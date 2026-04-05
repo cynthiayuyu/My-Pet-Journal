@@ -1,0 +1,278 @@
+import React, { useState, useRef } from 'react';
+import { DailyLog } from '../types';
+import { generateId, formatDate } from '../utils';
+import { Plus, Trash2, Edit2, X, Camera, Droplets, Utensils, Activity } from 'lucide-react';
+
+interface DailySectionProps {
+  logs: DailyLog[];
+  addLog: (log: DailyLog) => void;
+  updateLog: (log: DailyLog) => void;
+  deleteLog: (id: string) => void;
+}
+
+export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, updateLog, deleteLog }) => {
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingLogId, setEditingLogId] = useState<string | null>(null);
+  const [newLog, setNewLog] = useState<Partial<DailyLog>>({ date: new Date().toISOString().split('T')[0] });
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleOpenForm = (log?: DailyLog) => {
+    if (log) {
+      setEditingLogId(log.id);
+      setNewLog(log);
+    } else {
+      setEditingLogId(null);
+      setNewLog({ date: new Date().toISOString().split('T')[0], potty: 'Normal' });
+    }
+    setIsFormOpen(true);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newLog.date) {
+      const logData = {
+        id: editingLogId || generateId(),
+        date: newLog.date,
+        foodIntake: newLog.foodIntake,
+        waterIntake: newLog.waterIntake,
+        potty: newLog.potty,
+        notes: newLog.notes,
+        photoUrl: newLog.photoUrl,
+      };
+
+      if (editingLogId) {
+        updateLog(logData as DailyLog);
+      } else {
+        addLog(logData as DailyLog);
+      }
+      
+      setIsFormOpen(false);
+      setNewLog({});
+      setEditingLogId(null);
+    }
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewLog({ ...newLog, photoUrl: reader.result as string });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Sort logs by date descending
+  const sortedLogs = [...logs].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  return (
+    <div className="space-y-6 animate-fade-in">
+      
+      <div className="flex justify-between items-end px-2">
+         <div>
+           <span className="text-xs font-bold tracking-[0.2em] text-pencil uppercase font-sans">Daily Log</span>
+           <h4 className="text-2xl font-fangsong text-ink mt-1">日常紀錄</h4>
+         </div>
+         <button 
+            onClick={() => handleOpenForm()}
+            className="w-10 h-10 rounded-full bg-white border border-sand flex items-center justify-center text-ink shadow-sm hover:bg-sand/20 transition-colors"
+         >
+            <Plus size={18} />
+         </button>
+      </div>
+
+      {sortedLogs.length === 0 && !isFormOpen && (
+           <div className="bg-white/50 border border-dashed border-sand rounded-3xl p-8 flex flex-col items-center justify-center text-center gap-4 group hover:border-gold/50 hover:bg-white/80 transition-all cursor-pointer" onClick={() => handleOpenForm()}>
+             <div className="w-12 h-12 rounded-full bg-sand/20 flex items-center justify-center text-pencil group-hover:text-gold group-hover:scale-110 transition-all duration-500">
+               <Activity size={24} />
+             </div>
+             <p className="text-sm font-fangsong text-pencil">目前沒有日常紀錄。<br/>點擊新增 Tap to add today's log.</p>
+          </div>
+      )}
+
+      <div className="space-y-4">
+        {sortedLogs.map(log => (
+          <div key={log.id} className="bg-white rounded-2xl p-5 shadow-soft border border-white relative group animate-fade-in">
+              <div className="absolute top-4 right-4 flex gap-2 z-10">
+                <button onClick={() => handleOpenForm(log)} className="text-sand hover:text-clay transition-colors p-1 bg-white/80 rounded-full backdrop-blur-sm">
+                  <Edit2 size={16} />
+                </button>
+                <button onClick={() => deleteLog(log.id)} className="text-sand hover:text-red-400 transition-colors p-1 bg-white/80 rounded-full backdrop-blur-sm">
+                  <Trash2 size={16} />
+                </button>
+              </div>
+
+              <div className="mb-3">
+                <div className="text-lg font-fangsong text-ink font-medium">{formatDate(log.date)}</div>
+              </div>
+
+              {log.photoUrl && (
+                <div className="w-full h-48 rounded-xl overflow-hidden mb-4 border border-sand/30">
+                  <img src={log.photoUrl} alt="Daily Log" className="w-full h-full object-cover" />
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-3 mb-3">
+                {log.foodIntake && (
+                  <div className="bg-orange-50/50 p-3 rounded-xl border border-orange-100">
+                    <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-orange-600 font-sans mb-1">
+                      <Utensils size={12} /> 飲食 Food
+                    </div>
+                    <div className="text-sm font-fangsong text-ink whitespace-pre-wrap">{log.foodIntake}</div>
+                  </div>
+                )}
+                {log.waterIntake && (
+                  <div className="bg-blue-50/50 p-3 rounded-xl border border-blue-100">
+                    <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-blue-600 font-sans mb-1">
+                      <Droplets size={12} /> 喝水 Water
+                    </div>
+                    <div className="text-sm font-fangsong text-ink whitespace-pre-wrap">{log.waterIntake}</div>
+                  </div>
+                )}
+              </div>
+
+              {(log.potty || log.notes) && (
+                <div className="bg-sand/10 p-3 rounded-xl space-y-2">
+                  {log.potty && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-pencil font-sans">排泄 Potty:</span>
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                        log.potty === 'Normal' ? 'bg-green-100 text-green-700' :
+                        log.potty === 'None' ? 'bg-gray-200 text-gray-700' : 'bg-red-100 text-red-700'
+                      }`}>{
+                        log.potty === 'Normal' ? '正常 Normal' :
+                        log.potty === 'Diarrhea' ? '拉肚子 Diarrhea' :
+                        log.potty === 'Constipation' ? '便秘 Constipation' :
+                        '無 None'
+                      }</span>
+                    </div>
+                  )}
+                  {log.notes && (
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-pencil font-sans block mb-0.5">備註 Notes:</span>
+                      <div className="text-sm font-fangsong text-ink whitespace-pre-wrap">{log.notes}</div>
+                    </div>
+                  )}
+                </div>
+              )}
+          </div>
+        ))}
+      </div>
+
+      {/* Slide Up Form */}
+      {isFormOpen && (
+        <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
+          <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsFormOpen(false)} />
+          <form onSubmit={handleSubmit} className="bg-[#FDFCF8] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative max-h-[90vh] overflow-y-auto">
+             <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-8 opacity-50" />
+             
+             <div className="flex justify-between items-center mb-6">
+               <h3 className="font-fangsong text-2xl text-ink">{editingLogId ? '編輯紀錄 Edit Log' : '新增紀錄 New Log'}</h3>
+               <button type="button" onClick={() => setIsFormOpen(false)} className="w-8 h-8 rounded-full bg-sand/30 flex items-center justify-center text-ink hover:bg-sand transition-colors">
+                  <X size={16}/>
+               </button>
+             </div>
+
+             <div className="space-y-6">
+                 <div>
+                     <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">日期 Date</label>
+                     <input 
+                      type="date" required
+                      value={newLog.date || ''}
+                      onChange={e => setNewLog({...newLog, date: e.target.value})}
+                      className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none"
+                     />
+                 </div>
+
+                 {/* Photo Upload */}
+                 <div>
+                    <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-2 block font-sans">照片 Photo (選填 Optional)</label>
+                    <div 
+                      onClick={() => fileInputRef.current?.click()}
+                      className="w-full h-32 rounded-xl border-2 border-dashed border-sand flex flex-col items-center justify-center text-pencil hover:text-clay hover:border-clay transition-colors cursor-pointer overflow-hidden relative"
+                    >
+                      {newLog.photoUrl ? (
+                        <>
+                          <img src={newLog.photoUrl} alt="Preview" className="w-full h-full object-cover" />
+                          <div className="absolute inset-0 bg-ink/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                            <span className="text-white text-xs font-bold uppercase tracking-widest">更換照片 Change Photo</span>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <Camera size={24} className="mb-2" />
+                          <span className="text-xs font-sans">點擊上傳 Tap to upload</span>
+                        </>
+                      )}
+                    </div>
+                    <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" className="hidden" />
+                 </div>
+
+                 <div className="grid grid-cols-2 gap-6">
+                   <div>
+                     <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">飲食 Food Intake</label>
+                     <textarea 
+                      rows={2}
+                      placeholder="e.g. 100g 飼料 kibble"
+                      value={newLog.foodIntake || ''}
+                      onChange={e => setNewLog({...newLog, foodIntake: e.target.value})}
+                      className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-sm rounded-none placeholder-sand/50 resize-none"
+                     />
+                   </div>
+                   <div>
+                     <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">喝水 Water Intake</label>
+                     <textarea 
+                      rows={2}
+                      placeholder="e.g. 喝很多水 Drank well"
+                      value={newLog.waterIntake || ''}
+                      onChange={e => setNewLog({...newLog, waterIntake: e.target.value})}
+                      className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-sm rounded-none placeholder-sand/50 resize-none"
+                     />
+                   </div>
+                 </div>
+
+                 <div>
+                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-2 block font-sans">排泄 Potty</label>
+                   <div className="flex flex-wrap gap-2">
+                     {(['Normal', 'Diarrhea', 'Constipation', 'None'] as const).map(p => (
+                       <button
+                         key={p}
+                         type="button"
+                         onClick={() => setNewLog({...newLog, potty: p})}
+                         className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                           newLog.potty === p ? 'bg-clay text-white' : 'bg-sand/30 text-pencil hover:bg-sand/50'
+                         }`}
+                       >
+                         {
+                           p === 'Normal' ? '正常 Normal' :
+                           p === 'Diarrhea' ? '拉肚子 Diarrhea' :
+                           p === 'Constipation' ? '便秘 Constipation' :
+                           '無 None'
+                         }
+                       </button>
+                     ))}
+                   </div>
+                 </div>
+
+                 <div>
+                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">備註 Notes</label>
+                   <textarea 
+                    rows={3}
+                    placeholder="輸入備註 Any other observations..."
+                    value={newLog.notes || ''}
+                    onChange={e => setNewLog({...newLog, notes: e.target.value})}
+                    className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-sm rounded-none placeholder-sand/50 resize-none"
+                   />
+                </div>
+             </div>
+
+             <button type="submit" className="w-full py-4 mt-8 bg-ink text-paper rounded-xl font-bold hover:bg-ink/90 transition-all shadow-lg shadow-ink/20 tracking-widest text-xs uppercase font-sans">
+               {editingLogId ? '更新紀錄 Update Log' : '儲存紀錄 Save Log'}
+             </button>
+          </form>
+        </div>
+      )}
+    </div>
+  );
+};

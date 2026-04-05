@@ -1,0 +1,5 @@
+{
+  "name": "My Pet Journal",
+  "description": "An elegant and simple application to track your pet's growth, health records, and profile details.",
+  "requestFramePermissions": []
+}
