@@ -113,6 +113,15 @@
         font-family: 'DM Serif Display', 'FangSong', 'STFangsong', '华文仿宋', 'Noto Serif SC', serif;
       }
 
+      /* Hide scrollbar utility */
+      .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+
       /* Glassmorphism utility */
       .glass {
         background: color-mix(in srgb, var(--color-card) 60%, transparent);

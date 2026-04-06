@@ -338,7 +338,7 @@ const App: React.FC = () => {
 
       {/* Floating Bottom Navigation */}
       <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 glass rounded-full px-2 py-2 shadow-float flex gap-1 items-center z-50 max-w-[95vw] overflow-x-auto hide-scrollbar">
-        <div className="bg-ink/95 backdrop-blur-md rounded-full px-4 py-3 flex gap-3 shadow-inner border border-white/10 min-w-max">
+        <div className="bg-[#3E3A36] backdrop-blur-md rounded-full px-4 py-3 flex gap-3 shadow-inner border border-white/10 min-w-max">
           <NavBtn active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} icon={LayoutDashboard} label="總覽" />
           <NavBtn active={activeTab === 'daily'} onClick={() => setActiveTab('daily')} icon={CalendarDays} label="日常" />
           <NavBtn active={activeTab === 'profile'} onClick={() => setActiveTab('profile')} icon={User} label="資料" />
