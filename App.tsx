@@ -222,8 +222,8 @@ const App: React.FC = () => {
         {activeTab === 'dashboard' && (
           <div className="animate-fade-in">
             <div className="mb-6 ml-1 flex flex-col items-center text-center">
-               <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">總覽 Dashboard</span>
-               <h2 className="font-fangsong text-3xl text-ink">首頁 Home</h2>
+               <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">Dashboard</span>
+               <h2 className="font-fangsong text-3xl text-ink">首頁</h2>
              </div>
             <DashboardSection 
               healthRecords={healthRecords}
@@ -251,8 +251,8 @@ const App: React.FC = () => {
         {activeTab === 'physical' && (
            <div className="animate-fade-in">
              <div className="mb-6 ml-1 flex flex-col items-center text-center">
-               <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">成長紀錄 Growth Tracker</span>
-               <h2 className="font-fangsong text-3xl text-ink">體態紀錄 Body Record</h2>
+               <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">Growth Tracker</span>
+               <h2 className="font-fangsong text-3xl text-ink">體態紀錄</h2>
              </div>
              <PhysicalSection 
                records={physicalRecords} 
@@ -267,8 +267,8 @@ const App: React.FC = () => {
         {activeTab === 'health' && (
           <div className="animate-fade-in">
             <div className="mb-6 ml-1 flex flex-col items-center text-center">
-               <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">病歷 Medical History</span>
-               <h2 className="font-fangsong text-3xl text-ink">健康日曆 Health Calendar</h2>
+               <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">Medical History</span>
+               <h2 className="font-fangsong text-3xl text-ink">健康日曆</h2>
              </div>
             <HealthSection 
               records={healthRecords} 
@@ -283,8 +283,8 @@ const App: React.FC = () => {
         {activeTab === 'food' && (
           <div className="animate-fade-in">
             <div className="mb-6 ml-1 flex flex-col items-center text-center">
-               <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">飲食 Pantry & Diet</span>
-               <h2 className="font-fangsong text-3xl text-ink">食物庫存 Food Inventory</h2>
+               <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">Pantry & Diet</span>
+               <h2 className="font-fangsong text-3xl text-ink">食物庫存</h2>
              </div>
             <FoodSection 
               items={inventoryItems} 
@@ -297,8 +297,8 @@ const App: React.FC = () => {
         {activeTab === 'finance' && (
           <div className="animate-fade-in">
             <div className="mb-6 ml-1 flex flex-col items-center text-center">
-               <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">財富與照護 Wealth & Care</span>
-               <h2 className="font-fangsong text-3xl text-ink">財務與服務 Finance & Services</h2>
+               <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">Wealth & Care</span>
+               <h2 className="font-fangsong text-3xl text-ink">財務與服務</h2>
              </div>
             <FinanceSection 
               policies={insurancePolicies} 
@@ -314,8 +314,8 @@ const App: React.FC = () => {
         {activeTab === 'shops' && (
           <div className="animate-fade-in">
             <div className="mb-6 ml-1 flex flex-col items-center text-center">
-               <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">地點與造訪 Places & Visits</span>
-               <h2 className="font-fangsong text-3xl text-ink">住宿與美容 Boarding & Grooming</h2>
+               <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">Places & Visits</span>
+               <h2 className="font-fangsong text-3xl text-ink">住宿與美容</h2>
              </div>
             <ShopSection
               shops={shops}
@@ -327,8 +327,8 @@ const App: React.FC = () => {
         {activeTab === 'chat' && (
           <div className="animate-fade-in">
             <div className="mb-6 ml-1 flex flex-col items-center text-center">
-               <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">AI 助手 AI Assistant</span>
-               <h2 className="font-fangsong text-3xl text-ink">寵物顧問 Pet Advisor</h2>
+               <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">AI Assistant</span>
+               <h2 className="font-fangsong text-3xl text-ink">寵物顧問</h2>
              </div>
             <ChatSection profile={profile} />
           </div>
