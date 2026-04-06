@@ -181,13 +181,13 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
     if (profile.idealWeight && profile.activityLevel) {
       const rer = 70 * Math.pow(profile.idealWeight, 0.75);
       const multipliers = {
-        'resting': 1.0,
+        'resting': 1.2,
         'neutered_adult': 1.6,
         'intact_adult': 1.8,
         'active': 2.0,
         'highly_active': 3.0,
         'weight_loss': 1.0,
-        'weight_gain': 1.7
+        'weight_gain': 1.8
       };
       const mer = rer * (multipliers[profile.activityLevel] || 1.6);
       
