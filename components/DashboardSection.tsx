@@ -24,7 +24,7 @@ export const DashboardSection: React.FC<DashboardSectionProps> = ({ healthRecord
       if (r.nextDueDate) {
         const timeDiff = new Date(r.nextDueDate).getTime() - now;
         if (timeDiff > 0 && timeDiff < thirtyDays) {
-           items.push({ id: `h-${r.id}`, title: `${r.title} 即將到期 Due`, date: r.nextDueDate, type: '醫療 Health', icon: Syringe, color: 'text-blue-500' });
+           items.push({ id: `h-${r.id}`, title: `${r.title}`, date: r.nextDueDate, type: 'Health', icon: Syringe, color: 'text-blue-500' });
         }
       }
     });
@@ -32,14 +32,14 @@ export const DashboardSection: React.FC<DashboardSectionProps> = ({ healthRecord
     inventoryItems.forEach(i => {
       const timeDiff = new Date(i.expiryDate).getTime() - now;
       if (timeDiff > 0 && timeDiff < thirtyDays) {
-        items.push({ id: `i-${i.id}`, title: `${i.name} 即將到期 Expiring`, date: i.expiryDate, type: '食物 Food', icon: Package, color: 'text-orange-500' });
+        items.push({ id: `i-${i.id}`, title: `${i.name}`, date: i.expiryDate, type: 'Food', icon: Package, color: 'text-orange-500' });
       }
     });
 
     insurancePolicies.forEach(p => {
       const timeDiff = new Date(p.expiryDate).getTime() - now;
       if (timeDiff > 0 && timeDiff < thirtyDays) {
-        items.push({ id: `ins-${p.id}`, title: `${p.name} 即將到期 Expiring`, date: p.expiryDate, type: '保險 Insurance', icon: Shield, color: 'text-indigo-500' });
+        items.push({ id: `ins-${p.id}`, title: `${p.name}`, date: p.expiryDate, type: 'Insurance', icon: Shield, color: 'text-indigo-500' });
       }
     });
 
@@ -47,7 +47,7 @@ export const DashboardSection: React.FC<DashboardSectionProps> = ({ healthRecord
       if (s.expiryDate) {
         const timeDiff = new Date(s.expiryDate).getTime() - now;
         if (timeDiff > 0 && timeDiff < thirtyDays) {
-          items.push({ id: `prep-${s.id}`, title: `${s.name} 即將到期 Expiring`, date: s.expiryDate, type: '服務 Service', icon: PiggyBank, color: 'text-emerald-500' });
+          items.push({ id: `prep-${s.id}`, title: `${s.name}`, date: s.expiryDate, type: 'Service', icon: PiggyBank, color: 'text-emerald-500' });
         }
       }
     });
@@ -102,14 +102,14 @@ export const DashboardSection: React.FC<DashboardSectionProps> = ({ healthRecord
             <Bell size={20} />
           </div>
           <div>
-            <h3 className="text-xl font-fangsong text-ink">提醒中心 Reminders</h3>
-            <p className="text-xs text-pencil font-sans">未來 30 天 Upcoming in 30 days</p>
+            <h3 className="text-xl font-fangsong text-ink">提醒中心</h3>
+            <p className="text-xs text-pencil font-sans">Upcoming in 30 days</p>
           </div>
         </div>
 
         {reminders.length === 0 ? (
           <div className="text-center py-6 bg-sand/10 rounded-xl border border-dashed border-sand">
-            <p className="text-sm font-fangsong text-pencil">目前沒有即將到期的事項。<br/>都處理好了 All caught up!</p>
+            <p className="text-sm font-fangsong text-pencil">All caught up!</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -139,19 +139,19 @@ export const DashboardSection: React.FC<DashboardSectionProps> = ({ healthRecord
               <DollarSign size={20} />
             </div>
             <div>
-              <h3 className="text-xl font-fangsong text-ink">花費統計 Expenses</h3>
-              <p className="text-xs text-pencil font-sans">近 6 個月 Recent 6 Months</p>
+              <h3 className="text-xl font-fangsong text-ink">花費統計</h3>
+              <p className="text-xs text-pencil font-sans">Recent 6 months</p>
             </div>
           </div>
           <div className="text-right">
-            <div className="text-[10px] uppercase tracking-widest text-pencil font-sans">總計 Total</div>
+            <div className="text-[10px] uppercase tracking-widest text-pencil font-sans">Total</div>
             <div className="text-xl font-fangsong text-ink font-bold">${totalRecentExpense.toLocaleString()}</div>
           </div>
         </div>
 
         {expenseData.length === 0 ? (
           <div className="text-center py-6 bg-sand/10 rounded-xl border border-dashed border-sand">
-            <p className="text-sm font-fangsong text-pencil">尚無花費紀錄。<br/>No expenses recorded yet.</p>
+            <p className="text-sm font-fangsong text-pencil">No expenses recorded yet.</p>
           </div>
         ) : (
           <div className="h-48 w-full mt-4">

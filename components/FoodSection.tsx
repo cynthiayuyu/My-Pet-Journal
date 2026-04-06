@@ -92,22 +92,22 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
           <div className="w-8 h-8 rounded-full bg-clay/10 flex items-center justify-center text-clay">
             <Calculator size={16} />
           </div>
-          <h3 className="text-xs font-bold tracking-[0.2em] text-gold uppercase font-sans opacity-80">熱量需求 Calorie Needs</h3>
+          <h3 className="text-xs font-bold tracking-[0.2em] text-gold uppercase font-sans opacity-80">Calorie Needs</h3>
         </div>
         
         {calorieInfo ? (
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-sand/10 rounded-xl p-4 text-center">
-              <div className="text-[10px] font-bold uppercase tracking-widest text-pencil font-sans mb-1">基礎代謝 RER</div>
+              <div className="text-[10px] font-bold uppercase tracking-widest text-pencil font-sans mb-1">RER</div>
               <div className="text-2xl font-fangsong text-ink">{calorieInfo.rer} <span className="text-xs text-pencil font-sans">kcal/day</span></div>
             </div>
             <div className="bg-clay/5 rounded-xl p-4 text-center border border-clay/20">
-              <div className="text-[10px] font-bold uppercase tracking-widest text-clay font-sans mb-1">每日建議 MER</div>
+              <div className="text-[10px] font-bold uppercase tracking-widest text-clay font-sans mb-1">MER</div>
               <div className="text-2xl font-fangsong text-ink">{calorieInfo.mer} <span className="text-xs text-pencil font-sans">kcal/day</span></div>
             </div>
           </div>
         ) : (
-          <p className="text-sm text-pencil font-fangsong text-center py-4">請在「資料 Profile」設定理想體重與活動量來計算熱量需求。<br/>Please set Ideal Weight in Profile to calculate calories.</p>
+          <p className="text-sm text-pencil font-fangsong text-center py-4">Please set Ideal Weight and Activity Level in Profile to calculate calories.</p>
         )}
       </div>
 
@@ -130,7 +130,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
            <div className="w-12 h-12 rounded-full bg-sand/20 flex items-center justify-center text-pencil group-hover:text-gold group-hover:scale-110 transition-all duration-500">
              <Package size={24} />
            </div>
-           <p className="text-sm font-fangsong text-pencil">庫存空空如也。<br/>Pantry is empty. Add food or supplements.</p>
+           <p className="text-sm font-fangsong text-pencil">Pantry is empty. Add food or supplements.</p>
         </div>
       )}
 
@@ -171,18 +171,18 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
                         <div className="flex items-center gap-2 mb-1">
                           <span className="text-[10px] font-bold uppercase tracking-widest text-pencil font-sans">{item.type}</span>
                           {isFirstFood && item.type === 'Food' && (
-                            <span className="text-[8px] font-bold uppercase tracking-widest bg-gold/20 text-gold px-2 py-0.5 rounded-full">優先食用 Use First</span>
+                            <span className="text-[8px] font-bold uppercase tracking-widest bg-gold/20 text-gold px-2 py-0.5 rounded-full">Use First</span>
                           )}
                         </div>
                         <div className="text-xl font-fangsong text-ink">{item.name}</div>
                         
                         <div className="mt-3 grid grid-cols-2 gap-2">
                             <div className="bg-sand/10 px-3 py-2 rounded-lg">
-                                <div className="text-[10px] text-pencil font-sans uppercase tracking-widest mb-0.5">剩餘 Remaining</div>
+                                <div className="text-[10px] text-pencil font-sans uppercase tracking-widest mb-0.5">Remaining</div>
                                 <div className="text-sm font-fangsong text-ink font-medium">{item.quantity} {item.unit}</div>
                             </div>
                             <div className={`px-3 py-2 rounded-lg ${isExpiringSoon ? 'bg-red-50' : 'bg-sand/10'}`}>
-                                <div className={`text-[10px] font-sans uppercase tracking-widest mb-0.5 ${isExpiringSoon ? 'text-red-500 font-bold' : 'text-pencil'}`}>到期 Expires</div>
+                                <div className={`text-[10px] font-sans uppercase tracking-widest mb-0.5 ${isExpiringSoon ? 'text-red-500 font-bold' : 'text-pencil'}`}>Expires</div>
                                 <div className={`text-sm font-fangsong font-medium ${isExpiringSoon ? 'text-red-600' : 'text-ink'}`}>
                                   {formatDate(item.expiryDate)}
                                 </div>
@@ -191,7 +191,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
 
                         {suggestedAmount && (
                           <div className="mt-3 bg-clay/5 border border-clay/20 px-3 py-2 rounded-lg flex items-center justify-between">
-                            <span className="text-xs text-clay font-sans font-medium">建議每日份量 Daily Amount</span>
+                            <span className="text-xs text-clay font-sans font-medium">Daily Amount</span>
                             <span className="text-sm font-fangsong text-ink font-bold">{suggestedAmount} {item.unit}</span>
                           </div>
                         )}
@@ -210,7 +210,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
              <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-8 opacity-50" />
              
              <div className="flex justify-between items-center mb-6">
-               <h3 className="font-fangsong text-2xl text-ink">{editingItemId ? '編輯項目 Edit Item' : '新增庫存 Add to Pantry'}</h3>
+               <h3 className="font-fangsong text-2xl text-ink">{editingItemId ? 'Edit Item' : 'Add to Pantry'}</h3>
                <button type="button" onClick={() => setIsFormOpen(false)} className="w-8 h-8 rounded-full bg-sand/30 flex items-center justify-center text-ink hover:bg-sand transition-colors">
                   <X size={16}/>
                </button>
@@ -225,7 +225,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
                       newItem.type === 'Food' ? 'bg-white text-ink shadow-sm' : 'text-pencil'
                   }`}
                 >
-                  食物 Food
+                  Food
                 </button>
                 <button 
                   type="button"
@@ -234,13 +234,13 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
                       newItem.type === 'Supplement' ? 'bg-white text-ink shadow-sm' : 'text-pencil'
                   }`}
                 >
-                  保健品 Supplement
+                  Supplement
                 </button>
              </div>
 
              <div className="space-y-6">
                  <div>
-                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">名稱 Item Name</label>
+                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Item Name</label>
                    <input 
                     type="text" required
                     placeholder="e.g. 渴望 Orijen Original"
@@ -252,7 +252,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
 
                 <div className="grid grid-cols-2 gap-6">
                    <div>
-                       <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">數量 Quantity</label>
+                       <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Quantity</label>
                        <input 
                         type="number" step="0.1" required
                         placeholder="0"
@@ -262,7 +262,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
                        />
                    </div>
                    <div>
-                       <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">單位 Unit</label>
+                       <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Unit</label>
                        <input 
                         type="text" required
                         placeholder="e.g. g, kg, 顆 pills"
@@ -275,7 +275,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
 
                 <div className="grid grid-cols-2 gap-6">
                    <div>
-                       <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">到期日 Expiry Date</label>
+                       <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Expiry Date</label>
                        <input 
                         type="date" required
                         value={newItem.expiryDate || ''}
@@ -285,7 +285,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
                    </div>
                    {newItem.type === 'Food' && (
                      <div>
-                         <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">每單位熱量 Kcal per Unit</label>
+                         <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Kcal per Unit</label>
                          <input 
                           type="number" step="0.01"
                           placeholder="e.g. 3.5 (kcal/g)"
@@ -298,10 +298,10 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
                 </div>
 
                  <div>
-                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">成分與備註 Ingredients / Notes</label>
-                   <textarea 
+                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Ingredients / Notes</label>
+                   <textarea
                     rows={2}
-                    placeholder="輸入成分或備註 Main ingredients or notes..."
+                    placeholder="Main ingredients or notes..."
                     value={newItem.ingredients || ''}
                     onChange={e => setNewItem({...newItem, ingredients: e.target.value})}
                     className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none placeholder-sand/50 resize-none"
@@ -310,7 +310,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
              </div>
 
              <button type="submit" className="w-full py-4 mt-8 bg-ink text-paper rounded-xl font-bold hover:bg-ink/90 transition-all shadow-lg shadow-ink/20 tracking-widest text-xs uppercase font-sans">
-               {editingItemId ? '更新庫存 Update Item' : '儲存庫存 Save Item'}
+               {editingItemId ? 'Update' : 'Save'}
              </button>
           </form>
         </div>

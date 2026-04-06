@@ -87,7 +87,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
              <div className="w-12 h-12 rounded-full bg-sand/20 flex items-center justify-center text-pencil group-hover:text-gold group-hover:scale-110 transition-all duration-500">
                <Activity size={24} />
              </div>
-             <p className="text-sm font-fangsong text-pencil">目前沒有日常紀錄。<br/>點擊新增 Tap to add today's log.</p>
+             <p className="text-sm font-fangsong text-pencil">Tap to add today's log</p>
           </div>
       )}
 
@@ -117,7 +117,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
                 {log.foodIntake && (
                   <div className="bg-orange-50/50 p-3 rounded-xl border border-orange-100">
                     <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-orange-600 font-sans mb-1">
-                      <Utensils size={12} /> 飲食 Food
+                      <Utensils size={12} /> Food
                     </div>
                     <div className="text-sm font-fangsong text-ink whitespace-pre-wrap">{log.foodIntake}</div>
                   </div>
@@ -125,7 +125,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
                 {log.waterIntake && (
                   <div className="bg-blue-50/50 p-3 rounded-xl border border-blue-100">
                     <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-blue-600 font-sans mb-1">
-                      <Droplets size={12} /> 喝水 Water
+                      <Droplets size={12} /> Water
                     </div>
                     <div className="text-sm font-fangsong text-ink whitespace-pre-wrap">{log.waterIntake}</div>
                   </div>
@@ -136,21 +136,21 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
                 <div className="bg-sand/10 p-3 rounded-xl space-y-2">
                   {log.potty && (
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-pencil font-sans">排泄 Potty:</span>
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-pencil font-sans">Potty:</span>
                       <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
                         log.potty === 'Normal' ? 'bg-green-100 text-green-700' :
                         log.potty === 'None' ? 'bg-gray-200 text-gray-700' : 'bg-red-100 text-red-700'
                       }`}>{
-                        log.potty === 'Normal' ? '正常 Normal' :
-                        log.potty === 'Diarrhea' ? '拉肚子 Diarrhea' :
-                        log.potty === 'Constipation' ? '便秘 Constipation' :
-                        '無 None'
+                        log.potty === 'Normal' ? 'Normal' :
+                        log.potty === 'Diarrhea' ? 'Diarrhea' :
+                        log.potty === 'Constipation' ? 'Constipation' :
+                        'None'
                       }</span>
                     </div>
                   )}
                   {log.notes && (
                     <div>
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-pencil font-sans block mb-0.5">備註 Notes:</span>
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-pencil font-sans block mb-0.5">Notes:</span>
                       <div className="text-sm font-fangsong text-ink whitespace-pre-wrap">{log.notes}</div>
                     </div>
                   )}
@@ -168,7 +168,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
              <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-8 opacity-50" />
              
              <div className="flex justify-between items-center mb-6">
-               <h3 className="font-fangsong text-2xl text-ink">{editingLogId ? '編輯紀錄 Edit Log' : '新增紀錄 New Log'}</h3>
+               <h3 className="font-fangsong text-2xl text-ink">{editingLogId ? 'Edit Log' : 'New Log'}</h3>
                <button type="button" onClick={() => setIsFormOpen(false)} className="w-8 h-8 rounded-full bg-sand/30 flex items-center justify-center text-ink hover:bg-sand transition-colors">
                   <X size={16}/>
                </button>
@@ -176,7 +176,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
 
              <div className="space-y-6">
                  <div>
-                     <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">日期 Date</label>
+                     <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Date</label>
                      <input 
                       type="date" required
                       value={newLog.date || ''}
@@ -187,7 +187,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
 
                  {/* Photo Upload */}
                  <div>
-                    <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-2 block font-sans">照片 Photo (選填 Optional)</label>
+                    <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-2 block font-sans">Photo (Optional)</label>
                     <div 
                       onClick={() => fileInputRef.current?.click()}
                       className="w-full h-32 rounded-xl border-2 border-dashed border-sand flex flex-col items-center justify-center text-pencil hover:text-clay hover:border-clay transition-colors cursor-pointer overflow-hidden relative"
@@ -196,13 +196,13 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
                         <>
                           <img src={newLog.photoUrl} alt="Preview" className="w-full h-full object-cover" />
                           <div className="absolute inset-0 bg-ink/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                            <span className="text-white text-xs font-bold uppercase tracking-widest">更換照片 Change Photo</span>
+                            <span className="text-white text-xs font-bold uppercase tracking-widest">Change Photo</span>
                           </div>
                         </>
                       ) : (
                         <>
                           <Camera size={24} className="mb-2" />
-                          <span className="text-xs font-sans">點擊上傳 Tap to upload</span>
+                          <span className="text-xs font-sans">Tap to upload</span>
                         </>
                       )}
                     </div>
@@ -211,7 +211,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
 
                  <div className="grid grid-cols-2 gap-6">
                    <div>
-                     <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">飲食 Food Intake</label>
+                     <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Food Intake</label>
                      <textarea 
                       rows={2}
                       placeholder="e.g. 100g 飼料 kibble"
@@ -221,7 +221,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
                      />
                    </div>
                    <div>
-                     <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">喝水 Water Intake</label>
+                     <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Water Intake</label>
                      <textarea 
                       rows={2}
                       placeholder="e.g. 喝很多水 Drank well"
@@ -233,7 +233,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
                  </div>
 
                  <div>
-                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-2 block font-sans">排泄 Potty</label>
+                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-2 block font-sans">Potty</label>
                    <div className="flex flex-wrap gap-2">
                      {(['Normal', 'Diarrhea', 'Constipation', 'None'] as const).map(p => (
                        <button
@@ -256,10 +256,10 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
                  </div>
 
                  <div>
-                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">備註 Notes</label>
-                   <textarea 
+                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Notes</label>
+                   <textarea
                     rows={3}
-                    placeholder="輸入備註 Any other observations..."
+                    placeholder="Any other observations..."
                     value={newLog.notes || ''}
                     onChange={e => setNewLog({...newLog, notes: e.target.value})}
                     className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-sm rounded-none placeholder-sand/50 resize-none"
@@ -268,7 +268,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
              </div>
 
              <button type="submit" className="w-full py-4 mt-8 bg-ink text-paper rounded-xl font-bold hover:bg-ink/90 transition-all shadow-lg shadow-ink/20 tracking-widest text-xs uppercase font-sans">
-               {editingLogId ? '更新紀錄 Update Log' : '儲存紀錄 Save Log'}
+               {editingLogId ? 'Update' : 'Save'}
              </button>
           </form>
         </div>

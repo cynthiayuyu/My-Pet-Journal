@@ -98,9 +98,9 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
     const diff = latestRecord.weight - profile.idealWeight;
     const percentDiff = (diff / profile.idealWeight) * 100;
     
-    if (percentDiff > 10) return { type: 'overweight', message: `過重 Overweight by ${diff.toFixed(1)}kg (${percentDiff.toFixed(0)}%)`, color: 'text-red-500', bg: 'bg-red-50', icon: TrendingUp };
-    if (percentDiff < -10) return { type: 'underweight', message: `過輕 Underweight by ${Math.abs(diff).toFixed(1)}kg (${Math.abs(percentDiff).toFixed(0)}%)`, color: 'text-blue-500', bg: 'bg-blue-50', icon: TrendingDown };
-    return { type: 'ideal', message: '理想體重 Ideal Weight!', color: 'text-green-600', bg: 'bg-green-50', icon: Weight };
+    if (percentDiff > 10) return { type: 'overweight', message: `Overweight by ${diff.toFixed(1)}kg (${percentDiff.toFixed(0)}%)`, color: 'text-red-500', bg: 'bg-red-50', icon: TrendingUp };
+    if (percentDiff < -10) return { type: 'underweight', message: `Underweight by ${Math.abs(diff).toFixed(1)}kg (${Math.abs(percentDiff).toFixed(0)}%)`, color: 'text-blue-500', bg: 'bg-blue-50', icon: TrendingDown };
+    return { type: 'ideal', message: 'Ideal Weight!', color: 'text-green-600', bg: 'bg-green-50', icon: Weight };
   }, [profile.idealWeight, latestRecord]);
 
   return (
@@ -113,7 +113,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
              <weightAlert.icon size={20} />
            </div>
            <div>
-             <h4 className={`text-sm font-bold tracking-widest uppercase font-sans ${weightAlert.color}`}>體重狀態 Weight Status</h4>
+             <h4 className={`text-sm font-bold tracking-widest uppercase font-sans ${weightAlert.color}`}>Weight Status</h4>
              <p className="text-lg font-fangsong text-ink">{weightAlert.message}</p>
            </div>
         </div>
@@ -122,7 +122,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
       {/* Weight Chart */}
       {chartData.length > 1 && (
         <div className="bg-white/80 backdrop-blur-md rounded-[2rem] p-6 shadow-soft border border-white">
-          <h3 className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-4 font-sans opacity-80">體重趨勢 Weight Trend</h3>
+          <h3 className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-4 font-sans opacity-80">Weight Trend</h3>
           <div className="h-48 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
@@ -197,7 +197,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
       <div className="space-y-4">
         <div className="flex justify-between items-end px-2">
            <div>
-             <span className="text-xs font-bold tracking-[0.2em] text-pencil uppercase font-sans">紀錄 Records For</span>
+             <span className="text-xs font-bold tracking-[0.2em] text-pencil uppercase font-sans">Records</span>
              <h4 className="text-2xl font-fangsong text-ink mt-1">{formatDate(selectedDateStr)}</h4>
            </div>
            {selectedRecords.length > 0 && (
@@ -216,7 +216,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
              <div className="w-12 h-12 rounded-full bg-sand/20 flex items-center justify-center text-pencil group-hover:text-gold group-hover:scale-110 transition-all duration-500">
                <Plus size={24} />
              </div>
-             <p className="text-sm font-fangsong text-pencil">這天沒有紀錄 No records for this day.<br/>點擊新增 Tap to add a measurement.</p>
+             <p className="text-sm font-fangsong text-pencil">Tap to add a measurement</p>
           </div>
         )}
 
@@ -242,7 +242,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
                 <div className="grid grid-cols-2 gap-6 pr-16">
                     <div>
                       <div className="flex items-center gap-2 text-gold text-[10px] font-bold uppercase tracking-widest font-sans mb-1">
-                        <Weight size={12} /> 體重 Weight
+                        <Weight size={12} /> Weight
                       </div>
                       <div className="text-4xl font-fangsong text-ink">
                         {record.weight} <span className="text-sm text-pencil font-serif italic">kg</span>
@@ -252,11 +252,11 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
                     {(record.height || record.chest) && (
                       <div>
                         <div className="flex items-center gap-2 text-pencil text-[10px] font-bold uppercase tracking-widest font-sans mb-1">
-                          <Ruler size={12} /> 尺寸 Size
+                          <Ruler size={12} /> Size
                         </div>
                          <div className="space-y-1 mt-2">
-                            {record.height && <div className="text-sm font-fangsong text-ink">H (身高): {record.height}cm</div>}
-                            {record.chest && <div className="text-sm font-fangsong text-ink">C (胸圍): {record.chest}cm</div>}
+                            {record.height && <div className="text-sm font-fangsong text-ink">Height: {record.height}cm</div>}
+                            {record.chest && <div className="text-sm font-fangsong text-ink">Chest: {record.chest}cm</div>}
                          </div>
                       </div>
                     )}
@@ -264,8 +264,8 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
                 
                 {(record.neck || record.back) && (
                     <div className="mt-4 pt-4 border-t border-sand/30 flex gap-6 text-sm font-fangsong text-pencil">
-                       {record.neck && <span>Neck (頸圍): <span className="text-ink">{record.neck}</span></span>}
-                       {record.back && <span>Back (背長): <span className="text-ink">{record.back}</span></span>}
+                       {record.neck && <span>Neck: <span className="text-ink">{record.neck}cm</span></span>}
+                       {record.back && <span>Back: <span className="text-ink">{record.back}cm</span></span>}
                     </div>
                 )}
              </div>
@@ -281,7 +281,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
              <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-8 opacity-50" />
              
              <div className="flex justify-between items-center mb-8">
-               <h3 className="font-fangsong text-2xl text-ink">{editingRecordId ? '編輯紀錄 Edit Record' : '新增紀錄 New Measurement'}</h3>
+               <h3 className="font-fangsong text-2xl text-ink">{editingRecordId ? 'Edit Record' : 'New Measurement'}</h3>
                <button type="button" onClick={() => setIsFormOpen(false)} className="w-8 h-8 rounded-full bg-sand/30 flex items-center justify-center text-ink hover:bg-sand transition-colors">
                   <X size={16}/>
                </button>
@@ -289,7 +289,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
 
              <div className="grid grid-cols-2 gap-6 mb-8">
                 <div className="col-span-2">
-                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">日期 Date</label>
+                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Date</label>
                    <input 
                     type="date"
                     required 
@@ -299,7 +299,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
                    />
                 </div>
                 <div>
-                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">體重 Weight (kg)</label>
+                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Weight (kg)</label>
                    <input 
                     type="number" step="0.1" required
                     placeholder="0.0"
@@ -309,7 +309,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
                    />
                 </div>
                 <div>
-                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">身高 Height (cm)</label>
+                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Height (cm)</label>
                    <input 
                     type="number" step="0.1"
                     placeholder="0.0"
@@ -319,7 +319,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
                    />
                 </div>
                  <div>
-                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">頸圍 Neck (cm)</label>
+                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Neck (cm)</label>
                    <input 
                     type="number" step="0.1"
                     placeholder="-"
@@ -329,7 +329,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
                    />
                 </div>
                  <div>
-                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">背長 Back (cm)</label>
+                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Back (cm)</label>
                    <input 
                     type="number" step="0.1"
                     placeholder="-"
@@ -339,7 +339,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
                    />
                 </div>
                  <div>
-                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">胸圍 Chest (cm)</label>
+                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Chest (cm)</label>
                    <input 
                     type="number" step="0.1"
                     placeholder="-"
@@ -351,7 +351,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
              </div>
 
              <button type="submit" className="w-full py-4 bg-ink text-paper rounded-xl font-bold hover:bg-ink/90 transition-all shadow-lg shadow-ink/20 tracking-widest text-xs uppercase font-sans">
-               {editingRecordId ? '更新紀錄 Update Record' : '儲存紀錄 Save Record'}
+               {editingRecordId ? 'Update' : 'Save'}
              </button>
           </form>
         </div>
