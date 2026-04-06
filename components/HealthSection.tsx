@@ -461,6 +461,8 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
             </div>
         ))}
       </div>
+    </div>
+  )}
 
       {/* Checkup Trends */}
       {allMetricKeys.length > 0 && !searchTerm && (
