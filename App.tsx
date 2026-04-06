@@ -8,7 +8,8 @@ import { FinanceSection } from './components/FinanceSection';
 import { ShopSection } from './components/ShopSection';
 import { DashboardSection } from './components/DashboardSection';
 import { DailySection } from './components/DailySection';
-import { User, Activity, Heart, PawPrint, Utensils, Wallet, Store, LayoutDashboard, CalendarDays, Moon, Sun, Download, Upload } from 'lucide-react';
+import { ChatSection } from './components/ChatSection';
+import { User, Activity, Heart, PawPrint, Utensils, Wallet, Store, LayoutDashboard, CalendarDays, Moon, Sun, Download, Upload, MessageCircle } from 'lucide-react';
 
 const App: React.FC = () => {
   // --- State ---
@@ -316,10 +317,20 @@ const App: React.FC = () => {
                <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">地點與造訪 Places & Visits</span>
                <h2 className="font-fangsong text-3xl text-ink">住宿與美容 Boarding & Grooming</h2>
              </div>
-            <ShopSection 
-              shops={shops} 
+            <ShopSection
+              shops={shops}
               setShops={setShops}
             />
+          </div>
+        )}
+
+        {activeTab === 'chat' && (
+          <div className="animate-fade-in">
+            <div className="mb-6 ml-1 flex flex-col items-center text-center">
+               <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">AI 助手 AI Assistant</span>
+               <h2 className="font-fangsong text-3xl text-ink">寵物顧問 Pet Advisor</h2>
+             </div>
+            <ChatSection profile={profile} />
           </div>
         )}
 
@@ -336,6 +347,7 @@ const App: React.FC = () => {
           <NavBtn active={activeTab === 'food'} onClick={() => setActiveTab('food')} icon={Utensils} label="飲食" />
           <NavBtn active={activeTab === 'finance'} onClick={() => setActiveTab('finance')} icon={Wallet} label="財務" />
           <NavBtn active={activeTab === 'shops'} onClick={() => setActiveTab('shops')} icon={Store} label="愛店" />
+          <NavBtn active={activeTab === 'chat'} onClick={() => setActiveTab('chat')} icon={MessageCircle} label="顧問" />
         </div>
       </nav>
 
