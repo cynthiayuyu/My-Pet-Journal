@@ -264,7 +264,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
           {policies.map(policy => {
             const isExpiringSoon = new Date(policy.expiryDate).getTime() - new Date().getTime() < 30 * 24 * 60 * 60 * 1000;
             return (
-              <div key={policy.id} className="bg-white rounded-2xl p-6 shadow-soft border border-white relative group cursor-pointer hover:shadow-md transition-shadow" onClick={() => setSelectedPolicy(policy)}>
+              <div key={policy.id} className="card-warm rounded-2xl p-6 relative group cursor-pointer hover:shadow-md transition-shadow" onClick={() => setSelectedPolicy(policy)}>
                   <div className="absolute top-4 right-4 flex gap-2">
                     <button 
                       onClick={(e) => { e.stopPropagation(); handleOpenPolicyForm(policy); }}
@@ -331,7 +331,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
           {services.map(service => {
             const isExpiringSoon = service.expiryDate && new Date(service.expiryDate).getTime() - new Date().getTime() < 30 * 24 * 60 * 60 * 1000;
             return (
-              <div key={service.id} className="bg-white rounded-2xl p-6 shadow-soft border border-white relative group">
+              <div key={service.id} className="card-warm rounded-2xl p-6 relative group">
                   <div className="absolute top-4 right-4 flex gap-2">
                     <button 
                       onClick={() => handleOpenServiceForm(service)}
@@ -392,7 +392,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
       {showHotelPlan && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-ink/40 backdrop-blur-sm" onClick={() => setShowHotelPlan(false)} />
-          <div className="bg-[#FDFCF8] w-full max-w-md rounded-[2rem] p-8 shadow-2xl relative z-10 animate-scale-in">
+          <div className="bg-[#FEFCF8] w-full max-w-md rounded-[2rem] p-8 shadow-2xl relative z-10 animate-scale-in">
             <div className="flex justify-between items-center mb-6">
                <h3 className="font-fangsong text-2xl text-ink flex items-center gap-2"><Building size={24} className="text-indigo-400"/> 住宿計畫 Hotel Plan</h3>
                <button onClick={() => setShowHotelPlan(false)} className="p-2 text-pencil hover:text-ink"><X size={20}/></button>
@@ -436,7 +436,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
       {isPolicyFormOpen && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsPolicyFormOpen(false)} />
-          <form onSubmit={handlePolicySubmit} className="bg-[#FDFCF8] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative">
+          <form onSubmit={handlePolicySubmit} className="bg-[#FEFCF8] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative">
              <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-8 opacity-50" />
              
              <div className="flex justify-between items-center mb-6">
@@ -478,7 +478,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
                </div>
              </div>
 
-             <button type="submit" className="w-full py-4 mt-8 bg-ink text-paper rounded-xl font-bold hover:bg-ink/90 transition-all shadow-lg shadow-ink/20 tracking-widest text-xs uppercase font-sans">
+             <button type="submit" className="w-full py-4 mt-8 btn-warm">
                {editingPolicyId ? '更新保險 Update Policy' : '儲存保險 Save Policy'}
              </button>
           </form>
@@ -489,7 +489,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
       {isServiceFormOpen && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsServiceFormOpen(false)} />
-          <form onSubmit={handleServiceSubmit} className="bg-[#FDFCF8] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative">
+          <form onSubmit={handleServiceSubmit} className="bg-[#FEFCF8] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative">
              <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-8 opacity-50" />
              
              <div className="flex justify-between items-center mb-6">
@@ -557,7 +557,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
                 </div>
              </div>
 
-             <button type="submit" className="w-full py-4 mt-8 bg-ink text-paper rounded-xl font-bold hover:bg-ink/90 transition-all shadow-lg shadow-ink/20 tracking-widest text-xs uppercase font-sans">
+             <button type="submit" className="w-full py-4 mt-8 btn-warm">
                {editingServiceId ? '更新紀錄 Update Record' : '儲存紀錄 Save Record'}
              </button>
           </form>
@@ -568,7 +568,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
       {selectedPolicy && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setSelectedPolicy(null)} />
-          <div className="bg-[#FDFCF8] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative max-h-[90vh] overflow-y-auto">
+          <div className="bg-[#FEFCF8] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative max-h-[90vh] overflow-y-auto">
              <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-8 opacity-50" />
              
              <div className="flex justify-between items-center mb-6">

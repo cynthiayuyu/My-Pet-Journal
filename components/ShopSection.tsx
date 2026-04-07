@@ -187,7 +187,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
       {isManagingCategories && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center pointer-events-none p-4">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsManagingCategories(false)} />
-          <div className="bg-[#FDFCF8] w-full max-w-sm rounded-3xl p-6 shadow-2xl pointer-events-auto animate-fade-in relative">
+          <div className="bg-[#FEFCF8] w-full max-w-sm rounded-3xl p-6 shadow-2xl pointer-events-auto animate-fade-in relative">
             <div className="flex justify-between items-center mb-6">
               <h3 className="font-fangsong text-xl text-ink">Manage Categories</h3>
               <button onClick={() => setIsManagingCategories(false)} className="text-ink/40 hover:text-ink"><X size={20}/></button>

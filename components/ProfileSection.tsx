@@ -85,7 +85,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
       </div>
 
       {/* Details Form - Paper Style */}
-      <div className="bg-white/80 backdrop-blur-sm rounded-[2rem] p-8 shadow-soft border border-white space-y-8 relative overflow-hidden">
+      <div className="card-warm rounded-[2rem] p-8 shadow-soft border border-white space-y-8 relative overflow-hidden">
         {/* Decorative corner */}
         <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-sand/20 to-transparent rounded-bl-[4rem] pointer-events-none"></div>
 
@@ -208,7 +208,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
       </div>
 
       {/* Vet / Medical Contact */}
-      <div className="bg-white/80 backdrop-blur-sm rounded-[2rem] p-8 shadow-soft border border-white space-y-6 relative">
+      <div className="card-warm rounded-[2rem] p-8 shadow-soft border border-white space-y-6 relative">
          <h3 className="text-xs font-bold tracking-[0.2em] text-gold uppercase flex items-center gap-3 mb-6 font-sans opacity-80">
           <Stethoscope size={14} />
           Care Team

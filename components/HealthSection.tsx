@@ -212,7 +212,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
             </div>
           ) : (
             searchResults.map(record => (
-              <div key={record.id} className="bg-white rounded-2xl p-5 shadow-soft border border-white relative group animate-fade-in">
+              <div key={record.id} className="card-warm rounded-2xl p-5 relative group animate-fade-in">
                   <div className="absolute top-4 right-4 flex gap-2">
                     <button onClick={() => handleOpenForm(record)} className="text-sand hover:text-clay transition-colors p-1"><Edit2 size={16} /></button>
                     <button onClick={() => deleteRecord(record.id)} className="text-sand hover:text-red-400 transition-colors p-1"><Trash2 size={16} /></button>
@@ -266,7 +266,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
       ) : (
         <div className="space-y-6">
           {/* Calendar Card */}
-      <div className="bg-white/80 backdrop-blur-md rounded-[2rem] p-6 shadow-soft border border-white relative overflow-hidden">
+      <div className="card-warm rounded-[2rem] p-6 relative overflow-hidden">
         {/* Decorative corner */}
         <div className="absolute top-0 left-0 w-20 h-20 bg-gradient-to-br from-sage/10 to-transparent rounded-br-[4rem] pointer-events-none"></div>
 
@@ -312,7 +312,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
                   onClick={() => handleDateClick(day)}
                   className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-fangsong transition-all duration-300 relative border-2 
                     ${isSelected 
-                        ? 'bg-ink text-paper border-ink shadow-md scale-105' 
+                        ? 'bg-clay text-white border-clay shadow-md scale-105' 
                         : hasReminder 
                             ? 'bg-white border-clay text-ink' // Outline for reminders
                             : 'border-transparent text-ink hover:bg-sand/30'
@@ -385,7 +385,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
 
         {/* Render Actual Records */}
         {selectedDayRecords.map(record => (
-            <div key={record.id} className="bg-white rounded-2xl p-5 shadow-soft border border-white relative group animate-fade-in">
+            <div key={record.id} className="card-warm rounded-2xl p-5 relative group animate-fade-in">
                 <div className="absolute top-4 right-4 flex gap-2">
                   <button 
                     onClick={() => handleOpenForm(record)}
@@ -466,7 +466,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
 
       {/* Checkup Trends */}
       {allMetricKeys.length > 0 && !searchTerm && (
-        <div className="bg-white/80 backdrop-blur-md rounded-[2rem] p-6 shadow-soft border border-white mt-8">
+        <div className="card-warm rounded-[2rem] p-6 mt-8">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-xs font-bold tracking-[0.2em] text-gold uppercase font-sans opacity-80">Checkup Trends</h3>
             <select 
@@ -503,7 +503,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
       {isFormOpen && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsFormOpen(false)} />
-          <form onSubmit={handleSubmit} className="bg-[#FDFCF8] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative max-h-[90vh] overflow-y-auto">
+          <form onSubmit={handleSubmit} className="bg-[#FEFCF8] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative max-h-[90vh] overflow-y-auto">
              <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-8 opacity-50" />
              
              <div className="flex justify-between items-center mb-6">
@@ -691,7 +691,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
                  </div>
               </div>
 
-             <button type="submit" className="w-full py-4 mt-8 bg-ink text-paper rounded-xl font-bold hover:bg-ink/90 transition-all shadow-lg shadow-ink/20 tracking-widest text-xs uppercase font-sans">
+             <button type="submit" className="w-full py-4 mt-8 btn-warm">
                {editingRecordId ? 'Update' : 'Save'}
              </button>
           </form>
