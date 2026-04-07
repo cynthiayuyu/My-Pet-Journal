@@ -9,7 +9,7 @@ import { ShopSection } from './components/ShopSection';
 import { DashboardSection } from './components/DashboardSection';
 import { DailySection } from './components/DailySection';
 import { ChatSection } from './components/ChatSection';
-import { User, Activity, Heart, PawPrint, Utensils, Wallet, Store, LayoutDashboard, CalendarDays, Moon, Sun, Download, Upload, MessageCircle } from 'lucide-react';
+import { User, Activity, Heart, PawPrint, Utensils, Wallet, Store, LayoutDashboard, CalendarDays, Moon, Sun, Download, Upload } from 'lucide-react';
 
 const App: React.FC = () => {
   // --- State ---
@@ -324,21 +324,13 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {activeTab === 'chat' && (
-          <div className="animate-fade-in">
-            <div className="mb-6 ml-1 flex flex-col items-center text-center">
-               <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">AI Assistant</span>
-               <h2 className="font-fangsong text-3xl text-ink">寵物顧問</h2>
-             </div>
-            <ChatSection profile={profile} />
-          </div>
-        )}
 
       </main>
 
       {/* Floating Bottom Navigation */}
-      <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 glass rounded-full px-2 py-2 shadow-float flex gap-1 items-center z-50 max-w-[95vw] overflow-x-auto hide-scrollbar">
-        <div className="bg-[#3E3A36] backdrop-blur-md rounded-full px-4 py-3 flex gap-3 shadow-inner border border-white/10 min-w-max">
+      <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-[94vw]">
+        <div className="bg-[#252220] backdrop-blur-2xl rounded-[2rem] px-2 py-2 flex gap-0.5 overflow-x-auto hide-scrollbar min-w-max"
+          style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.06), inset 0 1px 0 rgba(255,255,255,0.05)' }}>
           <NavBtn active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} icon={LayoutDashboard} label="總覽" />
           <NavBtn active={activeTab === 'daily'} onClick={() => setActiveTab('daily')} icon={CalendarDays} label="日常" />
           <NavBtn active={activeTab === 'profile'} onClick={() => setActiveTab('profile')} icon={User} label="資料" />
@@ -347,7 +339,6 @@ const App: React.FC = () => {
           <NavBtn active={activeTab === 'food'} onClick={() => setActiveTab('food')} icon={Utensils} label="飲食" />
           <NavBtn active={activeTab === 'finance'} onClick={() => setActiveTab('finance')} icon={Wallet} label="財務" />
           <NavBtn active={activeTab === 'shops'} onClick={() => setActiveTab('shops')} icon={Store} label="愛店" />
-          <NavBtn active={activeTab === 'chat'} onClick={() => setActiveTab('chat')} icon={MessageCircle} label="顧問" />
         </div>
       </nav>
 
@@ -356,13 +347,24 @@ const App: React.FC = () => {
 };
 
 const NavBtn = ({ active, onClick, icon: Icon, label }: { active: boolean, onClick: () => void, icon: any, label: string }) => (
-  <button 
+  <button
     onClick={onClick}
-    className={`relative group flex flex-col items-center justify-center w-10 h-10 transition-all duration-300 ${active ? 'text-white' : 'text-white/40 hover:text-white/70'}`}
+    className={`relative flex flex-col items-center justify-center px-3 py-2.5 rounded-[1.4rem] transition-all duration-300 min-w-[48px] ${
+      active ? 'bg-white/10' : 'hover:bg-white/5'
+    }`}
   >
-    <Icon size={20} strokeWidth={active ? 2.5 : 2} className={`transition-transform duration-300 ${active ? 'scale-110 -translate-y-1' : 'group-hover:scale-110'}`} />
-    <span className={`text-[9px] font-sans tracking-wide mt-0.5 transition-opacity duration-300 ${active ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>{label}</span>
-    {active && <span className="absolute -bottom-1 w-1 h-1 bg-gold rounded-full animate-scale-in shadow-[0_0_8px_rgba(191,168,132,0.8)]" />}
+    <Icon
+      size={19}
+      strokeWidth={active ? 2.2 : 1.75}
+      className={`transition-all duration-300 ${active ? 'text-white' : 'text-white/30'}`}
+    />
+    <span className={`text-[8px] font-sans tracking-wider mt-1.5 transition-all duration-300 font-medium ${
+      active ? 'text-gold/80 opacity-100' : 'text-white/0 opacity-0 h-0 mt-0 overflow-hidden'
+    }`}>{label}</span>
+    {active && (
+      <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-3.5 h-[2px] bg-gold/60 rounded-full"
+        style={{ boxShadow: '0 0 8px rgba(191,168,132,0.6)' }} />
+    )}
   </button>
 );
 
