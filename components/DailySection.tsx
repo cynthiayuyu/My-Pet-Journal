@@ -93,7 +93,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
 
       <div className="space-y-4">
         {sortedLogs.map(log => (
-          <div key={log.id} className="bg-white rounded-2xl p-5 shadow-soft border border-white relative group animate-fade-in">
+          <div key={log.id} className="card-warm rounded-2xl p-5 relative group animate-fade-in">
               <div className="absolute top-4 right-4 flex gap-2 z-10">
                 <button onClick={() => handleOpenForm(log)} className="text-sand hover:text-clay transition-colors p-1 bg-white/80 rounded-full backdrop-blur-sm">
                   <Edit2 size={16} />
@@ -164,7 +164,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
       {isFormOpen && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsFormOpen(false)} />
-          <form onSubmit={handleSubmit} className="bg-[#FDFCF8] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative max-h-[90vh] overflow-y-auto">
+          <form onSubmit={handleSubmit} className="bg-[#FEFCF8] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative max-h-[90vh] overflow-y-auto">
              <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-8 opacity-50" />
              
              <div className="flex justify-between items-center mb-6">
@@ -267,7 +267,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
                 </div>
              </div>
 
-             <button type="submit" className="w-full py-4 mt-8 bg-ink text-paper rounded-xl font-bold hover:bg-ink/90 transition-all shadow-lg shadow-ink/20 tracking-widest text-xs uppercase font-sans">
+             <button type="submit" className="w-full py-4 mt-8 btn-warm">
                {editingLogId ? 'Update' : 'Save'}
              </button>
           </form>

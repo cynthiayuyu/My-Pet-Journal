@@ -96,7 +96,7 @@ export const DashboardSection: React.FC<DashboardSectionProps> = ({ healthRecord
     <div className="space-y-8 animate-fade-in">
       
       {/* Reminders Section */}
-      <div className="bg-white/80 backdrop-blur-md rounded-[2rem] p-6 shadow-soft border border-white">
+      <div className="card-warm rounded-[2rem] p-6">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-500">
             <Bell size={20} />
@@ -132,7 +132,7 @@ export const DashboardSection: React.FC<DashboardSectionProps> = ({ healthRecord
       </div>
 
       {/* Expenses Section */}
-      <div className="bg-white/80 backdrop-blur-md rounded-[2rem] p-6 shadow-soft border border-white">
+      <div className="card-warm rounded-[2rem] p-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500">

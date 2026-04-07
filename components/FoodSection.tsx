@@ -87,7 +87,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
     <div className="space-y-6 animate-fade-in">
       
       {/* Calorie Calculator Card */}
-      <div className="bg-white/80 backdrop-blur-md rounded-[2rem] p-6 shadow-soft border border-white">
+      <div className="card-warm rounded-[2rem] p-6">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-8 h-8 rounded-full bg-clay/10 flex items-center justify-center text-clay">
             <Calculator size={16} />
@@ -145,7 +145,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
           }
 
           return (
-            <div key={item.id} className="bg-white rounded-2xl p-5 shadow-soft border border-white relative group animate-fade-in">
+            <div key={item.id} className="card-warm rounded-2xl p-5 relative group animate-fade-in">
                 <div className="absolute top-4 right-4 flex gap-2">
                   <button 
                     onClick={() => handleOpenForm(item)}
@@ -206,7 +206,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
       {isFormOpen && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsFormOpen(false)} />
-          <form onSubmit={handleSubmit} className="bg-[#FDFCF8] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative max-h-[90vh] overflow-y-auto">
+          <form onSubmit={handleSubmit} className="bg-[#FEFCF8] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative max-h-[90vh] overflow-y-auto">
              <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-8 opacity-50" />
              
              <div className="flex justify-between items-center mb-6">
@@ -309,7 +309,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
                 </div>
              </div>
 
-             <button type="submit" className="w-full py-4 mt-8 bg-ink text-paper rounded-xl font-bold hover:bg-ink/90 transition-all shadow-lg shadow-ink/20 tracking-widest text-xs uppercase font-sans">
+             <button type="submit" className="w-full py-4 mt-8 btn-warm">
                {editingItemId ? 'Update' : 'Save'}
              </button>
           </form>

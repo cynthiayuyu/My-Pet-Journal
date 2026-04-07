@@ -121,7 +121,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
 
       {/* Weight Chart */}
       {chartData.length > 1 && (
-        <div className="bg-white/80 backdrop-blur-md rounded-[2rem] p-6 shadow-soft border border-white">
+        <div className="card-warm rounded-[2rem] p-6">
           <h3 className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-4 font-sans opacity-80">Weight Trend</h3>
           <div className="h-48 w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -144,7 +144,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
       )}
 
       {/* Calendar Card */}
-      <div className="bg-white/80 backdrop-blur-md rounded-[2rem] p-6 shadow-soft border border-white">
+      <div className="card-warm rounded-[2rem] p-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <button onClick={prevMonth} className="p-2 text-pencil hover:text-ink transition-colors"><ChevronLeft size={20}/></button>
@@ -178,7 +178,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
                 <button
                   onClick={() => handleDateClick(day)}
                   className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-fangsong transition-all duration-300 relative
-                    ${isSelected ? 'bg-ink text-paper shadow-md scale-105' : 'text-ink hover:bg-sand/30'}
+                    ${isSelected ? 'bg-clay text-white shadow-md scale-105' : 'text-ink hover:bg-sand/30'}
                     ${isToday && !isSelected ? 'border border-gold text-gold' : ''}
                   `}
                 >
@@ -223,7 +223,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
         {/* Records List for Selected Day */}
         <div className="space-y-4">
            {selectedRecords.map(record => (
-             <div key={record.id} className="bg-white rounded-2xl p-6 shadow-soft border border-white relative group animate-fade-in">
+             <div key={record.id} className="card-warm rounded-2xl p-6 relative group animate-fade-in">
                 <div className="absolute top-4 right-4 flex gap-2">
                   <button 
                     onClick={() => handleOpenForm(record)}
@@ -277,7 +277,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
       {isFormOpen && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsFormOpen(false)} />
-          <form onSubmit={handleSubmit} className="bg-[#FDFCF8] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative">
+          <form onSubmit={handleSubmit} className="bg-[#FEFCF8] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative">
              <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-8 opacity-50" />
              
              <div className="flex justify-between items-center mb-8">
@@ -350,7 +350,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
                 </div>
              </div>
 
-             <button type="submit" className="w-full py-4 bg-ink text-paper rounded-xl font-bold hover:bg-ink/90 transition-all shadow-lg shadow-ink/20 tracking-widest text-xs uppercase font-sans">
+             <button type="submit" className="w-full py-4 btn-warm">
                {editingRecordId ? 'Update' : 'Save'}
              </button>
           </form>

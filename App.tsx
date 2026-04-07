@@ -162,7 +162,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen pb-32 selection:bg-clay/20 selection:text-ink">
+    <div className="min-h-screen pb-32 selection:bg-clay/20 selection:text-ink" style={{ fontFamily: "'DM Sans', sans-serif" }}>
       
       {/* Header - Elegant & Adaptive */}
       <header 
@@ -180,8 +180,8 @@ const App: React.FC = () => {
                <PawPrint className="text-clay" fill="currentColor" size={20} strokeWidth={0} />
              </div>
            )}
-           <h1 className="font-fangsong text-2xl tracking-wide text-ink truncate max-w-[200px] font-medium">
-             {profile.name || '寵物手帳 My Pet Journal'}
+           <h1 className="font-fangsong text-2xl tracking-wide text-ink truncate max-w-[200px]">
+             {profile.name || 'My Pet Journal'}
            </h1>
         </div>
         <div className="flex items-center gap-2">
@@ -223,7 +223,7 @@ const App: React.FC = () => {
           <div className="animate-fade-in">
             <div className="mb-6 ml-1 flex flex-col items-center text-center">
                <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">Dashboard</span>
-               <h2 className="font-fangsong text-3xl text-ink">首頁</h2>
+               <h2 className="font-fangsong text-4xl text-ink font-light tracking-wide">首頁</h2>
              </div>
             <DashboardSection 
               healthRecords={healthRecords}
@@ -252,7 +252,7 @@ const App: React.FC = () => {
            <div className="animate-fade-in">
              <div className="mb-6 ml-1 flex flex-col items-center text-center">
                <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">Growth Tracker</span>
-               <h2 className="font-fangsong text-3xl text-ink">體態紀錄</h2>
+               <h2 className="font-fangsong text-4xl text-ink font-light tracking-wide">體態紀錄</h2>
              </div>
              <PhysicalSection 
                records={physicalRecords} 
@@ -268,7 +268,7 @@ const App: React.FC = () => {
           <div className="animate-fade-in">
             <div className="mb-6 ml-1 flex flex-col items-center text-center">
                <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">Medical History</span>
-               <h2 className="font-fangsong text-3xl text-ink">健康日曆</h2>
+               <h2 className="font-fangsong text-4xl text-ink font-light tracking-wide">健康日曆</h2>
              </div>
             <HealthSection 
               records={healthRecords} 
@@ -284,7 +284,7 @@ const App: React.FC = () => {
           <div className="animate-fade-in">
             <div className="mb-6 ml-1 flex flex-col items-center text-center">
                <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">Pantry & Diet</span>
-               <h2 className="font-fangsong text-3xl text-ink">食物庫存</h2>
+               <h2 className="font-fangsong text-4xl text-ink font-light tracking-wide">食物庫存</h2>
              </div>
             <FoodSection 
               items={inventoryItems} 
@@ -298,7 +298,7 @@ const App: React.FC = () => {
           <div className="animate-fade-in">
             <div className="mb-6 ml-1 flex flex-col items-center text-center">
                <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">Wealth & Care</span>
-               <h2 className="font-fangsong text-3xl text-ink">財務與服務</h2>
+               <h2 className="font-fangsong text-4xl text-ink font-light tracking-wide">財務與服務</h2>
              </div>
             <FinanceSection 
               policies={insurancePolicies} 
@@ -315,7 +315,7 @@ const App: React.FC = () => {
           <div className="animate-fade-in">
             <div className="mb-6 ml-1 flex flex-col items-center text-center">
                <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">Places & Visits</span>
-               <h2 className="font-fangsong text-3xl text-ink">住宿與美容</h2>
+               <h2 className="font-fangsong text-4xl text-ink font-light tracking-wide">住宿與美容</h2>
              </div>
             <ShopSection
               shops={shops}
