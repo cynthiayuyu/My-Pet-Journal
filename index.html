@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Raleway:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
-        darkMode: 'class',
         theme: {
           extend: {
             colors: {
@@ -65,18 +64,6 @@
         --color-sage: #B5C1A6;
         --color-clay: #C4906A;
         --color-gold: #C0A882;
-      }
-
-      .dark {
-        --color-paper: #2A2826;
-        --color-card: #363330;
-        --color-ink: #F4F1EA;
-        --color-pencil: #B0A8A0;
-        --color-sand: #4A4642;
-        --color-warm: #8C8680;
-        --color-sage: #8A9A7B;
-        --color-clay: #D9A886;
-        --color-gold: #D4BE9A;
       }
 
       body {
@@ -213,9 +200,6 @@
         background: linear-gradient(to top, rgba(237, 229, 211, 0.96) 0%, transparent 100%);
         pointer-events: none;
         z-index: 40;
-      }
-      .dark body::after {
-        background: linear-gradient(to top, rgba(42, 40, 38, 0.95) 0%, transparent 100%);
       }
     </style>
   <script type="importmap">

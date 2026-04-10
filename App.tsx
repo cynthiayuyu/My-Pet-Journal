@@ -7,7 +7,7 @@ import { FoodSection } from './components/FoodSection';
 import { FinanceSection } from './components/FinanceSection';
 import { ShopSection } from './components/ShopSection';
 import { DailySection } from './components/DailySection';
-import { User, Heart, PawPrint, Utensils, Wallet, CalendarDays, Moon, Sun, Download, Upload } from 'lucide-react';
+import { User, Heart, PawPrint, Utensils, Wallet, CalendarDays, Download, Upload } from 'lucide-react';
 
 const SubToggle = ({ options, active, onChange }: {
   options: { value: string; label: string }[];
@@ -47,9 +47,6 @@ const App: React.FC = () => {
   const [healthSubTab, setHealthSubTab] = useState<'health' | 'physical'>('health');
   const [financeSubTab, setFinanceSubTab] = useState<'finance' | 'shops'>('finance');
   const [scrolled, setScrolled] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    return localStorage.getItem('pawprint_theme') === 'dark';
-  });
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const [profile, setProfile] = useState<PetProfile>(() => {
@@ -101,10 +98,6 @@ const App: React.FC = () => {
   });
 
   // --- Effects ---
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', isDarkMode);
-    localStorage.setItem('pawprint_theme', isDarkMode ? 'dark' : 'light');
-  }, [isDarkMode]);
 
   useEffect(() => localStorage.setItem('pawprint_profile', JSON.stringify(profile)), [profile]);
   useEffect(() => localStorage.setItem('pawprint_physical', JSON.stringify(physicalRecords)), [physicalRecords]);
@@ -197,11 +190,6 @@ const App: React.FC = () => {
         </button>
 
         <div className="flex items-center gap-1.5">
-          <button onClick={() => setIsDarkMode(!isDarkMode)}
-            className="p-2 rounded-full bg-white/50 text-ink/60 hover:text-ink hover:bg-white/80 transition-colors border border-white/40"
-            title="深色模式">
-            {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
-          </button>
           <button onClick={handleExportData}
             className="p-2 rounded-full bg-white/50 text-ink/60 hover:text-ink hover:bg-white/80 transition-colors border border-white/40"
             title="匯出資料">
