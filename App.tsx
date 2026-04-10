@@ -221,9 +221,10 @@ const App: React.FC = () => {
         
         {activeTab === 'dashboard' && (
           <div className="animate-fade-in">
-            <div className="mb-6 ml-1 flex flex-col items-center text-center">
-               <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">Dashboard</span>
-               <h2 className="font-fangsong text-4xl text-ink font-light tracking-wide">首頁</h2>
+            <div className="mb-8 flex flex-col items-center text-center">
+               <span className="text-[10px] tracking-[0.35em] text-gold/60 uppercase mb-3 font-sans">Dashboard</span>
+               <h2 className="font-fangsong text-4xl text-ink tracking-wide">首頁</h2>
+               <div className="deco-line"></div>
              </div>
             <DashboardSection 
               healthRecords={healthRecords}
@@ -236,12 +237,19 @@ const App: React.FC = () => {
         )}
 
         {activeTab === 'daily' && (
-          <DailySection 
-            logs={dailyLogs}
-            addLog={addDailyLog}
-            updateLog={updateDailyLog}
-            deleteLog={deleteDailyLog}
-          />
+          <div className="animate-fade-in">
+            <div className="mb-8 flex flex-col items-center text-center">
+              <span className="text-[10px] tracking-[0.35em] text-gold/60 uppercase mb-3 font-sans">Daily Journal</span>
+              <h2 className="font-fangsong text-4xl text-ink tracking-wide">日常紀錄</h2>
+              <div className="deco-line"></div>
+            </div>
+            <DailySection
+              logs={dailyLogs}
+              addLog={addDailyLog}
+              updateLog={updateDailyLog}
+              deleteLog={deleteDailyLog}
+            />
+          </div>
         )}
 
         {activeTab === 'profile' && (
@@ -250,9 +258,10 @@ const App: React.FC = () => {
 
         {activeTab === 'physical' && (
            <div className="animate-fade-in">
-             <div className="mb-6 ml-1 flex flex-col items-center text-center">
-               <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">Growth Tracker</span>
-               <h2 className="font-fangsong text-4xl text-ink font-light tracking-wide">體態紀錄</h2>
+             <div className="mb-8 flex flex-col items-center text-center">
+               <span className="text-[10px] tracking-[0.35em] text-gold/60 uppercase mb-3 font-sans">Growth Tracker</span>
+               <h2 className="font-fangsong text-4xl text-ink tracking-wide">體態紀錄</h2>
+               <div className="deco-line"></div>
              </div>
              <PhysicalSection 
                records={physicalRecords} 
@@ -266,9 +275,10 @@ const App: React.FC = () => {
 
         {activeTab === 'health' && (
           <div className="animate-fade-in">
-            <div className="mb-6 ml-1 flex flex-col items-center text-center">
-               <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">Medical History</span>
-               <h2 className="font-fangsong text-4xl text-ink font-light tracking-wide">健康日曆</h2>
+            <div className="mb-8 flex flex-col items-center text-center">
+               <span className="text-[10px] tracking-[0.35em] text-gold/60 uppercase mb-3 font-sans">Medical History</span>
+               <h2 className="font-fangsong text-4xl text-ink tracking-wide">健康日曆</h2>
+               <div className="deco-line"></div>
              </div>
             <HealthSection 
               records={healthRecords} 
@@ -282,9 +292,10 @@ const App: React.FC = () => {
 
         {activeTab === 'food' && (
           <div className="animate-fade-in">
-            <div className="mb-6 ml-1 flex flex-col items-center text-center">
-               <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">Pantry & Diet</span>
-               <h2 className="font-fangsong text-4xl text-ink font-light tracking-wide">食物庫存</h2>
+            <div className="mb-8 flex flex-col items-center text-center">
+               <span className="text-[10px] tracking-[0.35em] text-gold/60 uppercase mb-3 font-sans">Pantry & Diet</span>
+               <h2 className="font-fangsong text-4xl text-ink tracking-wide">食物庫存</h2>
+               <div className="deco-line"></div>
              </div>
             <FoodSection 
               items={inventoryItems} 
@@ -296,9 +307,10 @@ const App: React.FC = () => {
 
         {activeTab === 'finance' && (
           <div className="animate-fade-in">
-            <div className="mb-6 ml-1 flex flex-col items-center text-center">
-               <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">Wealth & Care</span>
-               <h2 className="font-fangsong text-4xl text-ink font-light tracking-wide">財務與服務</h2>
+            <div className="mb-8 flex flex-col items-center text-center">
+               <span className="text-[10px] tracking-[0.35em] text-gold/60 uppercase mb-3 font-sans">Wealth & Care</span>
+               <h2 className="font-fangsong text-4xl text-ink tracking-wide">財務與服務</h2>
+               <div className="deco-line"></div>
              </div>
             <FinanceSection 
               policies={insurancePolicies} 
@@ -313,9 +325,10 @@ const App: React.FC = () => {
 
         {activeTab === 'shops' && (
           <div className="animate-fade-in">
-            <div className="mb-6 ml-1 flex flex-col items-center text-center">
-               <span className="text-xs font-bold tracking-[0.2em] text-gold uppercase mb-2">Places & Visits</span>
-               <h2 className="font-fangsong text-4xl text-ink font-light tracking-wide">住宿與美容</h2>
+            <div className="mb-8 flex flex-col items-center text-center">
+               <span className="text-[10px] tracking-[0.35em] text-gold/60 uppercase mb-3 font-sans">Places & Visits</span>
+               <h2 className="font-fangsong text-4xl text-ink tracking-wide">住宿與美容</h2>
+               <div className="deco-line"></div>
              </div>
             <ShopSection
               shops={shops}

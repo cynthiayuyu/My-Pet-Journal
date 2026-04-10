@@ -155,7 +155,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
                   </button>
                   <button 
                     onClick={() => deleteItem(item.id)}
-                    className="text-sand hover:text-red-400 transition-colors p-1"
+                    className="text-sand hover:text-clay transition-colors p-1"
                   >
                     <Trash2 size={16} />
                   </button>
@@ -163,7 +163,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
 
                 <div className="flex gap-4 pr-16">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                        item.type === 'Food' ? 'bg-orange-50 text-orange-500' : 'bg-sage/20 text-sage'
+                        item.type === 'Food' ? 'icon-clay' : 'bg-sage/20 text-sage'
                     }`}>
                         {item.type === 'Food' ? <Utensils size={18} /> : <Package size={18} />}
                     </div>
@@ -181,9 +181,9 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
                                 <div className="text-[10px] text-pencil font-sans uppercase tracking-widest mb-0.5">Remaining</div>
                                 <div className="text-sm font-fangsong text-ink font-medium">{item.quantity} {item.unit}</div>
                             </div>
-                            <div className={`px-3 py-2 rounded-lg ${isExpiringSoon ? 'bg-red-50' : 'bg-sand/10'}`}>
-                                <div className={`text-[10px] font-sans uppercase tracking-widest mb-0.5 ${isExpiringSoon ? 'text-red-500 font-bold' : 'text-pencil'}`}>Expires</div>
-                                <div className={`text-sm font-fangsong font-medium ${isExpiringSoon ? 'text-red-600' : 'text-ink'}`}>
+                            <div className={`px-3 py-2 rounded-lg ${isExpiringSoon ? 'bg-clay/10' : 'bg-sand/10'}`}>
+                                <div className={`text-[10px] font-sans uppercase tracking-widest mb-0.5 ${isExpiringSoon ? 'text-clay font-bold' : 'text-pencil'}`}>Expires</div>
+                                <div className={`text-sm font-fangsong font-medium ${isExpiringSoon ? 'text-clay' : 'text-ink'}`}>
                                   {formatDate(item.expiryDate)}
                                 </div>
                             </div>

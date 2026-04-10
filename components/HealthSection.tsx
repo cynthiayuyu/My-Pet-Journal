@@ -215,14 +215,14 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
               <div key={record.id} className="card-warm rounded-2xl p-5 relative group animate-fade-in">
                   <div className="absolute top-4 right-4 flex gap-2">
                     <button onClick={() => handleOpenForm(record)} className="text-sand hover:text-clay transition-colors p-1"><Edit2 size={16} /></button>
-                    <button onClick={() => deleteRecord(record.id)} className="text-sand hover:text-red-400 transition-colors p-1"><Trash2 size={16} /></button>
+                    <button onClick={() => deleteRecord(record.id)} className="text-sand hover:text-clay transition-colors p-1"><Trash2 size={16} /></button>
                   </div>
                   <div className="flex gap-4 pr-16">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                          record.type === 'Vaccine' ? 'bg-[#84b9cb]/20 text-[#84b9cb]' : 
-                          record.type === 'Deworming' ? 'bg-[#7ebea5]/20 text-[#7ebea5]' :
-                          record.type === 'Checkup' ? 'bg-[#9079ad]/20 text-[#9079ad]' :
-                          'bg-orange-50 text-orange-500'
+                          record.type === 'Vaccine' ? 'icon-clay' : 
+                          record.type === 'Deworming' ? 'icon-sage' :
+                          record.type === 'Checkup' ? 'icon-gold' :
+                          'icon-warm'
                       }`}>
                           {record.type === 'Vaccine' ? <Syringe size={18} /> : 
                            record.type === 'Deworming' ? <Bug size={18} /> : 
@@ -242,7 +242,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
                                   )}
                                   {record.cost !== undefined && (
                                       <div className="flex items-center gap-1.5 text-xs text-pencil font-fangsong">
-                                          <DollarSign size={12} className="text-emerald-500" /> ${record.cost}
+                                          <DollarSign size={12} className="text-sage" /> ${record.cost}
                                       </div>
                                   )}
                                   {record.nextDueDate && (
@@ -324,9 +324,9 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
                   
                   {/* Event Indicators */}
                   <div className="absolute -bottom-1 flex gap-0.5 justify-center">
-                    {hasVaccine && <span className={`w-1 h-1 rounded-full ${isSelected ? 'bg-gold' : 'bg-[#84b9cb]'}`} />}
-                    {hasDeworm && <span className={`w-1 h-1 rounded-full ${isSelected ? 'bg-gold' : 'bg-[#7ebea5]'}`} />}
-                    {hasCheckupOrVet && <span className={`w-1 h-1 rounded-full ${isSelected ? 'bg-gold' : 'bg-[#9079ad]'}`} />}
+                    {hasVaccine && <span className={`w-1 h-1 rounded-full ${isSelected ? 'bg-gold' : 'bg-clay/50'}`} />}
+                    {hasDeworm && <span className={`w-1 h-1 rounded-full ${isSelected ? 'bg-gold' : 'bg-sage/60'}`} />}
+                    {hasCheckupOrVet && <span className={`w-1 h-1 rounded-full ${isSelected ? 'bg-gold' : 'bg-gold/50'}`} />}
                   </div>
                 </button>
               </div>
@@ -336,9 +336,9 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
         
         {/* Legend */}
         <div className="mt-6 pt-4 border-t border-sand/30 flex justify-center gap-4 text-[10px] uppercase font-bold tracking-wider text-pencil font-sans">
-             <div className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-[#84b9cb]"></span> Vaccine</div>
-             <div className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-[#7ebea5]"></span> Deworm</div>
-             <div className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-[#9079ad]"></span> Vet/Checkup</div>
+             <div className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-clay/50"></span> Vaccine</div>
+             <div className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-sage/60"></span> Deworm</div>
+             <div className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-gold/50"></span> Vet/Checkup</div>
              <div className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full border border-clay"></span> Due</div>
         </div>
       </div>
@@ -395,7 +395,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
                   </button>
                   <button 
                     onClick={() => deleteRecord(record.id)}
-                    className="text-sand hover:text-red-400 transition-colors p-1"
+                    className="text-sand hover:text-clay transition-colors p-1"
                   >
                     <Trash2 size={16} />
                   </button>
@@ -403,10 +403,10 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
 
                 <div className="flex gap-4 pr-16">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                        record.type === 'Vaccine' ? 'bg-[#84b9cb]/20 text-[#84b9cb]' : 
-                        record.type === 'Deworming' ? 'bg-[#7ebea5]/20 text-[#7ebea5]' :
-                        record.type === 'Checkup' ? 'bg-[#9079ad]/20 text-[#9079ad]' :
-                        'bg-orange-50 text-orange-500'
+                        record.type === 'Vaccine' ? 'icon-clay' : 
+                        record.type === 'Deworming' ? 'icon-sage' :
+                        record.type === 'Checkup' ? 'icon-gold' :
+                        'icon-warm'
                     }`}>
                         {record.type === 'Vaccine' ? <Syringe size={18} /> : 
                          record.type === 'Deworming' ? <Bug size={18} /> : 
@@ -426,7 +426,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
                                 )}
                                 {record.cost !== undefined && (
                                     <div className="flex items-center gap-1.5 text-xs text-pencil font-fangsong">
-                                        <DollarSign size={12} className="text-emerald-500" /> ${record.cost}
+                                        <DollarSign size={12} className="text-sage" /> ${record.cost}
                                     </div>
                                 )}
                                 {record.nextDueDate && (
@@ -672,7 +672,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
                         {idx === metricsInput.length - 1 ? (
                           <button type="button" onClick={() => setMetricsInput([...metricsInput, {key: '', value: ''}])} className="p-2 text-gold hover:bg-gold/10 rounded-lg"><Plus size={16}/></button>
                         ) : (
-                          <button type="button" onClick={() => setMetricsInput(metricsInput.filter((_, i) => i !== idx))} className="p-2 text-red-400 hover:bg-red-50 rounded-lg"><Trash2 size={16}/></button>
+                          <button type="button" onClick={() => setMetricsInput(metricsInput.filter((_, i) => i !== idx))} className="p-2 text-clay hover:bg-clay/10 rounded-lg"><Trash2 size={16}/></button>
                         )}
                       </div>
                     ))}
