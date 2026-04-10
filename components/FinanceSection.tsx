@@ -274,23 +274,23 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
                     </button>
                     <button 
                       onClick={(e) => { e.stopPropagation(); deletePolicy(policy.id); }}
-                      className="text-sand hover:text-red-400 transition-colors p-1"
+                      className="text-sand hover:text-clay transition-colors p-1"
                     >
                       <Trash2 size={16} />
                     </button>
                   </div>
 
                   <div className="flex gap-4 pr-16">
-                      <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 flex-shrink-0">
+                      <div className="w-12 h-12 rounded-full flex items-center justify-center icon-gold flex-shrink-0">
                           <Shield size={20} />
                       </div>
                       <div className="flex-1">
                           <div className="text-[10px] font-bold uppercase tracking-widest text-pencil font-sans mb-1">{policy.provider}</div>
                           <div className="text-xl font-fangsong text-ink">{policy.name}</div>
                           
-                          <div className={`mt-3 px-3 py-2 rounded-lg inline-block ${isExpiringSoon ? 'bg-red-50' : 'bg-sand/10'}`}>
-                              <div className={`text-[10px] font-sans uppercase tracking-widest mb-0.5 ${isExpiringSoon ? 'text-red-500 font-bold' : 'text-pencil'}`}>到期 Expires</div>
-                              <div className={`text-sm font-fangsong font-medium ${isExpiringSoon ? 'text-red-600' : 'text-ink'}`}>
+                          <div className={`mt-3 px-3 py-2 rounded-lg inline-block ${isExpiringSoon ? 'bg-clay/10' : 'bg-sand/10'}`}>
+                              <div className={`text-[10px] font-sans uppercase tracking-widest mb-0.5 ${isExpiringSoon ? 'text-clay font-bold' : 'text-pencil'}`}>到期 Expires</div>
+                              <div className={`text-sm font-fangsong font-medium ${isExpiringSoon ? 'text-clay' : 'text-ink'}`}>
                                 {formatDate(policy.expiryDate)}
                               </div>
                           </div>
@@ -341,7 +341,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
                     </button>
                     <button 
                       onClick={() => deleteService(service.id)}
-                      className="text-sand hover:text-red-400 transition-colors p-1"
+                      className="text-sand hover:text-clay transition-colors p-1"
                     >
                       <Trash2 size={16} />
                     </button>
@@ -350,8 +350,8 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
                   <div className="flex gap-4 pr-16">
                       <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${
                           service.type === 'Grooming' ? 'bg-pink-50 text-pink-500' :
-                          service.type === 'Hotel' ? 'bg-indigo-50 text-indigo-500' :
-                          'bg-emerald-50 text-emerald-500'
+                          service.type === 'Hotel' ? 'icon-gold' :
+                          'icon-sage'
                       }`}>
                           {service.type === 'Grooming' ? <Scissors size={20} /> :
                            service.type === 'Hotel' ? <Building size={20} /> :
@@ -367,9 +367,9 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
                                   <div className="text-lg font-fangsong text-ink font-medium">${service.balance}</div>
                               </div>
                               {service.expiryDate && (
-                                <div className={`px-3 py-2 rounded-lg ${isExpiringSoon ? 'bg-red-50' : 'bg-sand/10'}`}>
-                                    <div className={`text-[10px] font-sans uppercase tracking-widest mb-0.5 ${isExpiringSoon ? 'text-red-500 font-bold' : 'text-pencil'}`}>到期 Expires</div>
-                                    <div className={`text-sm font-fangsong font-medium mt-1 ${isExpiringSoon ? 'text-red-600' : 'text-ink'}`}>
+                                <div className={`px-3 py-2 rounded-lg ${isExpiringSoon ? 'bg-clay/10' : 'bg-sand/10'}`}>
+                                    <div className={`text-[10px] font-sans uppercase tracking-widest mb-0.5 ${isExpiringSoon ? 'text-clay font-bold' : 'text-pencil'}`}>到期 Expires</div>
+                                    <div className={`text-sm font-fangsong font-medium mt-1 ${isExpiringSoon ? 'text-clay' : 'text-ink'}`}>
                                       {formatDate(service.expiryDate)}
                                     </div>
                                 </div>
@@ -394,7 +394,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
           <div className="absolute inset-0 bg-ink/40 backdrop-blur-sm" onClick={() => setShowHotelPlan(false)} />
           <div className="bg-[#FEFCF8] w-full max-w-md rounded-[2rem] p-8 shadow-2xl relative z-10 animate-scale-in">
             <div className="flex justify-between items-center mb-6">
-               <h3 className="font-fangsong text-2xl text-ink flex items-center gap-2"><Building size={24} className="text-indigo-400"/> 住宿計畫 Hotel Plan</h3>
+               <h3 className="font-fangsong text-2xl text-ink flex items-center gap-2"><Building size={24} className="text-gold"/> 住宿計畫 Hotel Plan</h3>
                <button onClick={() => setShowHotelPlan(false)} className="p-2 text-pencil hover:text-ink"><X size={20}/></button>
             </div>
             
@@ -424,7 +424,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
                 navigator.clipboard.writeText(hotelPlanText);
                 alert('已複製到剪貼簿！ Copied to clipboard!');
               }}
-              className="w-full py-3 bg-indigo-500 text-white rounded-xl font-bold hover:bg-indigo-600 transition-all shadow-lg shadow-indigo-500/20 tracking-widest text-xs uppercase font-sans flex items-center justify-center gap-2"
+              className="w-full py-3 btn-warm flex items-center justify-center gap-2"
             >
               複製到剪貼簿 Copy to Clipboard
             </button>
@@ -591,7 +591,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
                  <div className="space-y-3 mb-4">
                    {selectedPolicy.coverageLimits.map((limit, idx) => (
                      <div key={idx} className="bg-white p-4 rounded-xl border border-sand/50 relative group">
-                       <button onClick={() => deleteLimit(selectedPolicy.id, limit.item)} className="absolute top-2 right-2 text-sand hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                       <button onClick={() => deleteLimit(selectedPolicy.id, limit.item)} className="absolute top-2 right-2 text-sand hover:text-clay opacity-0 group-hover:opacity-100 transition-opacity">
                          <Trash2 size={14} />
                        </button>
                        <div className="flex justify-between items-end mb-2">
@@ -600,7 +600,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
                        </div>
                        <div className="w-full bg-sand/20 rounded-full h-2 overflow-hidden">
                          <div 
-                           className={`h-full rounded-full ${limit.used >= limit.limit ? 'bg-red-400' : 'bg-gold'}`} 
+                           className={`h-full rounded-full ${limit.used >= limit.limit ? 'bg-clay' : 'bg-gold'}`} 
                            style={{ width: `${Math.min(100, (limit.used / limit.limit) * 100)}%` }}
                          />
                        </div>
@@ -651,7 +651,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
                  <div className="space-y-3 mb-4">
                    {selectedPolicy.claims.map(claim => (
                      <div key={claim.id} className="bg-white p-4 rounded-xl border border-sand/50 flex justify-between items-center relative group">
-                       <button onClick={() => deleteClaim(selectedPolicy.id, claim.id)} className="absolute -top-2 -right-2 bg-white rounded-full p-1 text-sand hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity shadow-sm border border-sand/20">
+                       <button onClick={() => deleteClaim(selectedPolicy.id, claim.id)} className="absolute -top-2 -right-2 bg-white rounded-full p-1 text-sand hover:text-clay opacity-0 group-hover:opacity-100 transition-opacity shadow-sm border border-sand/20">
                          <X size={12} />
                        </button>
                        <div>
@@ -659,8 +659,8 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
                          <div className="text-[10px] font-sans text-pencil uppercase tracking-widest">{formatDate(claim.date)}</div>
                        </div>
                        <div className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-widest font-sans ${
-                         claim.status === 'Approved' ? 'bg-emerald-50 text-emerald-600' :
-                         claim.status === 'Rejected' ? 'bg-red-50 text-red-600' :
+                         claim.status === 'Approved' ? 'bg-sage/15 text-[#5A8A5A]' :
+                         claim.status === 'Rejected' ? 'bg-clay/10 text-clay' :
                          'bg-amber-50 text-amber-600'
                        }`}>
                          {claim.status === 'Approved' ? '已核准 Approved' : claim.status === 'Rejected' ? '已拒絕 Rejected' : '審核中 Pending'}

@@ -229,7 +229,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
                     )}
                     <button 
                       onClick={() => handleDeleteCategory(category)}
-                      className="text-sand hover:text-red-400 transition-colors"
+                      className="text-sand hover:text-clay transition-colors"
                     >
                       <Trash2 size={16} />
                     </button>
@@ -393,7 +393,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
                 </div>
                 <div className="flex gap-2">
                   <button onClick={() => { setEditingShopId(shop.id); setEditShopData(shop); }} className="text-ink/40 hover:text-clay"><Edit2 size={16} /></button>
-                  <button onClick={() => handleDeleteShop(shop.id)} className="text-ink/40 hover:text-red-400"><Trash2 size={16} /></button>
+                  <button onClick={() => handleDeleteShop(shop.id)} className="text-ink/40 hover:text-clay"><Trash2 size={16} /></button>
                 </div>
               </div>
               
@@ -543,7 +543,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
                       </div>
                       <div className="absolute top-3 right-3 flex gap-1">
                           <button onClick={() => { setEditingVisitId(visit.id); setEditVisitData(visit); }} className="text-ink/40 hover:text-clay p-1"><Edit2 size={14} /></button>
-                          <button onClick={() => handleDeleteVisit(shop.id, visit.id)} className="text-ink/40 hover:text-red-400 p-1"><Trash2 size={14} /></button>
+                          <button onClick={() => handleDeleteVisit(shop.id, visit.id)} className="text-ink/40 hover:text-clay p-1"><Trash2 size={14} /></button>
                       </div>
                       <div className="text-sm text-ink/80 pr-12">{visit.purpose}</div>
                       {visit.notes && <div className="text-xs text-ink/60 mt-1 whitespace-pre-wrap pr-12">{visit.notes}</div>}

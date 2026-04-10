@@ -98,9 +98,9 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
     const diff = latestRecord.weight - profile.idealWeight;
     const percentDiff = (diff / profile.idealWeight) * 100;
     
-    if (percentDiff > 10) return { type: 'overweight', message: `Overweight by ${diff.toFixed(1)}kg (${percentDiff.toFixed(0)}%)`, color: 'text-red-500', bg: 'bg-red-50', icon: TrendingUp };
-    if (percentDiff < -10) return { type: 'underweight', message: `Underweight by ${Math.abs(diff).toFixed(1)}kg (${Math.abs(percentDiff).toFixed(0)}%)`, color: 'text-blue-500', bg: 'bg-blue-50', icon: TrendingDown };
-    return { type: 'ideal', message: 'Ideal Weight!', color: 'text-green-600', bg: 'bg-green-50', icon: Weight };
+    if (percentDiff > 10) return { type: 'overweight', message: `Overweight by ${diff.toFixed(1)}kg (${percentDiff.toFixed(0)}%)`, color: 'text-clay', bg: 'bg-clay/10', icon: TrendingUp };
+    if (percentDiff < -10) return { type: 'underweight', message: `Underweight by ${Math.abs(diff).toFixed(1)}kg (${Math.abs(percentDiff).toFixed(0)}%)`, color: 'text-pencil', bg: 'bg-sand/20', icon: TrendingDown };
+    return { type: 'ideal', message: 'Ideal Weight!', color: 'text-[#6A9A6A]', bg: 'bg-sage/15', icon: Weight };
   }, [profile.idealWeight, latestRecord]);
 
   return (
@@ -233,7 +233,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
                   </button>
                   <button 
                     onClick={() => deleteRecord(record.id)}
-                    className="text-sand hover:text-red-400 transition-colors p-2"
+                    className="text-sand hover:text-clay transition-colors p-2"
                   >
                     <Trash2 size={16} />
                   </button>

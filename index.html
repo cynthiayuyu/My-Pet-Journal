@@ -157,11 +157,60 @@
 
       /* Warm card base */
       .card-warm {
-        background: rgba(254, 252, 248, 0.82);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.65);
-        box-shadow: 0 4px 24px -2px rgba(175, 140, 105, 0.10);
+        background: rgba(254, 252, 248, 0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.75);
+        box-shadow: 0 2px 12px -2px rgba(175, 140, 105, 0.08), 0 8px 32px -4px rgba(175, 140, 105, 0.12);
+      }
+
+      /* Icon containers */
+      .icon-clay {
+        background: rgba(196, 144, 106, 0.12);
+        color: #C4906A;
+      }
+      .icon-sage {
+        background: rgba(181, 193, 166, 0.18);
+        color: #8DA07E;
+      }
+      .icon-gold {
+        background: rgba(192, 168, 130, 0.15);
+        color: #A8906A;
+      }
+      .icon-warm {
+        background: rgba(200, 190, 176, 0.2);
+        color: #9A8C7E;
+      }
+
+      /* Reminder/list item inside card */
+      .item-row {
+        background: rgba(255, 255, 255, 0.55);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: 1rem;
+        padding: 0.875rem 1rem;
+      }
+
+      /* Decorative gradient line */
+      .deco-line {
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(192, 168, 130, 0.45), transparent);
+        width: 2.5rem;
+        margin: 0.75rem auto 0;
+      }
+
+      /* Page bottom fade for nav bar */
+      body::after {
+        content: '';
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 7rem;
+        background: linear-gradient(to top, var(--color-paper) 0%, transparent 100%);
+        pointer-events: none;
+        z-index: 40;
       }
     </style>
   <script type="importmap">

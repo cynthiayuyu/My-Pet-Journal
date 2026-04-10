@@ -24,7 +24,7 @@ export const DashboardSection: React.FC<DashboardSectionProps> = ({ healthRecord
       if (r.nextDueDate) {
         const timeDiff = new Date(r.nextDueDate).getTime() - now;
         if (timeDiff > 0 && timeDiff < thirtyDays) {
-           items.push({ id: `h-${r.id}`, title: `${r.title}`, date: r.nextDueDate, type: 'Health', icon: Syringe, color: 'text-blue-500' });
+           items.push({ id: `h-${r.id}`, title: `${r.title}`, date: r.nextDueDate, type: 'Health', icon: Syringe, color: 'icon-clay' });
         }
       }
     });
@@ -32,14 +32,14 @@ export const DashboardSection: React.FC<DashboardSectionProps> = ({ healthRecord
     inventoryItems.forEach(i => {
       const timeDiff = new Date(i.expiryDate).getTime() - now;
       if (timeDiff > 0 && timeDiff < thirtyDays) {
-        items.push({ id: `i-${i.id}`, title: `${i.name}`, date: i.expiryDate, type: 'Food', icon: Package, color: 'text-orange-500' });
+        items.push({ id: `i-${i.id}`, title: `${i.name}`, date: i.expiryDate, type: 'Food', icon: Package, color: 'icon-warm' });
       }
     });
 
     insurancePolicies.forEach(p => {
       const timeDiff = new Date(p.expiryDate).getTime() - now;
       if (timeDiff > 0 && timeDiff < thirtyDays) {
-        items.push({ id: `ins-${p.id}`, title: `${p.name}`, date: p.expiryDate, type: 'Insurance', icon: Shield, color: 'text-indigo-500' });
+        items.push({ id: `ins-${p.id}`, title: `${p.name}`, date: p.expiryDate, type: 'Insurance', icon: Shield, color: 'icon-gold' });
       }
     });
 
@@ -47,7 +47,7 @@ export const DashboardSection: React.FC<DashboardSectionProps> = ({ healthRecord
       if (s.expiryDate) {
         const timeDiff = new Date(s.expiryDate).getTime() - now;
         if (timeDiff > 0 && timeDiff < thirtyDays) {
-          items.push({ id: `prep-${s.id}`, title: `${s.name}`, date: s.expiryDate, type: 'Service', icon: PiggyBank, color: 'text-emerald-500' });
+          items.push({ id: `prep-${s.id}`, title: `${s.name}`, date: s.expiryDate, type: 'Service', icon: PiggyBank, color: 'icon-sage' });
         }
       }
     });
@@ -98,32 +98,33 @@ export const DashboardSection: React.FC<DashboardSectionProps> = ({ healthRecord
       {/* Reminders Section */}
       <div className="card-warm rounded-[2rem] p-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-500">
-            <Bell size={20} />
+          <div className="w-10 h-10 rounded-full icon-clay flex items-center justify-center">
+            <Bell size={18} />
           </div>
           <div>
             <h3 className="text-xl font-fangsong text-ink">提醒中心</h3>
-            <p className="text-xs text-pencil font-sans">Upcoming in 30 days</p>
+            <p className="text-[10px] tracking-widest text-pencil font-sans uppercase">Upcoming in 30 days</p>
           </div>
         </div>
 
         {reminders.length === 0 ? (
-          <div className="text-center py-6 bg-sand/10 rounded-xl border border-dashed border-sand">
-            <p className="text-sm font-fangsong text-pencil">All caught up!</p>
+          <div className="text-center py-8 rounded-2xl border border-dashed border-sand/60">
+            <p className="text-sm font-fangsong text-pencil/60">沒有近期提醒</p>
+            <p className="text-[10px] text-pencil/40 font-sans mt-1 tracking-wider">All caught up!</p>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {reminders.map(item => (
-              <div key={item.id} className="flex items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-sand/30">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center bg-sand/10 ${item.color}`}>
-                  <item.icon size={16} />
+              <div key={item.id} className="item-row flex items-center gap-3">
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 ${item.color}`}>
+                  <item.icon size={15} />
                 </div>
-                <div className="flex-1">
-                  <div className="text-sm font-fangsong text-ink font-medium">{item.title}</div>
-                  <div className="text-[10px] uppercase tracking-widest text-pencil font-sans mt-0.5">{item.type}</div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-fangsong text-ink truncate">{item.title}</div>
+                  <div className="text-[9px] uppercase tracking-[0.15em] text-pencil/60 font-sans mt-0.5">{item.type}</div>
                 </div>
-                <div className="text-right">
-                  <div className="text-sm font-fangsong text-red-500 font-medium">{formatDate(item.date)}</div>
+                <div className="text-right flex-shrink-0">
+                  <div className="text-xs font-sans text-clay font-medium">{formatDate(item.date)}</div>
                 </div>
               </div>
             ))}
@@ -135,23 +136,24 @@ export const DashboardSection: React.FC<DashboardSectionProps> = ({ healthRecord
       <div className="card-warm rounded-[2rem] p-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500">
-              <DollarSign size={20} />
+            <div className="w-10 h-10 rounded-full icon-sage flex items-center justify-center">
+              <DollarSign size={18} />
             </div>
             <div>
               <h3 className="text-xl font-fangsong text-ink">花費統計</h3>
-              <p className="text-xs text-pencil font-sans">Recent 6 months</p>
+              <p className="text-[10px] tracking-widest text-pencil font-sans uppercase">Recent 6 months</p>
             </div>
           </div>
           <div className="text-right">
-            <div className="text-[10px] uppercase tracking-widest text-pencil font-sans">Total</div>
-            <div className="text-xl font-fangsong text-ink font-bold">${totalRecentExpense.toLocaleString()}</div>
+            <div className="text-[9px] uppercase tracking-[0.2em] text-pencil/60 font-sans">Total</div>
+            <div className="text-2xl font-fangsong text-ink">${totalRecentExpense.toLocaleString()}</div>
           </div>
         </div>
 
         {expenseData.length === 0 ? (
-          <div className="text-center py-6 bg-sand/10 rounded-xl border border-dashed border-sand">
-            <p className="text-sm font-fangsong text-pencil">No expenses recorded yet.</p>
+          <div className="text-center py-8 rounded-2xl border border-dashed border-sand/60">
+            <p className="text-sm font-fangsong text-pencil/60">尚無花費記錄</p>
+            <p className="text-[10px] text-pencil/40 font-sans mt-1 tracking-wider">No expenses yet</p>
           </div>
         ) : (
           <div className="h-48 w-full mt-4">

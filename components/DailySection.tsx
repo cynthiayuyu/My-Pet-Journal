@@ -69,16 +69,13 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
   return (
     <div className="space-y-6 animate-fade-in">
       
-      <div className="flex justify-between items-end px-2">
-         <div>
-           <span className="text-xs font-bold tracking-[0.2em] text-pencil uppercase font-sans">Daily Log</span>
-           <h4 className="text-2xl font-fangsong text-ink mt-1">日常紀錄</h4>
-         </div>
-         <button 
+      <div className="flex justify-end px-1 -mt-4 mb-2">
+         <button
             onClick={() => handleOpenForm()}
-            className="w-10 h-10 rounded-full bg-white border border-sand flex items-center justify-center text-ink shadow-sm hover:bg-sand/20 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/70 border border-white/80 text-ink/60 hover:text-clay hover:bg-white/90 transition-all text-xs font-sans tracking-wider backdrop-blur-sm shadow-sm"
          >
-            <Plus size={18} />
+            <Plus size={14} strokeWidth={2} />
+            New Log
          </button>
       </div>
 
@@ -98,7 +95,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
                 <button onClick={() => handleOpenForm(log)} className="text-sand hover:text-clay transition-colors p-1 bg-white/80 rounded-full backdrop-blur-sm">
                   <Edit2 size={16} />
                 </button>
-                <button onClick={() => deleteLog(log.id)} className="text-sand hover:text-red-400 transition-colors p-1 bg-white/80 rounded-full backdrop-blur-sm">
+                <button onClick={() => deleteLog(log.id)} className="text-sand hover:text-clay transition-colors p-1 bg-white/80 rounded-full backdrop-blur-sm">
                   <Trash2 size={16} />
                 </button>
               </div>
@@ -115,17 +112,17 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
 
               <div className="grid grid-cols-2 gap-3 mb-3">
                 {log.foodIntake && (
-                  <div className="bg-orange-50/50 p-3 rounded-xl border border-orange-100">
-                    <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-orange-600 font-sans mb-1">
-                      <Utensils size={12} /> Food
+                  <div className="bg-clay/10 p-3 rounded-xl border border-clay/20">
+                    <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.15em] text-clay font-sans mb-1.5">
+                      <Utensils size={11} /> Food
                     </div>
                     <div className="text-sm font-fangsong text-ink whitespace-pre-wrap">{log.foodIntake}</div>
                   </div>
                 )}
                 {log.waterIntake && (
-                  <div className="bg-blue-50/50 p-3 rounded-xl border border-blue-100">
-                    <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-blue-600 font-sans mb-1">
-                      <Droplets size={12} /> Water
+                  <div className="bg-sage/10 p-3 rounded-xl border border-sage/20">
+                    <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.15em] text-sage font-sans mb-1.5">
+                      <Droplets size={11} /> Water
                     </div>
                     <div className="text-sm font-fangsong text-ink whitespace-pre-wrap">{log.waterIntake}</div>
                   </div>
@@ -138,8 +135,8 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
                     <div className="flex items-center gap-2">
                       <span className="text-[10px] font-bold uppercase tracking-widest text-pencil font-sans">Potty:</span>
                       <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                        log.potty === 'Normal' ? 'bg-green-100 text-green-700' :
-                        log.potty === 'None' ? 'bg-gray-200 text-gray-700' : 'bg-red-100 text-red-700'
+                        log.potty === 'Normal' ? 'bg-sage/20 text-[#7A9A6A]' :
+                        log.potty === 'None' ? 'bg-sand/40 text-pencil' : 'bg-clay/15 text-clay'
                       }`}>{
                         log.potty === 'Normal' ? 'Normal' :
                         log.potty === 'Diarrhea' ? 'Diarrhea' :
