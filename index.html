@@ -56,7 +56,7 @@
     </script>
     <style>
       :root {
-        --color-paper: #F3EDE3;
+        --color-paper: #EAE0CE;
         --color-card: #FEFCF8;
         --color-ink: #3A3530;
         --color-pencil: #9A9088;
@@ -81,11 +81,12 @@
 
       body {
         -webkit-tap-highlight-color: transparent;
-        background-color: var(--color-paper);
+        background-color: #EAE0CE;
         background-image:
-          radial-gradient(ellipse at 18% 12%, rgba(210, 180, 145, 0.30) 0%, transparent 48%),
-          radial-gradient(ellipse at 82% 82%, rgba(196, 144, 106, 0.18) 0%, transparent 48%),
-          radial-gradient(ellipse at 50% 45%, rgba(255, 248, 238, 0.35) 0%, transparent 65%);
+          radial-gradient(ellipse 90% 70% at 50% 20%, rgba(255, 248, 235, 0.95) 0%, transparent 65%),
+          radial-gradient(ellipse at 10% 90%, rgba(196, 144, 106, 0.28) 0%, transparent 50%),
+          radial-gradient(ellipse at 92% 8%, rgba(218, 190, 148, 0.32) 0%, transparent 45%),
+          radial-gradient(ellipse at 50% 100%, rgba(175, 140, 105, 0.15) 0%, transparent 55%);
         background-attachment: fixed;
         font-family: 'DM Sans', 'FangSong', 'STFangsong', '华文仿宋', 'Noto Serif SC', sans-serif;
         color: var(--color-ink);
@@ -207,10 +208,13 @@
         bottom: 0;
         left: 0;
         right: 0;
-        height: 7rem;
-        background: linear-gradient(to top, var(--color-paper) 0%, transparent 100%);
+        height: 8rem;
+        background: linear-gradient(to top, rgba(234, 224, 206, 0.95) 0%, transparent 100%);
         pointer-events: none;
         z-index: 40;
+      }
+      .dark body::after {
+        background: linear-gradient(to top, rgba(42, 40, 38, 0.95) 0%, transparent 100%);
       }
     </style>
   <script type="importmap">

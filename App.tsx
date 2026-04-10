@@ -6,20 +6,52 @@ import { HealthSection } from './components/HealthSection';
 import { FoodSection } from './components/FoodSection';
 import { FinanceSection } from './components/FinanceSection';
 import { ShopSection } from './components/ShopSection';
-import { DashboardSection } from './components/DashboardSection';
 import { DailySection } from './components/DailySection';
-import { ChatSection } from './components/ChatSection';
-import { User, Activity, Heart, PawPrint, Utensils, Wallet, Store, LayoutDashboard, CalendarDays, Moon, Sun, Download, Upload } from 'lucide-react';
+import { User, Heart, PawPrint, Utensils, Wallet, CalendarDays, Moon, Sun, Download, Upload } from 'lucide-react';
+
+const SubToggle = ({ options, active, onChange }: {
+  options: { value: string; label: string }[];
+  active: string;
+  onChange: (v: string) => void;
+}) => (
+  <div className="flex items-center justify-center mb-8">
+    <div className="flex bg-white/55 backdrop-blur-sm rounded-full p-1 gap-0.5 border border-white/70 shadow-sm">
+      {options.map(opt => (
+        <button
+          key={opt.value}
+          onClick={() => onChange(opt.value)}
+          className={`px-5 py-1.5 rounded-full text-[11px] font-sans tracking-wider transition-all duration-300 ${
+            active === opt.value
+              ? 'bg-white text-ink shadow-sm font-medium'
+              : 'text-pencil hover:text-ink'
+          }`}
+        >
+          {opt.label}
+        </button>
+      ))}
+    </div>
+  </div>
+);
+
+const SectionHeader = ({ en, zh }: { en: string; zh: string }) => (
+  <div className="mb-8 flex flex-col items-center text-center">
+    <span className="text-[10px] tracking-[0.35em] text-gold/60 uppercase mb-3 font-sans">{en}</span>
+    <h2 className="font-fangsong text-4xl text-ink tracking-wide">{zh}</h2>
+    <div className="deco-line"></div>
+  </div>
+);
 
 const App: React.FC = () => {
   // --- State ---
-  const [activeTab, setActiveTab] = useState<TabView>('dashboard');
+  const [activeTab, setActiveTab] = useState<TabView>('profile');
+  const [healthSubTab, setHealthSubTab] = useState<'health' | 'physical'>('health');
+  const [financeSubTab, setFinanceSubTab] = useState<'finance' | 'shops'>('finance');
   const [scrolled, setScrolled] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     return localStorage.getItem('pawprint_theme') === 'dark';
   });
   const fileInputRef = React.useRef<HTMLInputElement>(null);
-  
+
   const [profile, setProfile] = useState<PetProfile>(() => {
     const saved = localStorage.getItem('pawprint_profile');
     return saved ? JSON.parse(saved) : {
@@ -29,11 +61,7 @@ const App: React.FC = () => {
       birthDate: '',
       microchipId: '',
       photoUrl: null,
-      vetContact: {
-        clinicName: '',
-        phone: '',
-        address: ''
-      }
+      vetContact: { clinicName: '', phone: '', address: '' }
     };
   });
 
@@ -74,11 +102,7 @@ const App: React.FC = () => {
 
   // --- Effects ---
   useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    document.documentElement.classList.toggle('dark', isDarkMode);
     localStorage.setItem('pawprint_theme', isDarkMode ? 'dark' : 'light');
   }, [isDarkMode]);
 
@@ -91,7 +115,6 @@ const App: React.FC = () => {
   useEffect(() => localStorage.setItem('pawprint_shops', JSON.stringify(shops)), [shops]);
   useEffect(() => localStorage.setItem('pawprint_daily', JSON.stringify(dailyLogs)), [dailyLogs]);
 
-  // Scroll effect for header
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
@@ -99,12 +122,12 @@ const App: React.FC = () => {
   }, []);
 
   // --- Handlers ---
-  const addPhysicalRecord = (record: PhysicalRecord) => setPhysicalRecords([...physicalRecords, record]);
-  const updatePhysicalRecord = (record: PhysicalRecord) => setPhysicalRecords(physicalRecords.map(r => r.id === record.id ? record : r));
+  const addPhysicalRecord = (r: PhysicalRecord) => setPhysicalRecords([...physicalRecords, r]);
+  const updatePhysicalRecord = (r: PhysicalRecord) => setPhysicalRecords(physicalRecords.map(x => x.id === r.id ? r : x));
   const deletePhysicalRecord = (id: string) => setPhysicalRecords(physicalRecords.filter(r => r.id !== id));
-  
-  const addHealthRecord = (record: HealthRecord) => setHealthRecords([...healthRecords, record]);
-  const updateHealthRecord = (record: HealthRecord) => setHealthRecords(healthRecords.map(r => r.id === record.id ? record : r));
+
+  const addHealthRecord = (r: HealthRecord) => setHealthRecords([...healthRecords, r]);
+  const updateHealthRecord = (r: HealthRecord) => setHealthRecords(healthRecords.map(x => x.id === r.id ? r : x));
   const deleteHealthRecord = (id: string) => setHealthRecords(healthRecords.filter(r => r.id !== id));
 
   const addDailyLog = (log: DailyLog) => setDailyLogs([...dailyLogs, log]);
@@ -112,16 +135,7 @@ const App: React.FC = () => {
   const deleteDailyLog = (id: string) => setDailyLogs(dailyLogs.filter(l => l.id !== id));
 
   const handleExportData = () => {
-    const data = {
-      profile,
-      physicalRecords,
-      healthRecords,
-      inventoryItems,
-      insurancePolicies,
-      prepaidServices,
-      shops,
-      dailyLogs
-    };
+    const data = { profile, physicalRecords, healthRecords, inventoryItems, insurancePolicies, prepaidServices, shops, dailyLogs };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -136,7 +150,6 @@ const App: React.FC = () => {
   const handleImportData = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     const reader = new FileReader();
     reader.onload = (event) => {
       try {
@@ -149,100 +162,74 @@ const App: React.FC = () => {
         if (data.prepaidServices) setPrepaidServices(data.prepaidServices);
         if (data.shops) setShops(data.shops);
         if (data.dailyLogs) setDailyLogs(data.dailyLogs);
-        alert('Data imported successfully! 資料匯入成功！');
-      } catch (error) {
-        alert('Failed to import data. Invalid file format. 匯入失敗，檔案格式錯誤。');
+        alert('資料匯入成功！');
+      } catch {
+        alert('匯入失敗，檔案格式錯誤。');
       }
     };
     reader.readAsText(file);
-    // Reset input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   return (
-    <div className="min-h-screen pb-32 selection:bg-clay/20 selection:text-ink" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-      
-      {/* Header - Elegant & Adaptive */}
-      <header 
-        className={`sticky top-0 z-50 px-6 py-4 flex items-center justify-between transition-all duration-500 ${
-          scrolled ? 'glass shadow-sm py-3' : 'bg-transparent py-6'
-        }`}
-      >
-        <div className={`flex items-center gap-3 transition-transform duration-500 ${scrolled ? 'scale-90' : 'scale-100'}`}>
-           {profile.photoUrl ? (
-             <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-md flex-shrink-0 ring-1 ring-sand/50">
-               <img src={profile.photoUrl} alt="Profile" className="w-full h-full object-cover" />
-             </div>
-           ) : (
-             <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm border border-sand">
-               <PawPrint className="text-clay" fill="currentColor" size={20} strokeWidth={0} />
-             </div>
-           )}
-           <h1 className="font-fangsong text-2xl tracking-wide text-ink truncate max-w-[200px]">
-             {profile.name || 'My Pet Journal'}
-           </h1>
-        </div>
-        <div className="flex items-center gap-2">
-          <button 
-            onClick={() => setIsDarkMode(!isDarkMode)}
-            className="p-2 rounded-full bg-white/50 text-ink/70 hover:text-ink hover:bg-white/80 transition-colors shadow-sm border border-white/40"
-            title="切換深色模式 Toggle Dark Mode"
-          >
-            {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+    <div className="min-h-screen pb-36 selection:bg-clay/20 selection:text-ink" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+
+      {/* Header */}
+      <header className={`sticky top-0 z-50 px-5 flex items-center justify-between transition-all duration-500 ${
+        scrolled ? 'glass shadow-sm py-3' : 'bg-transparent py-5'
+      }`}>
+        <button
+          onClick={() => setActiveTab('profile')}
+          className={`flex items-center gap-2.5 transition-all duration-300 ${scrolled ? 'scale-90' : 'scale-100'}`}
+        >
+          {profile.photoUrl ? (
+            <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-white shadow-md flex-shrink-0 ring-1 ring-sand/50">
+              <img src={profile.photoUrl} alt="Profile" className="w-full h-full object-cover" />
+            </div>
+          ) : (
+            <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center shadow-sm border border-sand flex-shrink-0">
+              <PawPrint className="text-clay" fill="currentColor" size={18} strokeWidth={0} />
+            </div>
+          )}
+          <h1 className="font-fangsong text-xl tracking-wide text-ink truncate max-w-[160px]">
+            {profile.name || 'My Pet Journal'}
+          </h1>
+        </button>
+
+        <div className="flex items-center gap-1.5">
+          <button onClick={() => setIsDarkMode(!isDarkMode)}
+            className="p-2 rounded-full bg-white/50 text-ink/60 hover:text-ink hover:bg-white/80 transition-colors border border-white/40"
+            title="深色模式">
+            {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
           </button>
-          <button 
-            onClick={handleExportData}
-            className="p-2 rounded-full bg-white/50 text-ink/70 hover:text-ink hover:bg-white/80 transition-colors shadow-sm border border-white/40"
-            title="匯出資料 Export Data"
-          >
-            <Download size={18} />
+          <button onClick={handleExportData}
+            className="p-2 rounded-full bg-white/50 text-ink/60 hover:text-ink hover:bg-white/80 transition-colors border border-white/40"
+            title="匯出資料">
+            <Download size={16} />
           </button>
-          <button 
-            onClick={() => fileInputRef.current?.click()}
-            className="p-2 rounded-full bg-white/50 text-ink/70 hover:text-ink hover:bg-white/80 transition-colors shadow-sm border border-white/40"
-            title="匯入資料 Import Data"
-          >
-            <Upload size={18} />
+          <button onClick={() => fileInputRef.current?.click()}
+            className="p-2 rounded-full bg-white/50 text-ink/60 hover:text-ink hover:bg-white/80 transition-colors border border-white/40"
+            title="匯入資料">
+            <Upload size={16} />
           </button>
-          <input 
-            type="file" 
-            ref={fileInputRef} 
-            onChange={handleImportData} 
-            accept=".json" 
-            className="hidden" 
-          />
+          <input type="file" ref={fileInputRef} onChange={handleImportData} accept=".json" className="hidden" />
         </div>
       </header>
 
-      {/* Main Content Area */}
-      <main className="max-w-md mx-auto px-6 pt-2">
-        
-        {activeTab === 'dashboard' && (
+      {/* Main Content */}
+      <main className="max-w-md mx-auto px-5 pt-2">
+
+        {/* ── Profile ── */}
+        {activeTab === 'profile' && (
           <div className="animate-fade-in">
-            <div className="mb-8 flex flex-col items-center text-center">
-               <span className="text-[10px] tracking-[0.35em] text-gold/60 uppercase mb-3 font-sans">Dashboard</span>
-               <h2 className="font-fangsong text-4xl text-ink tracking-wide">首頁</h2>
-               <div className="deco-line"></div>
-             </div>
-            <DashboardSection 
-              healthRecords={healthRecords}
-              inventoryItems={inventoryItems}
-              insurancePolicies={insurancePolicies}
-              prepaidServices={prepaidServices}
-              shops={shops}
-            />
+            <ProfileSection profile={profile} setProfile={setProfile} />
           </div>
         )}
 
+        {/* ── Daily ── */}
         {activeTab === 'daily' && (
           <div className="animate-fade-in">
-            <div className="mb-8 flex flex-col items-center text-center">
-              <span className="text-[10px] tracking-[0.35em] text-gold/60 uppercase mb-3 font-sans">Daily Journal</span>
-              <h2 className="font-fangsong text-4xl text-ink tracking-wide">日常紀錄</h2>
-              <div className="deco-line"></div>
-            </div>
+            <SectionHeader en="Daily Journal" zh="日常紀錄" />
             <DailySection
               logs={dailyLogs}
               addLog={addDailyLog}
@@ -252,106 +239,94 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {activeTab === 'profile' && (
-          <ProfileSection profile={profile} setProfile={setProfile} />
-        )}
-
-        {activeTab === 'physical' && (
-           <div className="animate-fade-in">
-             <div className="mb-8 flex flex-col items-center text-center">
-               <span className="text-[10px] tracking-[0.35em] text-gold/60 uppercase mb-3 font-sans">Growth Tracker</span>
-               <h2 className="font-fangsong text-4xl text-ink tracking-wide">體態紀錄</h2>
-               <div className="deco-line"></div>
-             </div>
-             <PhysicalSection 
-               records={physicalRecords} 
-               addRecord={addPhysicalRecord} 
-               updateRecord={updatePhysicalRecord}
-               deleteRecord={deletePhysicalRecord} 
-               profile={profile}
-             />
-           </div>
-        )}
-
+        {/* ── Health + Physical ── */}
         {activeTab === 'health' && (
           <div className="animate-fade-in">
-            <div className="mb-8 flex flex-col items-center text-center">
-               <span className="text-[10px] tracking-[0.35em] text-gold/60 uppercase mb-3 font-sans">Medical History</span>
-               <h2 className="font-fangsong text-4xl text-ink tracking-wide">健康日曆</h2>
-               <div className="deco-line"></div>
-             </div>
-            <HealthSection 
-              records={healthRecords} 
-              addRecord={addHealthRecord} 
-              updateRecord={updateHealthRecord}
-              deleteRecord={deleteHealthRecord} 
-              shops={shops}
+            <SubToggle
+              options={[{ value: 'health', label: '健康日曆' }, { value: 'physical', label: '體態紀錄' }]}
+              active={healthSubTab}
+              onChange={(v) => setHealthSubTab(v as 'health' | 'physical')}
             />
+            {healthSubTab === 'health' ? (
+              <>
+                <SectionHeader en="Medical History" zh="健康日曆" />
+                <HealthSection
+                  records={healthRecords}
+                  addRecord={addHealthRecord}
+                  updateRecord={updateHealthRecord}
+                  deleteRecord={deleteHealthRecord}
+                  shops={shops}
+                />
+              </>
+            ) : (
+              <>
+                <SectionHeader en="Growth Tracker" zh="體態紀錄" />
+                <PhysicalSection
+                  records={physicalRecords}
+                  addRecord={addPhysicalRecord}
+                  updateRecord={updatePhysicalRecord}
+                  deleteRecord={deletePhysicalRecord}
+                  profile={profile}
+                />
+              </>
+            )}
           </div>
         )}
 
+        {/* ── Food ── */}
         {activeTab === 'food' && (
           <div className="animate-fade-in">
-            <div className="mb-8 flex flex-col items-center text-center">
-               <span className="text-[10px] tracking-[0.35em] text-gold/60 uppercase mb-3 font-sans">Pantry & Diet</span>
-               <h2 className="font-fangsong text-4xl text-ink tracking-wide">食物庫存</h2>
-               <div className="deco-line"></div>
-             </div>
-            <FoodSection 
-              items={inventoryItems} 
-              setItems={setInventoryItems} 
+            <SectionHeader en="Pantry & Diet" zh="食物庫存" />
+            <FoodSection
+              items={inventoryItems}
+              setItems={setInventoryItems}
               profile={profile}
             />
           </div>
         )}
 
+        {/* ── Finance + Shops ── */}
         {activeTab === 'finance' && (
           <div className="animate-fade-in">
-            <div className="mb-8 flex flex-col items-center text-center">
-               <span className="text-[10px] tracking-[0.35em] text-gold/60 uppercase mb-3 font-sans">Wealth & Care</span>
-               <h2 className="font-fangsong text-4xl text-ink tracking-wide">財務與服務</h2>
-               <div className="deco-line"></div>
-             </div>
-            <FinanceSection 
-              policies={insurancePolicies} 
-              setPolicies={setInsurancePolicies}
-              services={prepaidServices}
-              setServices={setPrepaidServices}
-              inventoryItems={inventoryItems}
-              profile={profile}
+            <SubToggle
+              options={[{ value: 'finance', label: '財務與服務' }, { value: 'shops', label: '住宿與美容' }]}
+              active={financeSubTab}
+              onChange={(v) => setFinanceSubTab(v as 'finance' | 'shops')}
             />
+            {financeSubTab === 'finance' ? (
+              <>
+                <SectionHeader en="Wealth & Care" zh="財務與服務" />
+                <FinanceSection
+                  policies={insurancePolicies}
+                  setPolicies={setInsurancePolicies}
+                  services={prepaidServices}
+                  setServices={setPrepaidServices}
+                  inventoryItems={inventoryItems}
+                  profile={profile}
+                />
+              </>
+            ) : (
+              <>
+                <SectionHeader en="Places & Visits" zh="住宿與美容" />
+                <ShopSection shops={shops} setShops={setShops} />
+              </>
+            )}
           </div>
         )}
-
-        {activeTab === 'shops' && (
-          <div className="animate-fade-in">
-            <div className="mb-8 flex flex-col items-center text-center">
-               <span className="text-[10px] tracking-[0.35em] text-gold/60 uppercase mb-3 font-sans">Places & Visits</span>
-               <h2 className="font-fangsong text-4xl text-ink tracking-wide">住宿與美容</h2>
-               <div className="deco-line"></div>
-             </div>
-            <ShopSection
-              shops={shops}
-              setShops={setShops}
-            />
-          </div>
-        )}
-
 
       </main>
 
-      {/* Floating Bottom Navigation */}
-      <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-[94vw]">
-        <div className="bg-[#252220] backdrop-blur-2xl rounded-[2rem] px-2 py-2 flex gap-0.5 overflow-x-auto hide-scrollbar min-w-max"
-          style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.06), inset 0 1px 0 rgba(255,255,255,0.05)' }}>
-          <NavBtn active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} icon={LayoutDashboard} label="總覽" />
-          <NavBtn active={activeTab === 'daily'} onClick={() => setActiveTab('daily')} icon={CalendarDays} label="日常" />
+      {/* ── Bottom Nav (5 tabs) ── */}
+      <nav className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50">
+        <div
+          className="bg-[#252220] backdrop-blur-2xl rounded-[2rem] px-2 py-2 flex gap-0.5"
+          style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.06), inset 0 1px 0 rgba(255,255,255,0.05)' }}
+        >
           <NavBtn active={activeTab === 'profile'} onClick={() => setActiveTab('profile')} icon={User} label="資料" />
-          <NavBtn active={activeTab === 'physical'} onClick={() => setActiveTab('physical')} icon={Activity} label="體態" />
-          <NavBtn active={activeTab === 'health'} onClick={() => setActiveTab('health')} icon={Heart} label="醫療" />
+          <NavBtn active={activeTab === 'daily'} onClick={() => setActiveTab('daily')} icon={CalendarDays} label="日常" />
+          <NavBtn active={activeTab === 'health'} onClick={() => setActiveTab('health')} icon={Heart} label="健康" />
           <NavBtn active={activeTab === 'food'} onClick={() => setActiveTab('food')} icon={Utensils} label="飲食" />
           <NavBtn active={activeTab === 'finance'} onClick={() => setActiveTab('finance')} icon={Wallet} label="財務" />
-          <NavBtn active={activeTab === 'shops'} onClick={() => setActiveTab('shops')} icon={Store} label="愛店" />
         </div>
       </nav>
 
@@ -359,23 +334,21 @@ const App: React.FC = () => {
   );
 };
 
-const NavBtn = ({ active, onClick, icon: Icon, label }: { active: boolean, onClick: () => void, icon: any, label: string }) => (
+const NavBtn = ({ active, onClick, icon: Icon, label }: { active: boolean; onClick: () => void; icon: any; label: string }) => (
   <button
     onClick={onClick}
-    className={`relative flex flex-col items-center justify-center px-3 py-2.5 rounded-[1.4rem] transition-all duration-300 min-w-[48px] ${
+    className={`relative flex flex-col items-center justify-center px-4 py-2.5 rounded-[1.4rem] transition-all duration-300 min-w-[52px] ${
       active ? 'bg-white/10' : 'hover:bg-white/5'
     }`}
   >
-    <Icon
-      size={19}
-      strokeWidth={active ? 2.2 : 1.75}
+    <Icon size={20} strokeWidth={active ? 2.2 : 1.6}
       className={`transition-all duration-300 ${active ? 'text-white' : 'text-white/30'}`}
     />
-    <span className={`text-[8px] font-sans tracking-wider mt-1.5 transition-all duration-300 font-medium ${
-      active ? 'text-gold/80 opacity-100' : 'text-white/0 opacity-0 h-0 mt-0 overflow-hidden'
+    <span className={`text-[8px] font-sans tracking-wider transition-all duration-300 font-medium ${
+      active ? 'text-gold/80 opacity-100 mt-1.5' : 'opacity-0 h-0 mt-0 overflow-hidden'
     }`}>{label}</span>
     {active && (
-      <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-3.5 h-[2px] bg-gold/60 rounded-full"
+      <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-4 h-[2px] bg-gold/60 rounded-full"
         style={{ boxShadow: '0 0 8px rgba(191,168,132,0.6)' }} />
     )}
   </button>
