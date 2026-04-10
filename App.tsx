@@ -7,7 +7,7 @@ import { FoodSection } from './components/FoodSection';
 import { FinanceSection } from './components/FinanceSection';
 import { ShopSection } from './components/ShopSection';
 import { DailySection } from './components/DailySection';
-import { User, Heart, PawPrint, Utensils, Wallet, CalendarDays, Moon, Sun, Download, Upload } from 'lucide-react';
+import { User, Heart, PawPrint, Utensils, Wallet, CalendarDays, Download, Upload } from 'lucide-react';
 
 const SubToggle = ({ options, active, onChange }: {
   options: { value: string; label: string }[];
@@ -47,9 +47,6 @@ const App: React.FC = () => {
   const [healthSubTab, setHealthSubTab] = useState<'health' | 'physical'>('health');
   const [financeSubTab, setFinanceSubTab] = useState<'finance' | 'shops'>('finance');
   const [scrolled, setScrolled] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    return localStorage.getItem('pawprint_theme') === 'dark';
-  });
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const [profile, setProfile] = useState<PetProfile>(() => {
@@ -101,10 +98,6 @@ const App: React.FC = () => {
   });
 
   // --- Effects ---
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', isDarkMode);
-    localStorage.setItem('pawprint_theme', isDarkMode ? 'dark' : 'light');
-  }, [isDarkMode]);
 
   useEffect(() => localStorage.setItem('pawprint_profile', JSON.stringify(profile)), [profile]);
   useEffect(() => localStorage.setItem('pawprint_physical', JSON.stringify(physicalRecords)), [physicalRecords]);
@@ -172,7 +165,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen pb-36 selection:bg-clay/20 selection:text-ink" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+    <div className="min-h-screen pb-36 selection:bg-clay/20 selection:text-ink" style={{ fontFamily: "'Raleway', 'Noto Serif SC', sans-serif" }}>
 
       {/* Header */}
       <header className={`sticky top-0 z-50 px-5 flex items-center justify-between transition-all duration-500 ${
@@ -197,11 +190,6 @@ const App: React.FC = () => {
         </button>
 
         <div className="flex items-center gap-1.5">
-          <button onClick={() => setIsDarkMode(!isDarkMode)}
-            className="p-2 rounded-full bg-white/50 text-ink/60 hover:text-ink hover:bg-white/80 transition-colors border border-white/40"
-            title="深色模式">
-            {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
-          </button>
           <button onClick={handleExportData}
             className="p-2 rounded-full bg-white/50 text-ink/60 hover:text-ink hover:bg-white/80 transition-colors border border-white/40"
             title="匯出資料">
@@ -319,8 +307,12 @@ const App: React.FC = () => {
       {/* ── Bottom Nav (5 tabs) ── */}
       <nav className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50">
         <div
-          className="bg-[#252220] backdrop-blur-2xl rounded-[2rem] px-2 py-2 flex gap-0.5"
-          style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.06), inset 0 1px 0 rgba(255,255,255,0.05)' }}
+          className="backdrop-blur-2xl rounded-[2rem] px-1.5 py-1.5 flex gap-0.5"
+          style={{
+            background: 'rgba(252, 246, 236, 0.88)',
+            border: '1px solid rgba(255, 255, 255, 0.80)',
+            boxShadow: '0 8px 40px -4px rgba(160, 120, 80, 0.22), 0 2px 12px -2px rgba(160, 120, 80, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9)'
+          }}
         >
           <NavBtn active={activeTab === 'profile'} onClick={() => setActiveTab('profile')} icon={User} label="資料" />
           <NavBtn active={activeTab === 'daily'} onClick={() => setActiveTab('daily')} icon={CalendarDays} label="日常" />
@@ -337,19 +329,20 @@ const App: React.FC = () => {
 const NavBtn = ({ active, onClick, icon: Icon, label }: { active: boolean; onClick: () => void; icon: any; label: string }) => (
   <button
     onClick={onClick}
-    className={`relative flex flex-col items-center justify-center px-4 py-2.5 rounded-[1.4rem] transition-all duration-300 min-w-[52px] ${
-      active ? 'bg-white/10' : 'hover:bg-white/5'
+    className={`relative flex flex-col items-center justify-center px-4 py-2.5 rounded-[1.3rem] transition-all duration-300 min-w-[52px] ${
+      active ? 'bg-clay/12' : 'hover:bg-clay/5'
     }`}
+    style={active ? { background: 'rgba(196,144,106,0.10)' } : undefined}
   >
-    <Icon size={20} strokeWidth={active ? 2.2 : 1.6}
-      className={`transition-all duration-300 ${active ? 'text-white' : 'text-white/30'}`}
+    <Icon size={20} strokeWidth={active ? 2.0 : 1.5}
+      className={`transition-all duration-300 ${active ? 'text-clay' : 'text-ink/25'}`}
     />
-    <span className={`text-[8px] font-sans tracking-wider transition-all duration-300 font-medium ${
-      active ? 'text-gold/80 opacity-100 mt-1.5' : 'opacity-0 h-0 mt-0 overflow-hidden'
+    <span className={`text-[8px] font-sans tracking-widest transition-all duration-300 uppercase ${
+      active ? 'text-clay/70 opacity-100 mt-1.5' : 'opacity-0 h-0 mt-0 overflow-hidden'
     }`}>{label}</span>
     {active && (
-      <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-4 h-[2px] bg-gold/60 rounded-full"
-        style={{ boxShadow: '0 0 8px rgba(191,168,132,0.6)' }} />
+      <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-3.5 h-[1.5px] rounded-full"
+        style={{ background: 'rgba(196,144,106,0.5)' }} />
     )}
   </button>
 );
