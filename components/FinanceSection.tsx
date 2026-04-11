@@ -392,7 +392,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
       {showHotelPlan && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-ink/40 backdrop-blur-sm" onClick={() => setShowHotelPlan(false)} />
-          <div className="bg-[#FEFCF8] w-full max-w-md rounded-[2rem] p-8 shadow-2xl relative z-10 animate-scale-in">
+          <div className="bg-[#FDFAF5] w-full max-w-md rounded-[2rem] p-8 shadow-2xl relative z-10 animate-scale-in">
             <div className="flex justify-between items-center mb-6">
                <h3 className="font-fangsong text-2xl text-ink flex items-center gap-2"><Building size={24} className="text-gold"/> 住宿計畫 Hotel Plan</h3>
                <button onClick={() => setShowHotelPlan(false)} className="p-2 text-pencil hover:text-ink"><X size={20}/></button>
@@ -436,7 +436,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
       {isPolicyFormOpen && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsPolicyFormOpen(false)} />
-          <form onSubmit={handlePolicySubmit} className="bg-[#FEFCF8] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative">
+          <form onSubmit={handlePolicySubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative">
              <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-8 opacity-50" />
              
              <div className="flex justify-between items-center mb-6">
@@ -489,7 +489,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
       {isServiceFormOpen && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsServiceFormOpen(false)} />
-          <form onSubmit={handleServiceSubmit} className="bg-[#FEFCF8] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative">
+          <form onSubmit={handleServiceSubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative">
              <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-8 opacity-50" />
              
              <div className="flex justify-between items-center mb-6">
@@ -568,7 +568,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
       {selectedPolicy && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setSelectedPolicy(null)} />
-          <div className="bg-[#FEFCF8] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative max-h-[90vh] overflow-y-auto">
+          <div className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative max-h-[90vh] overflow-y-auto">
              <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-8 opacity-50" />
              
              <div className="flex justify-between items-center mb-6">
@@ -659,7 +659,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
                          <div className="text-[10px] font-sans text-pencil uppercase tracking-widest">{formatDate(claim.date)}</div>
                        </div>
                        <div className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-widest font-sans ${
-                         claim.status === 'Approved' ? 'bg-sage/15 text-[#5A8A5A]' :
+                         claim.status === 'Approved' ? 'bg-sage/15 text-[#5E8A55]' :
                          claim.status === 'Rejected' ? 'bg-clay/10 text-clay' :
                          'bg-amber-50 text-amber-600'
                        }`}>

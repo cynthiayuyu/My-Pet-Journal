@@ -5,21 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My Pet Journal</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Raleway:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Raleway:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         theme: {
           extend: {
             colors: {
-              paper: 'var(--color-paper)',     // Main background
-              card: 'var(--color-card)',      // Card background
-              ink: 'var(--color-ink)',       // Primary text
-              pencil: 'var(--color-pencil)',    // Secondary text
-              sand: 'var(--color-sand)',      // Borders/Dividers
-              warm: 'var(--color-warm)',      // Accents
-              sage: 'var(--color-sage)',      // Soft Green
-              clay: 'var(--color-clay)',      // Soft Terracotta
-              gold: 'var(--color-gold)',      // Gold/Bronze accent
+              paper: 'var(--color-paper)',         // Main background — warm parchment
+              card: 'var(--color-card)',            // Card background — cream
+              ink: 'var(--color-ink)',              // Primary text — deep sepia
+              pencil: 'var(--color-pencil)',        // Secondary text — warm brown
+              sand: 'var(--color-sand)',            // Borders/Dividers — dusty sand
+              warm: 'var(--color-warm)',            // Accents — taupe
+              sage: 'var(--color-sage)',            // French sage green
+              clay: 'var(--color-clay)',            // Dusty rose-terracotta
+              gold: 'var(--color-gold)',            // Antique gold
+              petal: 'var(--color-petal)',          // French rose petal
+              lavender: 'var(--color-lavender)',    // Provençal lavender
             },
             fontFamily: {
               sans: ['Raleway', 'ui-sans-serif', 'system-ui', 'sans-serif'],
@@ -46,8 +48,8 @@
               }
             },
             boxShadow: {
-              'soft': '0 4px 24px -2px rgba(175, 140, 105, 0.10)',
-              'float': '0 16px 48px -8px rgba(175, 140, 105, 0.18)',
+              'soft': '0 4px 24px -4px rgba(184, 112, 104, 0.10), 0 1px 4px -1px rgba(43, 33, 26, 0.04)',
+              'float': '0 16px 48px -8px rgba(184, 112, 104, 0.18), 0 4px 16px -4px rgba(43, 33, 26, 0.06)',
             }
           },
         },
@@ -55,42 +57,50 @@
     </script>
     <style>
       :root {
-        --color-paper: #EDE5D3;
-        --color-card: #FEFCF8;
-        --color-ink: #3A3530;
-        --color-pencil: #9A9088;
-        --color-sand: #E8E0D2;
-        --color-warm: #C8BEB0;
-        --color-sage: #B5C1A6;
-        --color-clay: #C4906A;
-        --color-gold: #C0A882;
+        --color-paper: #EDE4D8;
+        --color-card: #FDFAF5;
+        --color-ink: #2B211A;
+        --color-pencil: #8A7870;
+        --color-sand: #E2D5C8;
+        --color-warm: #BCA898;
+        --color-sage: #7A9870;
+        --color-clay: #B87068;
+        --color-gold: #B89050;
+        --color-petal: #C4A0A8;
+        --color-lavender: #9888A8;
       }
 
       body {
         -webkit-tap-highlight-color: transparent;
-        background-color: #EDE5D3;
+        background-color: #EDE4D8;
         background-image:
-          radial-gradient(ellipse 110% 80% at 50% -5%, rgba(255, 253, 245, 0.98) 0%, transparent 60%),
-          radial-gradient(ellipse 60% 50% at 8% 95%, rgba(196, 144, 106, 0.22) 0%, transparent 55%),
-          radial-gradient(ellipse 50% 40% at 95% 5%, rgba(212, 185, 145, 0.20) 0%, transparent 50%);
+          /* Top: soft ivory fade — like morning light through linen */
+          radial-gradient(ellipse 120% 75% at 50% -8%, rgba(255, 251, 244, 0.97) 0%, transparent 54%),
+          /* Lower-left: dusty rose blush — dried rose petals */
+          radial-gradient(ellipse 65% 50% at 8% 100%, rgba(184, 112, 104, 0.14) 0%, transparent 52%),
+          /* Upper-right: Provençal lavender — French lavender fields */
+          radial-gradient(ellipse 55% 45% at 96% 0%, rgba(152, 136, 168, 0.16) 0%, transparent 50%),
+          /* Lower-right: botanical sage — herb garden */
+          radial-gradient(ellipse 40% 35% at 85% 90%, rgba(122, 152, 112, 0.10) 0%, transparent 45%);
         background-attachment: fixed;
         font-family: 'Raleway', 'Noto Serif SC', sans-serif;
         color: var(--color-ink);
         transition: background-color 0.3s ease, color 0.3s ease;
-        letter-spacing: 0.01em;
+        letter-spacing: 0.015em;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
       }
-      
+
       /* Refined Scrollbar */
       ::-webkit-scrollbar {
-        width: 5px;
+        width: 4px;
       }
       ::-webkit-scrollbar-track {
         background: transparent;
       }
       ::-webkit-scrollbar-thumb {
-        background: var(--color-warm);
+        background: linear-gradient(180deg, var(--color-clay), var(--color-gold));
         border-radius: 10px;
-        transition: background 0.3s;
       }
       ::-webkit-scrollbar-thumb:hover {
         background: var(--color-clay);
@@ -99,10 +109,10 @@
       input, textarea, select, button {
         outline: none;
       }
-      
+
       .font-fangsong {
         font-family: 'Cormorant Garamond', 'Noto Serif SC', 'FangSong', 'STFangsong', '华文仿宋', serif;
-        letter-spacing: 0.02em;
+        letter-spacing: 0.025em;
       }
 
       /* Hide scrollbar utility */
@@ -114,79 +124,92 @@
         display: none;
       }
 
-      /* Glassmorphism utility */
+      /* Glassmorphism — pearlescent French glass */
       .glass {
-        background: rgba(254, 251, 246, 0.72);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.58);
+        background: rgba(253, 250, 245, 0.80);
+        backdrop-filter: blur(24px) saturate(1.3);
+        -webkit-backdrop-filter: blur(24px) saturate(1.3);
+        border: 1px solid rgba(255, 255, 255, 0.68);
       }
 
-      /* Warm primary button */
+      /* French boutique primary button */
       .btn-warm {
-        background: linear-gradient(135deg, #C4906A 0%, #B8805C 100%);
+        background: linear-gradient(135deg, #B87068 0%, #A86060 100%);
         color: #fff;
-        border-radius: 0.875rem;
-        font-weight: 700;
-        letter-spacing: 0.1em;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        letter-spacing: 0.18em;
         text-transform: uppercase;
-        font-size: 0.75rem;
-        font-family: 'DM Sans', sans-serif;
-        transition: all 0.3s ease;
-        box-shadow: 0 8px 24px -4px rgba(196, 144, 106, 0.35);
+        font-size: 0.7rem;
+        font-family: 'Raleway', sans-serif;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 16px -4px rgba(184, 112, 104, 0.35), 0 2px 8px -2px rgba(184, 112, 104, 0.20);
       }
       .btn-warm:hover {
-        background: linear-gradient(135deg, #B8805C 0%, #A8704C 100%);
-        box-shadow: 0 12px 32px -4px rgba(196, 144, 106, 0.45);
+        background: linear-gradient(135deg, #A86058 0%, #985250 100%);
+        box-shadow: 0 8px 24px -4px rgba(184, 112, 104, 0.42), 0 4px 12px -2px rgba(184, 112, 104, 0.25);
         transform: translateY(-1px);
+        letter-spacing: 0.22em;
       }
       .btn-warm:active {
         transform: translateY(0);
+        box-shadow: 0 2px 8px -2px rgba(184, 112, 104, 0.25);
       }
 
-      /* Warm card base */
+      /* Elegant card base */
       .card-warm {
-        background: rgba(254, 252, 248, 0.85);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.75);
-        box-shadow: 0 2px 12px -2px rgba(175, 140, 105, 0.08), 0 8px 32px -4px rgba(175, 140, 105, 0.12);
+        background: rgba(253, 250, 245, 0.88);
+        backdrop-filter: blur(24px) saturate(1.2);
+        -webkit-backdrop-filter: blur(24px) saturate(1.2);
+        border: 1px solid rgba(255, 255, 255, 0.82);
+        box-shadow:
+          0 1px 2px rgba(43, 33, 26, 0.03),
+          0 4px 16px -2px rgba(43, 33, 26, 0.06),
+          0 12px 40px -8px rgba(184, 112, 104, 0.09);
       }
 
       /* Icon containers */
       .icon-clay {
-        background: rgba(196, 144, 106, 0.12);
-        color: #C4906A;
+        background: rgba(184, 112, 104, 0.10);
+        color: #B87068;
       }
       .icon-sage {
-        background: rgba(181, 193, 166, 0.18);
-        color: #8DA07E;
+        background: rgba(122, 152, 112, 0.14);
+        color: #5E8A55;
       }
       .icon-gold {
-        background: rgba(192, 168, 130, 0.15);
-        color: #A8906A;
+        background: rgba(184, 144, 80, 0.12);
+        color: #96782E;
       }
       .icon-warm {
-        background: rgba(200, 190, 176, 0.2);
-        color: #9A8C7E;
+        background: rgba(188, 168, 152, 0.18);
+        color: #8A7870;
+      }
+      .icon-petal {
+        background: rgba(196, 160, 168, 0.12);
+        color: #9E7882;
+      }
+      .icon-lavender {
+        background: rgba(152, 136, 168, 0.14);
+        color: #7262A0;
       }
 
       /* Reminder/list item inside card */
       .item-row {
-        background: rgba(255, 255, 255, 0.55);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        border: 1px solid rgba(255, 255, 255, 0.8);
-        border-radius: 1rem;
+        background: rgba(255, 255, 255, 0.68);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.88);
+        border-radius: 0.875rem;
         padding: 0.875rem 1rem;
       }
 
-      /* Decorative gradient line */
+      /* Decorative gradient line — French botanical separator */
       .deco-line {
-        height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(192, 168, 130, 0.45), transparent);
-        width: 2.5rem;
-        margin: 0.75rem auto 0;
+        height: 0.5px;
+        background: linear-gradient(90deg, transparent, rgba(184, 144, 80, 0.32), rgba(196, 160, 168, 0.28), rgba(184, 144, 80, 0.32), transparent);
+        width: 5rem;
+        margin: 0.875rem auto 0;
       }
 
       /* Page bottom fade for nav bar */
@@ -197,7 +220,7 @@
         left: 0;
         right: 0;
         height: 8rem;
-        background: linear-gradient(to top, rgba(237, 229, 211, 0.96) 0%, transparent 100%);
+        background: linear-gradient(to top, rgba(237, 228, 216, 0.97) 0%, transparent 100%);
         pointer-events: none;
         z-index: 40;
       }

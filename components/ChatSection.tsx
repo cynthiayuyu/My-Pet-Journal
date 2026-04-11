@@ -94,7 +94,7 @@ export const ChatSection: React.FC<ChatSectionProps> = ({ profile, latestWeight 
 
   return (
     <div className="flex flex-col h-[calc(100vh-220px)] animate-fade-in">
-      <div className="bg-[#EAE6DD] text-ink p-5 rounded-3xl mb-4 flex items-center gap-4 border border-sand/50 shadow-sm">
+      <div className="bg-[#E8E0D4] text-ink p-5 rounded-3xl mb-4 flex items-center gap-4 border border-sand/50 shadow-sm">
         <div className="bg-white p-2.5 rounded-full shadow-sm text-clay">
           <Sparkles size={20} />
         </div>

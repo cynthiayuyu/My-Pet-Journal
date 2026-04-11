@@ -100,7 +100,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
     
     if (percentDiff > 10) return { type: 'overweight', message: `Overweight by ${diff.toFixed(1)}kg (${percentDiff.toFixed(0)}%)`, color: 'text-clay', bg: 'bg-clay/10', icon: TrendingUp };
     if (percentDiff < -10) return { type: 'underweight', message: `Underweight by ${Math.abs(diff).toFixed(1)}kg (${Math.abs(percentDiff).toFixed(0)}%)`, color: 'text-pencil', bg: 'bg-sand/20', icon: TrendingDown };
-    return { type: 'ideal', message: 'Ideal Weight!', color: 'text-[#6A9A6A]', bg: 'bg-sage/15', icon: Weight };
+    return { type: 'ideal', message: 'Ideal Weight!', color: 'text-[#5E8A55]', bg: 'bg-sage/15', icon: Weight };
   }, [profile.idealWeight, latestRecord]);
 
   return (
@@ -126,17 +126,17 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
           <div className="h-48 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E6E2D8" />
-                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#8C8680', fontFamily: 'DM Sans' }} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#8C8680', fontFamily: 'DM Sans' }} />
-                <Tooltip 
-                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px -2px rgba(62, 58, 54, 0.1)', fontFamily: 'DM Sans', fontSize: '12px' }}
-                  itemStyle={{ color: '#3E3A36', fontWeight: 'bold' }}
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#DDD5C8" />
+                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#8A7870', fontFamily: 'Raleway' }} dy={10} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#8A7870', fontFamily: 'Raleway' }} />
+                <Tooltip
+                  contentStyle={{ borderRadius: '10px', border: 'none', boxShadow: '0 4px 20px -2px rgba(43, 33, 26, 0.10)', fontFamily: 'Raleway', fontSize: '12px', background: '#FDFAF5' }}
+                  itemStyle={{ color: '#2B211A', fontWeight: '600' }}
                 />
                 {profile.idealWeight && (
-                  <ReferenceLine y={profile.idealWeight} stroke="#B5C1A6" strokeDasharray="3 3" label={{ position: 'insideTopLeft', value: 'Ideal', fill: '#B5C1A6', fontSize: 10 }} />
+                  <ReferenceLine y={profile.idealWeight} stroke="#7A9870" strokeDasharray="3 3" label={{ position: 'insideTopLeft', value: 'Ideal', fill: '#7A9870', fontSize: 10 }} />
                 )}
-                <Line type="monotone" dataKey="weight" stroke="#C79A78" strokeWidth={3} dot={{ r: 4, fill: '#C79A78', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6, fill: '#BFA884', stroke: '#fff', strokeWidth: 2 }} />
+                <Line type="monotone" dataKey="weight" stroke="#B87068" strokeWidth={2.5} dot={{ r: 4, fill: '#B87068', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6, fill: '#B89050', stroke: '#fff', strokeWidth: 2 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -277,7 +277,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
       {isFormOpen && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsFormOpen(false)} />
-          <form onSubmit={handleSubmit} className="bg-[#FEFCF8] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative">
+          <form onSubmit={handleSubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative">
              <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-8 opacity-50" />
              
              <div className="flex justify-between items-center mb-8">

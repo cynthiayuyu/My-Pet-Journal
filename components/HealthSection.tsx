@@ -371,7 +371,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
 
         {/* Render "Due" Items First */}
         {selectedDayReminders.map(record => (
-             <div key={`remind-${record.id}`} className="bg-[#FAF6F2] rounded-2xl p-5 shadow-sm border border-clay/30 relative flex gap-4 animate-fade-in pr-16">
+             <div key={`remind-${record.id}`} className="bg-[#F9F4EE] rounded-2xl p-5 shadow-sm border border-clay/30 relative flex gap-4 animate-fade-in pr-16">
                 <div className="w-10 h-10 rounded-full bg-white border border-clay/20 flex items-center justify-center text-clay flex-shrink-0">
                    <Clock size={18} />
                 </div>
@@ -482,14 +482,14 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
             <div className="h-48 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={trendData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E6E2D8" />
-                  <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#8C8680', fontFamily: 'DM Sans' }} dy={10} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#8C8680', fontFamily: 'DM Sans' }} />
-                  <Tooltip 
-                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px -2px rgba(62, 58, 54, 0.1)', fontFamily: 'DM Sans', fontSize: '12px' }}
-                    itemStyle={{ color: '#3E3A36', fontWeight: 'bold' }}
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#DDD5C8" />
+                  <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#8A7870', fontFamily: 'Raleway' }} dy={10} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#8A7870', fontFamily: 'Raleway' }} />
+                  <Tooltip
+                    contentStyle={{ borderRadius: '10px', border: 'none', boxShadow: '0 4px 20px -2px rgba(43, 33, 26, 0.10)', fontFamily: 'Raleway', fontSize: '12px', background: '#FDFAF5' }}
+                    itemStyle={{ color: '#2B211A', fontWeight: '600' }}
                   />
-                  <Line type="monotone" dataKey="value" stroke="#B5C1A6" strokeWidth={3} dot={{ r: 4, fill: '#B5C1A6', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6, fill: '#8C8680', stroke: '#fff', strokeWidth: 2 }} />
+                  <Line type="monotone" dataKey="value" stroke="#7A9870" strokeWidth={2.5} dot={{ r: 4, fill: '#7A9870', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6, fill: '#5E8A55', stroke: '#fff', strokeWidth: 2 }} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -503,7 +503,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
       {isFormOpen && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsFormOpen(false)} />
-          <form onSubmit={handleSubmit} className="bg-[#FEFCF8] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative max-h-[90vh] overflow-y-auto">
+          <form onSubmit={handleSubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative max-h-[90vh] overflow-y-auto">
              <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-8 opacity-50" />
              
              <div className="flex justify-between items-center mb-6">
