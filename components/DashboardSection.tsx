@@ -159,15 +159,15 @@ export const DashboardSection: React.FC<DashboardSectionProps> = ({ healthRecord
           <div className="h-48 w-full mt-4">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={expenseData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E6E2D8" />
-                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#8C8680', fontFamily: 'DM Sans' }} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#8C8680', fontFamily: 'DM Sans' }} />
-                <Tooltip 
-                  cursor={{ fill: 'rgba(230, 226, 216, 0.4)' }}
-                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px -2px rgba(62, 58, 54, 0.1)', fontFamily: 'DM Sans', fontSize: '12px' }}
-                  itemStyle={{ color: '#3E3A36', fontWeight: 'bold' }}
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#DDD5C8" />
+                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#8A7870', fontFamily: 'Raleway' }} dy={10} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#8A7870', fontFamily: 'Raleway' }} />
+                <Tooltip
+                  cursor={{ fill: 'rgba(220, 210, 200, 0.38)' }}
+                  contentStyle={{ borderRadius: '10px', border: 'none', boxShadow: '0 4px 20px -2px rgba(43, 33, 26, 0.10)', fontFamily: 'Raleway', fontSize: '12px', background: '#FDFAF5' }}
+                  itemStyle={{ color: '#2B211A', fontWeight: '600' }}
                 />
-                <Bar dataKey="amount" fill="#C79A78" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                <Bar dataKey="amount" fill="#B87068" radius={[4, 4, 0, 0]} maxBarSize={40} />
               </BarChart>
             </ResponsiveContainer>
           </div>

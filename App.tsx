@@ -15,12 +15,12 @@ const SubToggle = ({ options, active, onChange }: {
   onChange: (v: string) => void;
 }) => (
   <div className="flex items-center justify-center mb-8">
-    <div className="flex bg-white/55 backdrop-blur-sm rounded-full p-1 gap-0.5 border border-white/70 shadow-sm">
+    <div className="flex bg-white/60 backdrop-blur-sm rounded-xl p-1 gap-0.5 border border-white/72 shadow-sm">
       {options.map(opt => (
         <button
           key={opt.value}
           onClick={() => onChange(opt.value)}
-          className={`px-5 py-1.5 rounded-full text-[11px] font-sans tracking-wider transition-all duration-300 ${
+          className={`px-5 py-1.5 rounded-[0.6rem] text-[10px] font-sans tracking-[0.15em] transition-all duration-300 ${
             active === opt.value
               ? 'bg-white text-ink shadow-sm font-medium'
               : 'text-pencil hover:text-ink'
@@ -35,9 +35,17 @@ const SubToggle = ({ options, active, onChange }: {
 
 const SectionHeader = ({ en, zh }: { en: string; zh: string }) => (
   <div className="mb-8 flex flex-col items-center text-center">
-    <span className="text-[10px] tracking-[0.35em] text-gold/60 uppercase mb-3 font-sans">{en}</span>
+    <div className="flex items-center gap-2.5 mb-3">
+      <div className="h-px w-6" style={{background: 'linear-gradient(to right, transparent, rgba(184,144,80,0.32))'}} />
+      <span className="text-[9px] tracking-[0.42em] text-gold/55 uppercase font-sans">{en}</span>
+      <div className="h-px w-6" style={{background: 'linear-gradient(to left, transparent, rgba(184,144,80,0.32))'}} />
+    </div>
     <h2 className="font-fangsong text-4xl text-ink tracking-wide">{zh}</h2>
-    <div className="deco-line"></div>
+    <div className="flex items-center gap-2.5 mt-3">
+      <div className="h-px w-10" style={{background: 'linear-gradient(to right, transparent, rgba(184,144,80,0.28))'}} />
+      <span style={{color: 'rgba(184,144,80,0.40)', fontSize: '0.45rem', lineHeight: '1', fontFamily: 'serif'}}>✦</span>
+      <div className="h-px w-10" style={{background: 'linear-gradient(to left, transparent, rgba(184,144,80,0.28))'}} />
+    </div>
   </div>
 );
 
@@ -309,9 +317,9 @@ const App: React.FC = () => {
         <div
           className="backdrop-blur-2xl rounded-[2rem] px-1.5 py-1.5 flex gap-0.5"
           style={{
-            background: 'rgba(252, 246, 236, 0.88)',
-            border: '1px solid rgba(255, 255, 255, 0.80)',
-            boxShadow: '0 8px 40px -4px rgba(160, 120, 80, 0.22), 0 2px 12px -2px rgba(160, 120, 80, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9)'
+            background: 'rgba(253, 248, 242, 0.90)',
+            border: '1px solid rgba(255, 255, 255, 0.84)',
+            boxShadow: '0 8px 40px -4px rgba(152, 100, 80, 0.20), 0 2px 10px -2px rgba(152, 100, 80, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.92)'
           }}
         >
           <NavBtn active={activeTab === 'profile'} onClick={() => setActiveTab('profile')} icon={User} label="資料" />
@@ -329,20 +337,20 @@ const App: React.FC = () => {
 const NavBtn = ({ active, onClick, icon: Icon, label }: { active: boolean; onClick: () => void; icon: any; label: string }) => (
   <button
     onClick={onClick}
-    className={`relative flex flex-col items-center justify-center px-4 py-2.5 rounded-[1.3rem] transition-all duration-300 min-w-[52px] ${
-      active ? 'bg-clay/12' : 'hover:bg-clay/5'
+    className={`relative flex flex-col items-center justify-center px-4 py-2.5 rounded-[1.1rem] transition-all duration-300 min-w-[52px] ${
+      active ? '' : 'hover:bg-clay/5'
     }`}
-    style={active ? { background: 'rgba(196,144,106,0.10)' } : undefined}
+    style={active ? { background: 'rgba(184,112,104,0.09)' } : undefined}
   >
-    <Icon size={20} strokeWidth={active ? 2.0 : 1.5}
+    <Icon size={19} strokeWidth={active ? 1.8 : 1.4}
       className={`transition-all duration-300 ${active ? 'text-clay' : 'text-ink/25'}`}
     />
-    <span className={`text-[8px] font-sans tracking-widest transition-all duration-300 uppercase ${
-      active ? 'text-clay/70 opacity-100 mt-1.5' : 'opacity-0 h-0 mt-0 overflow-hidden'
+    <span className={`text-[8px] font-sans tracking-[0.18em] transition-all duration-300 uppercase ${
+      active ? 'text-clay/65 opacity-100 mt-1.5' : 'opacity-0 h-0 mt-0 overflow-hidden'
     }`}>{label}</span>
     {active && (
-      <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-3.5 h-[1.5px] rounded-full"
-        style={{ background: 'rgba(196,144,106,0.5)' }} />
+      <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-[1px] rounded-full"
+        style={{ background: 'rgba(184,112,104,0.42)' }} />
     )}
   </button>
 );

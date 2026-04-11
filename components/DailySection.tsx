@@ -135,7 +135,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
                     <div className="flex items-center gap-2">
                       <span className="text-[10px] font-bold uppercase tracking-widest text-pencil font-sans">Potty:</span>
                       <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                        log.potty === 'Normal' ? 'bg-sage/20 text-[#7A9A6A]' :
+                        log.potty === 'Normal' ? 'bg-sage/15 text-[#5E8A55]' :
                         log.potty === 'None' ? 'bg-sand/40 text-pencil' : 'bg-clay/15 text-clay'
                       }`}>{
                         log.potty === 'Normal' ? 'Normal' :
@@ -161,7 +161,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
       {isFormOpen && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsFormOpen(false)} />
-          <form onSubmit={handleSubmit} className="bg-[#FEFCF8] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative max-h-[90vh] overflow-y-auto">
+          <form onSubmit={handleSubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative max-h-[90vh] overflow-y-auto">
              <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-8 opacity-50" />
              
              <div className="flex justify-between items-center mb-6">

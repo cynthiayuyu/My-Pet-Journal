@@ -47,7 +47,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
       <div className="flex flex-col items-center text-center relative pt-4 pb-2">
         
         <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-          <div className="w-44 h-44 rounded-full shadow-soft border-[6px] border-white bg-white overflow-hidden relative transform transition-all duration-500 hover:scale-[1.02] hover:shadow-float">
+          <div className="w-44 h-44 rounded-full shadow-soft border-[5px] border-white bg-white overflow-hidden relative transform transition-all duration-500 hover:scale-[1.02] hover:shadow-float ring-1 ring-sand/40">
             {profile.photoUrl ? (
               <img src={profile.photoUrl} alt="Pet" className="w-full h-full object-cover" />
             ) : (
@@ -87,7 +87,8 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
       {/* Details Form - Paper Style */}
       <div className="card-warm rounded-[2rem] p-8 shadow-soft border border-white space-y-8 relative overflow-hidden">
         {/* Decorative corner */}
-        <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-sand/20 to-transparent rounded-bl-[4rem] pointer-events-none"></div>
+        <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-lavender/10 via-petal/8 to-transparent rounded-bl-[5rem] pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-sage/8 to-transparent rounded-tr-[4rem] pointer-events-none"></div>
 
         <h3 className="text-xs font-bold tracking-[0.2em] text-gold uppercase flex items-center gap-3 mb-6 font-sans opacity-80">
           <Award size={14} />
