@@ -288,58 +288,66 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
         </div>
 
         {/* Days Grid */}
-        <div className="grid grid-cols-7 gap-y-2 relative z-10">
+        <div className="grid grid-cols-7 gap-y-0.5 relative z-10">
           {Array.from({ length: firstDayOfMonth }).map((_, i) => <div key={`empty-${i}`} />)}
-          
+
           {Array.from({ length: daysInMonth }).map((_, i) => {
             const day = i + 1;
             const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
             const isSelected = dateStr === selectedDateStr;
             const isToday = dateStr === new Date().toISOString().split('T')[0];
-            
-            // Check for events on this day
+
             const dayEvents = records.filter(r => r.date === dateStr);
             const hasVaccine = dayEvents.some(r => r.type === 'Vaccine');
             const hasDeworm = dayEvents.some(r => r.type === 'Deworming');
             const hasCheckupOrVet = dayEvents.some(r => r.type === 'Checkup' || r.type === 'Vet Visit');
-            
-            // Check for reminders (Next Due)
+            const hasAnyEvent = hasVaccine || hasDeworm || hasCheckupOrVet;
             const hasReminder = records.some(r => r.nextDueDate === dateStr);
 
             return (
-              <div key={day} className="flex flex-col items-center">
+              <div key={day} className="flex flex-col items-center gap-[3px] py-0.5">
                 <button
                   onClick={() => handleDateClick(day)}
-                  className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-fangsong transition-all duration-300 relative border-2 
-                    ${isSelected 
-                        ? 'bg-clay text-white border-clay shadow-md scale-105' 
-                        : hasReminder 
-                            ? 'bg-white border-clay text-ink' // Outline for reminders
+                  className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-fangsong transition-all duration-300 border
+                    ${isSelected
+                        ? 'bg-clay text-white border-clay shadow-md scale-105'
+                        : hasReminder && !isSelected
+                            ? 'bg-white border-clay/60 text-ink'
+                            : isToday
+                            ? 'border-sage/50 bg-sage/10 text-ink border'
                             : 'border-transparent text-ink hover:bg-sand/30'
                     }
-                    ${isToday && !isSelected && !hasReminder ? 'border-sage/50 bg-sage/10' : ''}
                   `}
                 >
                   {day}
-                  
-                  {/* Event Indicators */}
-                  <div className="absolute -bottom-1 flex gap-0.5 justify-center">
-                    {hasVaccine && <span className={`w-1 h-1 rounded-full ${isSelected ? 'bg-gold' : 'bg-clay/50'}`} />}
-                    {hasDeworm && <span className={`w-1 h-1 rounded-full ${isSelected ? 'bg-gold' : 'bg-sage/60'}`} />}
-                    {hasCheckupOrVet && <span className={`w-1 h-1 rounded-full ${isSelected ? 'bg-gold' : 'bg-gold/50'}`} />}
-                  </div>
                 </button>
+
+                {/* Event indicator dots — below the button, always in normal flow */}
+                <div className="flex gap-0.5 h-[6px] items-center">
+                  {hasVaccine && (
+                    <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white/90' : 'bg-clay'}`} />
+                  )}
+                  {hasDeworm && (
+                    <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white/90' : 'bg-sage'}`} />
+                  )}
+                  {hasCheckupOrVet && (
+                    <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white/90' : 'bg-gold'}`} />
+                  )}
+                  {hasReminder && !hasAnyEvent && (
+                    <span className={`w-1.5 h-1.5 rounded-full border ${isSelected ? 'border-white/80' : 'border-clay'}`} />
+                  )}
+                </div>
               </div>
             );
           })}
         </div>
-        
+
         {/* Legend */}
-        <div className="mt-6 pt-4 border-t border-sand/30 flex justify-center gap-4 text-[10px] uppercase font-bold tracking-wider text-pencil font-sans">
-             <div className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-clay/50"></span> Vaccine</div>
-             <div className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-sage/60"></span> Deworm</div>
-             <div className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-gold/50"></span> Vet/Checkup</div>
-             <div className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full border border-clay"></span> Due</div>
+        <div className="mt-5 pt-4 border-t border-sand/30 flex flex-wrap justify-center gap-x-4 gap-y-1.5 text-[10px] uppercase font-bold tracking-wider text-pencil font-sans">
+          <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-clay inline-block"></span> 疫苗</div>
+          <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-sage inline-block"></span> 驅蟲</div>
+          <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-gold inline-block"></span> 健檢/看診</div>
+          <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full border border-clay inline-block"></span> 提醒到期</div>
         </div>
       </div>
 
@@ -503,15 +511,20 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
       {isFormOpen && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsFormOpen(false)} />
-          <form onSubmit={handleSubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative max-h-[90vh] overflow-y-auto">
-             <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-8 opacity-50" />
-             
-             <div className="flex justify-between items-center mb-6">
-               <h3 className="font-fangsong text-2xl text-ink">{editingRecordId ? 'Edit Record' : 'New Record'}</h3>
-               <button type="button" onClick={() => setIsFormOpen(false)} className="w-8 h-8 rounded-full bg-sand/30 flex items-center justify-center text-ink hover:bg-sand transition-colors">
-                  <X size={16}/>
-               </button>
-             </div>
+          <form onSubmit={handleSubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] shadow-2xl pointer-events-auto animate-fade-in relative flex flex-col" style={{ maxHeight: '90vh' }}>
+            {/* Fixed header */}
+            <div className="flex-shrink-0 px-8 pt-6 pb-4">
+              <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-5 opacity-50" />
+              <div className="flex justify-between items-center">
+                <h3 className="font-fangsong text-2xl text-ink">{editingRecordId ? '編輯紀錄' : '新增紀錄'}</h3>
+                <button type="button" onClick={() => setIsFormOpen(false)} className="w-8 h-8 rounded-full bg-sand/30 flex items-center justify-center text-ink hover:bg-sand transition-colors">
+                  <X size={16} />
+                </button>
+              </div>
+            </div>
+            {/* Scrollable content wrapper — opened below */}
+            <div className="flex-1 overflow-y-auto px-8 pb-4">
+            <div className="space-y-0">
 
              {/* Type Selector */}
              <div className="flex flex-wrap bg-sand/20 p-1 rounded-xl mb-6 gap-1">
@@ -691,9 +704,14 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
                  </div>
               </div>
 
-             <button type="submit" className="w-full py-4 mt-8 btn-warm">
-               {editingRecordId ? 'Update' : 'Save'}
-             </button>
+            </div>{/* close space-y-0 */}
+            </div>{/* close flex-1 overflow-y-auto */}
+            {/* Sticky submit */}
+            <div className="flex-shrink-0 px-8 pb-8 pt-4 border-t border-sand/20">
+              <button type="submit" className="w-full py-3.5 btn-warm">
+                {editingRecordId ? '更新' : '儲存'}
+              </button>
+            </div>
           </form>
         </div>
       )}
