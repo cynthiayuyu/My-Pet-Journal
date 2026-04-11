@@ -202,116 +202,121 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
         })}
       </div>
 
-       {/* Slide Up Form */}
+      {/* Slide Up Form */}
       {isFormOpen && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsFormOpen(false)} />
-          <form onSubmit={handleSubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative max-h-[90vh] overflow-y-auto">
-             <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-8 opacity-50" />
-             
-             <div className="flex justify-between items-center mb-6">
-               <h3 className="font-fangsong text-2xl text-ink">{editingItemId ? 'Edit Item' : 'Add to Pantry'}</h3>
-               <button type="button" onClick={() => setIsFormOpen(false)} className="w-8 h-8 rounded-full bg-sand/30 flex items-center justify-center text-ink hover:bg-sand transition-colors">
-                  <X size={16}/>
-               </button>
-             </div>
-
-             {/* Type Selector */}
-             <div className="flex bg-sand/20 p-1 rounded-xl mb-6">
-                <button 
-                  type="button"
-                  onClick={() => setNewItem({...newItem, type: 'Food'})}
-                  className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all duration-300 font-fangsong ${
-                      newItem.type === 'Food' ? 'bg-white text-ink shadow-sm' : 'text-pencil'
-                  }`}
-                >
-                  Food
+          <form
+            onSubmit={handleSubmit}
+            className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] shadow-2xl pointer-events-auto animate-fade-in relative flex flex-col"
+            style={{ maxHeight: '90vh' }}
+          >
+            {/* Fixed header */}
+            <div className="flex-shrink-0 px-8 pt-6 pb-4">
+              <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-5 opacity-50" />
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="font-fangsong text-2xl text-ink">{editingItemId ? '編輯品項' : '新增庫存'}</h3>
+                <button type="button" onClick={() => setIsFormOpen(false)} className="w-8 h-8 rounded-full bg-sand/30 flex items-center justify-center text-ink hover:bg-sand transition-colors">
+                  <X size={16} />
                 </button>
-                <button 
+              </div>
+              {/* Type Selector */}
+              <div className="flex bg-sand/20 p-1 rounded-xl">
+                <button
                   type="button"
-                  onClick={() => setNewItem({...newItem, type: 'Supplement'})}
-                  className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all duration-300 font-fangsong ${
-                      newItem.type === 'Supplement' ? 'bg-white text-ink shadow-sm' : 'text-pencil'
-                  }`}
+                  onClick={() => setNewItem({ ...newItem, type: 'Food' })}
+                  className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all duration-300 font-fangsong ${newItem.type === 'Food' ? 'bg-white text-ink shadow-sm' : 'text-pencil'}`}
                 >
-                  Supplement
+                  Food 飼料
                 </button>
-             </div>
+                <button
+                  type="button"
+                  onClick={() => setNewItem({ ...newItem, type: 'Supplement' })}
+                  className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all duration-300 font-fangsong ${newItem.type === 'Supplement' ? 'bg-white text-ink shadow-sm' : 'text-pencil'}`}
+                >
+                  Supplement 補充品
+                </button>
+              </div>
+            </div>
 
-             <div className="space-y-6">
-                 <div>
-                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Item Name</label>
-                   <input 
+            {/* Scrollable fields */}
+            <div className="flex-1 overflow-y-auto px-8 pb-4 space-y-6">
+              <div>
+                <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Item Name 品名</label>
+                <input
+                  type="text" required
+                  placeholder="e.g. 渴望 Orijen Original"
+                  value={newItem.name || ''}
+                  onChange={e => setNewItem({ ...newItem, name: e.target.value })}
+                  className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-xl rounded-none placeholder-sand/50"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Quantity 數量</label>
+                  <input
+                    type="number" step="0.1" required
+                    placeholder="0"
+                    value={newItem.quantity || ''}
+                    onChange={e => setNewItem({ ...newItem, quantity: Number(e.target.value) })}
+                    className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Unit 單位</label>
+                  <input
                     type="text" required
-                    placeholder="e.g. 渴望 Orijen Original"
-                    value={newItem.name || ''}
-                    onChange={e => setNewItem({...newItem, name: e.target.value})}
-                    className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-xl rounded-none placeholder-sand/50"
-                   />
+                    placeholder="g, kg, 顆…"
+                    value={newItem.unit || ''}
+                    onChange={e => setNewItem({ ...newItem, unit: e.target.value })}
+                    className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none"
+                  />
                 </div>
+              </div>
 
-                <div className="grid grid-cols-2 gap-6">
-                   <div>
-                       <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Quantity</label>
-                       <input 
-                        type="number" step="0.1" required
-                        placeholder="0"
-                        value={newItem.quantity || ''}
-                        onChange={e => setNewItem({...newItem, quantity: Number(e.target.value)})}
-                        className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none"
-                       />
-                   </div>
-                   <div>
-                       <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Unit</label>
-                       <input 
-                        type="text" required
-                        placeholder="e.g. g, kg, 顆 pills"
-                        value={newItem.unit || ''}
-                        onChange={e => setNewItem({...newItem, unit: e.target.value})}
-                        className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none"
-                       />
-                   </div>
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Expiry Date 效期</label>
+                  <input
+                    type="date" required
+                    value={newItem.expiryDate || ''}
+                    onChange={e => setNewItem({ ...newItem, expiryDate: e.target.value })}
+                    className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none"
+                  />
                 </div>
+                {newItem.type === 'Food' && (
+                  <div>
+                    <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Kcal / Unit</label>
+                    <input
+                      type="number" step="0.01"
+                      placeholder="e.g. 3.5"
+                      value={newItem.caloriesPerUnit || ''}
+                      onChange={e => setNewItem({ ...newItem, caloriesPerUnit: Number(e.target.value) })}
+                      className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none placeholder-sand/50"
+                    />
+                  </div>
+                )}
+              </div>
 
-                <div className="grid grid-cols-2 gap-6">
-                   <div>
-                       <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Expiry Date</label>
-                       <input 
-                        type="date" required
-                        value={newItem.expiryDate || ''}
-                        onChange={e => setNewItem({...newItem, expiryDate: e.target.value})}
-                        className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none"
-                       />
-                   </div>
-                   {newItem.type === 'Food' && (
-                     <div>
-                         <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Kcal per Unit</label>
-                         <input 
-                          type="number" step="0.01"
-                          placeholder="e.g. 3.5 (kcal/g)"
-                          value={newItem.caloriesPerUnit || ''}
-                          onChange={e => setNewItem({...newItem, caloriesPerUnit: Number(e.target.value)})}
-                          className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none placeholder-sand/50"
-                         />
-                     </div>
-                   )}
-                </div>
+              <div>
+                <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">成分 / 備註</label>
+                <textarea
+                  rows={2}
+                  placeholder="主要成分或備註..."
+                  value={newItem.ingredients || ''}
+                  onChange={e => setNewItem({ ...newItem, ingredients: e.target.value })}
+                  className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none placeholder-sand/50 resize-none"
+                />
+              </div>
+            </div>
 
-                 <div>
-                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Ingredients / Notes</label>
-                   <textarea
-                    rows={2}
-                    placeholder="Main ingredients or notes..."
-                    value={newItem.ingredients || ''}
-                    onChange={e => setNewItem({...newItem, ingredients: e.target.value})}
-                    className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none placeholder-sand/50 resize-none"
-                   />
-                </div>
-             </div>
-
-             <button type="submit" className="w-full py-4 mt-8 btn-warm">
-               {editingItemId ? 'Update' : 'Save'}
-             </button>
+            {/* Sticky submit button */}
+            <div className="flex-shrink-0 px-8 pb-8 pt-4 border-t border-sand/20">
+              <button type="submit" className="w-full py-3.5 btn-warm">
+                {editingItemId ? '更新' : '儲存'}
+              </button>
+            </div>
           </form>
         </div>
       )}
