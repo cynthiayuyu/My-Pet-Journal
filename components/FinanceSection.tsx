@@ -229,7 +229,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
               activeTab === 'Insurance' ? 'bg-white text-ink shadow-sm' : 'text-pencil hover:text-ink/70'
           }`}
         >
-          保險 Insurance
+          保險
         </button>
         <button 
           onClick={() => setActiveTab('Prepaid')}
@@ -237,7 +237,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
               activeTab === 'Prepaid' ? 'bg-white text-ink shadow-sm' : 'text-pencil hover:text-ink/70'
           }`}
         >
-          預付與基金 Prepaid & Funds
+          預付與基金
         </button>
       </div>
 
