@@ -277,14 +277,17 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
       {isFormOpen && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsFormOpen(false)} />
-          <form onSubmit={handleSubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative">
-             <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-8 opacity-50" />
-             
-             <div className="flex justify-between items-center mb-8">
-               <h3 className="font-fangsong text-2xl text-ink">{editingRecordId ? 'Edit Record' : 'New Measurement'}</h3>
-               <button type="button" onClick={() => setIsFormOpen(false)} className="w-8 h-8 rounded-full bg-sand/30 flex items-center justify-center text-ink hover:bg-sand transition-colors">
-                  <X size={16}/>
-               </button>
+          <form onSubmit={handleSubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] shadow-2xl pointer-events-auto animate-fade-in relative flex flex-col" style={{ maxHeight: '90vh' }}>
+            <div className="flex-shrink-0 px-8 pt-6 pb-4">
+              <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-5 opacity-50" />
+              <div className="flex justify-between items-center">
+                <h3 className="font-fangsong text-2xl text-ink">{editingRecordId ? '編輯紀錄' : '新增量測'}</h3>
+                <button type="button" onClick={() => setIsFormOpen(false)} className="w-8 h-8 rounded-full bg-sand/30 flex items-center justify-center text-ink hover:bg-sand transition-colors">
+                  <X size={16} />
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto px-8 pb-4">
              </div>
 
              <div className="grid grid-cols-2 gap-6 mb-8">
@@ -350,9 +353,12 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
                 </div>
              </div>
 
-             <button type="submit" className="w-full py-4 btn-warm">
-               {editingRecordId ? 'Update' : 'Save'}
-             </button>
+            </div>{/* end scrollable */}
+            <div className="flex-shrink-0 px-8 pb-24 pt-4 border-t border-sand/20">
+              <button type="submit" className="w-full py-3.5 btn-warm">
+                {editingRecordId ? '更新' : '儲存'}
+              </button>
+            </div>
           </form>
         </div>
       )}
