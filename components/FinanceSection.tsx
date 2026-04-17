@@ -436,51 +436,55 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
       {isPolicyFormOpen && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsPolicyFormOpen(false)} />
-          <form onSubmit={handlePolicySubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative">
-             <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-8 opacity-50" />
-             
-             <div className="flex justify-between items-center mb-6">
-               <h3 className="font-fangsong text-2xl text-ink">{editingPolicyId ? '編輯保險 Edit Policy' : '新增保險 New Policy'}</h3>
-               <button type="button" onClick={() => setIsPolicyFormOpen(false)} className="w-8 h-8 rounded-full bg-sand/30 flex items-center justify-center text-ink hover:bg-sand transition-colors">
+          <form onSubmit={handlePolicySubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] shadow-2xl pointer-events-auto animate-fade-in relative flex flex-col" style={{ maxHeight: '90vh' }}>
+            {/* Fixed header */}
+            <div className="flex-shrink-0 px-8 pt-6 pb-4">
+              <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-5 opacity-50" />
+              <div className="flex justify-between items-center">
+                <h3 className="font-fangsong text-2xl text-ink">{editingPolicyId ? '編輯保險' : '新增保險'}</h3>
+                <button type="button" onClick={() => setIsPolicyFormOpen(false)} className="w-8 h-8 rounded-full bg-sand/30 flex items-center justify-center text-ink hover:bg-sand transition-colors">
                   <X size={16}/>
-               </button>
-             </div>
-
-             <div className="space-y-6">
-                 <div>
-                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">保險公司 Provider</label>
-                   <input 
-                    type="text" required
-                    placeholder="e.g. 富邦產險 Fubon"
-                    value={newPolicy.provider || ''}
-                    onChange={e => setNewPolicy({...newPolicy, provider: e.target.value})}
-                    className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-xl rounded-none placeholder-sand/50"
-                   />
-                </div>
-                 <div>
-                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">保單名稱/號碼 Policy Name / Number</label>
-                   <input 
-                    type="text" required
-                    placeholder="e.g. 寵物險 Premium Care"
-                    value={newPolicy.name || ''}
-                    onChange={e => setNewPolicy({...newPolicy, name: e.target.value})}
-                    className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none placeholder-sand/50"
-                   />
-                </div>
-                <div>
-                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">到期日 Expiry Date</label>
-                   <input 
-                    type="date" required
-                    value={newPolicy.expiryDate || ''}
-                    onChange={e => setNewPolicy({...newPolicy, expiryDate: e.target.value})}
-                    className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none"
-                   />
-               </div>
-             </div>
-
-             <button type="submit" className="w-full py-4 mt-8 btn-warm">
-               {editingPolicyId ? '更新保險 Update Policy' : '儲存保險 Save Policy'}
-             </button>
+                </button>
+              </div>
+            </div>
+            {/* Scrollable fields */}
+            <div className="flex-1 overflow-y-auto px-8 pb-4 space-y-6">
+              <div>
+                <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">保險公司 Provider</label>
+                <input
+                  type="text" required
+                  placeholder="e.g. 富邦產險 Fubon"
+                  value={newPolicy.provider || ''}
+                  onChange={e => setNewPolicy({...newPolicy, provider: e.target.value})}
+                  className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-xl rounded-none placeholder-sand/50"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">保單名稱/號碼 Policy Name / Number</label>
+                <input
+                  type="text" required
+                  placeholder="e.g. 寵物險 Premium Care"
+                  value={newPolicy.name || ''}
+                  onChange={e => setNewPolicy({...newPolicy, name: e.target.value})}
+                  className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none placeholder-sand/50"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">到期日 Expiry Date</label>
+                <input
+                  type="date" required
+                  value={newPolicy.expiryDate || ''}
+                  onChange={e => setNewPolicy({...newPolicy, expiryDate: e.target.value})}
+                  className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none"
+                />
+              </div>
+            </div>
+            {/* Sticky submit */}
+            <div className="flex-shrink-0 px-8 pb-24 pt-4 border-t border-sand/20">
+              <button type="submit" className="w-full py-3.5 btn-warm">
+                {editingPolicyId ? '更新保險 Update Policy' : '儲存保險 Save Policy'}
+              </button>
+            </div>
           </form>
         </div>
       )}
@@ -489,19 +493,19 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
       {isServiceFormOpen && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsServiceFormOpen(false)} />
-          <form onSubmit={handleServiceSubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative">
-             <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-8 opacity-50" />
-             
-             <div className="flex justify-between items-center mb-6">
-               <h3 className="font-fangsong text-2xl text-ink">{editingServiceId ? '編輯紀錄 Edit Record' : '新增預付/基金 Add Prepaid / Fund'}</h3>
-               <button type="button" onClick={() => setIsServiceFormOpen(false)} className="w-8 h-8 rounded-full bg-sand/30 flex items-center justify-center text-ink hover:bg-sand transition-colors">
+          <form onSubmit={handleServiceSubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] shadow-2xl pointer-events-auto animate-fade-in relative flex flex-col" style={{ maxHeight: '90vh' }}>
+            {/* Fixed header */}
+            <div className="flex-shrink-0 px-8 pt-6 pb-4">
+              <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-5 opacity-50" />
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="font-fangsong text-2xl text-ink">{editingServiceId ? '編輯紀錄 Edit Record' : '新增預付/基金 Add Prepaid / Fund'}</h3>
+                <button type="button" onClick={() => setIsServiceFormOpen(false)} className="w-8 h-8 rounded-full bg-sand/30 flex items-center justify-center text-ink hover:bg-sand transition-colors">
                   <X size={16}/>
-               </button>
-             </div>
-
-             <div className="flex bg-sand/20 p-1 rounded-xl mb-6">
+                </button>
+              </div>
+              <div className="flex bg-sand/20 p-1 rounded-xl">
                 {(['Grooming', 'Hotel', 'MedicalFund'] as const).map(type => (
-                  <button 
+                  <button
                     key={type} type="button"
                     onClick={() => setNewService({...newService, type})}
                     className={`flex-1 py-2 rounded-lg text-xs font-bold tracking-widest uppercase transition-all duration-300 font-sans ${
@@ -511,55 +515,58 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
                     {type === 'MedicalFund' ? '醫療 Medical' : type === 'Grooming' ? '美容 Grooming' : '住宿 Hotel'}
                   </button>
                 ))}
-             </div>
-
-             <div className="space-y-6">
-                 <div>
-                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">名稱/店家 Name / Store</label>
-                   <input 
-                    type="text" required
-                    placeholder="e.g. 快樂毛孩美容 Happy Paws Grooming"
-                    value={newService.name || ''}
-                    onChange={e => setNewService({...newService, name: e.target.value})}
-                    className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-xl rounded-none placeholder-sand/50"
-                   />
-                </div>
-                <div className="grid grid-cols-2 gap-6">
-                   <div>
-                       <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">餘額 Balance ($)</label>
-                       <input 
-                        type="number" step="1" required
-                        placeholder="0"
-                        value={newService.balance || ''}
-                        onChange={e => setNewService({...newService, balance: Number(e.target.value)})}
-                        className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none"
-                       />
-                   </div>
-                   <div>
-                       <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">到期日 Expiry (選填 Optional)</label>
-                       <input 
-                        type="date"
-                        value={newService.expiryDate || ''}
-                        onChange={e => setNewService({...newService, expiryDate: e.target.value})}
-                        className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none"
-                       />
-                   </div>
+              </div>
+            </div>
+            {/* Scrollable fields */}
+            <div className="flex-1 overflow-y-auto px-8 pb-4 space-y-6">
+              <div>
+                <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">名稱/店家 Name / Store</label>
+                <input
+                  type="text" required
+                  placeholder="e.g. 快樂毛孩美容 Happy Paws Grooming"
+                  value={newService.name || ''}
+                  onChange={e => setNewService({...newService, name: e.target.value})}
+                  className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-xl rounded-none placeholder-sand/50"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">餘額 Balance ($)</label>
+                  <input
+                    type="number" step="1" required
+                    placeholder="0"
+                    value={newService.balance || ''}
+                    onChange={e => setNewService({...newService, balance: Number(e.target.value)})}
+                    className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none"
+                  />
                 </div>
                 <div>
-                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">備註 Notes</label>
-                   <textarea 
-                    rows={2}
-                    placeholder="e.g. 包含 2 次免費 SPA Includes 2 free spa treatments"
-                    value={newService.notes || ''}
-                    onChange={e => setNewService({...newService, notes: e.target.value})}
-                    className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none placeholder-sand/50 resize-none whitespace-pre-wrap"
-                   />
+                  <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">到期日 Expiry (選填 Optional)</label>
+                  <input
+                    type="date"
+                    value={newService.expiryDate || ''}
+                    onChange={e => setNewService({...newService, expiryDate: e.target.value})}
+                    className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none"
+                  />
                 </div>
-             </div>
-
-             <button type="submit" className="w-full py-4 mt-8 btn-warm">
-               {editingServiceId ? '更新紀錄 Update Record' : '儲存紀錄 Save Record'}
-             </button>
+              </div>
+              <div>
+                <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">備註 Notes</label>
+                <textarea
+                  rows={2}
+                  placeholder="e.g. 包含 2 次免費 SPA Includes 2 free spa treatments"
+                  value={newService.notes || ''}
+                  onChange={e => setNewService({...newService, notes: e.target.value})}
+                  className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none placeholder-sand/50 resize-none whitespace-pre-wrap"
+                />
+              </div>
+            </div>
+            {/* Sticky submit */}
+            <div className="flex-shrink-0 px-8 pb-24 pt-4 border-t border-sand/20">
+              <button type="submit" className="w-full py-3.5 btn-warm">
+                {editingServiceId ? '更新紀錄 Update Record' : '儲存紀錄 Save Record'}
+              </button>
+            </div>
           </form>
         </div>
       )}
