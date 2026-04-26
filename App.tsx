@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { PetProfile, PhysicalRecord, HealthRecord, TabView, InventoryItem, InsurancePolicy, PrepaidService, PetShop, DailyLog } from './types';
 import { ProfileSection } from './components/ProfileSection';
 import { PhysicalSection } from './components/PhysicalSection';
@@ -7,7 +7,8 @@ import { FoodSection } from './components/FoodSection';
 import { FinanceSection } from './components/FinanceSection';
 import { ShopSection } from './components/ShopSection';
 import { DailySection } from './components/DailySection';
-import { User, Heart, PawPrint, Utensils, Wallet, CalendarDays, Download, Upload } from 'lucide-react';
+import { ChatSection } from './components/ChatSection';
+import { User, Heart, PawPrint, Utensils, Wallet, CalendarDays, Download, Upload, MessageSquare } from 'lucide-react';
 
 const SubToggle = ({ options, active, onChange }: {
   options: { value: string; label: string }[];
@@ -104,6 +105,11 @@ const App: React.FC = () => {
     const saved = localStorage.getItem('pawprint_daily');
     return saved ? JSON.parse(saved) : [];
   });
+
+  const latestWeight = useMemo(() => {
+    if (physicalRecords.length === 0) return undefined;
+    return [...physicalRecords].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0].weight;
+  }, [physicalRecords]);
 
   // --- Effects ---
 
@@ -281,6 +287,14 @@ const App: React.FC = () => {
           </div>
         )}
 
+        {/* ── Chat ── */}
+        {activeTab === 'chat' && (
+          <div className="animate-fade-in">
+            <SectionHeader en="AI Assistant" zh="智能助手" />
+            <ChatSection profile={profile} latestWeight={latestWeight} />
+          </div>
+        )}
+
         {/* ── Finance + Shops ── */}
         {activeTab === 'finance' && (
           <div className="animate-fade-in">
@@ -317,9 +331,9 @@ const App: React.FC = () => {
         <div
           className="backdrop-blur-2xl rounded-[2rem] px-1.5 py-1.5 flex gap-0.5"
           style={{
-            background: 'rgba(253, 248, 242, 0.90)',
-            border: '1px solid rgba(255, 255, 255, 0.84)',
-            boxShadow: '0 8px 40px -4px rgba(152, 100, 80, 0.20), 0 2px 10px -2px rgba(152, 100, 80, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.92)'
+            background: 'rgba(255, 253, 250, 0.94)',
+            border: '1px solid rgba(255, 255, 255, 0.92)',
+            boxShadow: '0 8px 40px -4px rgba(152, 100, 80, 0.12), 0 2px 10px -2px rgba(152, 100, 80, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.98)'
           }}
         >
           <NavBtn active={activeTab === 'profile'} onClick={() => setActiveTab('profile')} icon={User} label="資料" />
@@ -327,6 +341,7 @@ const App: React.FC = () => {
           <NavBtn active={activeTab === 'health'} onClick={() => setActiveTab('health')} icon={Heart} label="健康" />
           <NavBtn active={activeTab === 'food'} onClick={() => setActiveTab('food')} icon={Utensils} label="飲食" />
           <NavBtn active={activeTab === 'finance'} onClick={() => setActiveTab('finance')} icon={Wallet} label="財務" />
+          <NavBtn active={activeTab === 'chat'} onClick={() => setActiveTab('chat')} icon={MessageSquare} label="助手" />
         </div>
       </nav>
 

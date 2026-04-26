@@ -1,5 +1,6 @@
 import React, { useState, useRef, useMemo } from 'react';
 import { PetShop, ShopVisit } from '../types';
+import { generateId } from '../utils';
 import { Plus, Trash2, MapPin, DollarSign, Calendar, Edit2, Save, X, Search, Camera, Settings } from 'lucide-react';
 
 interface ShopSectionProps {
@@ -88,7 +89,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
   const handleAddShop = () => {
     if (!newShop.name) return;
     const shop: PetShop = {
-      id: Date.now().toString(),
+      id: generateId(),
       name: newShop.name,
       type: newShop.type || 'Other',
       pricingInfo: newShop.pricingInfo,
@@ -113,7 +114,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
   const handleAddVisit = (shopId: string) => {
     if (!newVisit.date || !newVisit.purpose) return;
     const visit: ShopVisit = {
-      id: Date.now().toString(),
+      id: generateId(),
       date: newVisit.date,
       cost: Number(newVisit.cost) || 0,
       purpose: newVisit.purpose,
