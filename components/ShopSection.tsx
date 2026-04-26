@@ -148,17 +148,17 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-fangsong text-ink">愛店與地點</h3>
         <div className="flex gap-4">
-          <button 
+          <button
             onClick={() => setIsManagingCategories(true)}
             className="flex items-center gap-1 text-sm text-pencil hover:text-clay transition-colors"
           >
-            <Settings size={16} /> Categories
+            <Settings size={16} /> <span>Categories <span className="text-pencil/60">分類</span></span>
           </button>
-          <button 
+          <button
             onClick={() => setIsAddingShop(true)}
             className="flex items-center gap-1 text-sm text-clay hover:text-clay/80 transition-colors"
           >
-            <Plus size={16} /> Add Shop
+            <Plus size={16} /> <span>Add <span className="text-clay/70">新增</span></span>
           </button>
         </div>
       </div>
@@ -170,7 +170,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
         </div>
         <input
           type="text"
-          placeholder="Search shops..."
+          placeholder="搜尋店家 Search shops..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full pl-12 pr-4 py-3 bg-white/80 backdrop-blur-md border border-white rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gold/50 text-ink font-fangsong transition-all"
@@ -190,7 +190,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsManagingCategories(false)} />
           <div className="bg-[#FDFAF5] w-full max-w-sm rounded-3xl p-6 shadow-2xl pointer-events-auto animate-fade-in relative">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="font-fangsong text-xl text-ink">Manage Categories</h3>
+              <h3 className="font-fangsong text-xl text-ink">分類管理 <span className="text-base text-pencil/60">Categories</span></h3>
               <button onClick={() => setIsManagingCategories(false)} className="text-ink/40 hover:text-ink"><X size={20}/></button>
             </div>
             
@@ -242,7 +242,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
             <div className="flex gap-2">
               <input
                 type="text"
-                placeholder="New Category..."
+                placeholder="新增分類 New Category..."
                 value={newCategory}
                 onChange={e => setNewCategory(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleAddCategory()}
@@ -264,7 +264,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
           <div className="space-y-3">
             <input
               type="text"
-              placeholder="Shop Name"
+              placeholder="商店名稱 Shop Name"
               className="w-full bg-white/50 border-none rounded-xl px-4 py-2 text-ink focus:ring-1 focus:ring-clay"
               value={newShop.name || ''}
               onChange={e => setNewShop({...newShop, name: e.target.value})}
@@ -295,26 +295,26 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
               />
             )}
             <textarea
-              placeholder="Contact Info (Phone, Address...)"
+              placeholder="聯絡方式 Contact（電話、地址...）"
               className="w-full bg-white/50 border-none rounded-xl px-4 py-2 text-ink focus:ring-1 focus:ring-clay min-h-[80px] whitespace-pre-wrap"
               value={newShop.contact || ''}
               onChange={e => setNewShop({...newShop, contact: e.target.value})}
             />
             <textarea
-              placeholder="Pricing Info"
+              placeholder="收費資訊 Pricing"
               className="w-full bg-white/50 border-none rounded-xl px-4 py-2 text-ink focus:ring-1 focus:ring-clay min-h-[80px] whitespace-pre-wrap"
               value={newShop.pricingInfo || ''}
               onChange={e => setNewShop({...newShop, pricingInfo: e.target.value})}
             />
             <textarea
-              placeholder="Other Notes"
+              placeholder="備註 Notes"
               className="w-full bg-white/50 border-none rounded-xl px-4 py-2 text-ink focus:ring-1 focus:ring-clay min-h-[80px] whitespace-pre-wrap"
               value={newShop.notes || ''}
               onChange={e => setNewShop({...newShop, notes: e.target.value})}
             />
             <div className="flex justify-end gap-2 pt-2">
-              <button onClick={() => setIsAddingShop(false)} className="px-4 py-2 text-sm text-ink/60 hover:text-ink">Cancel</button>
-              <button onClick={handleAddShop} className="px-4 py-2 text-sm bg-clay text-white rounded-xl hover:bg-clay/90">Save Shop</button>
+              <button onClick={() => setIsAddingShop(false)} className="px-4 py-2 text-sm text-ink/60 hover:text-ink">取消</button>
+              <button onClick={handleAddShop} className="px-4 py-2 text-sm bg-clay text-white rounded-xl hover:bg-clay/90">儲存店家</button>
             </div>
           </div>
         </div>
@@ -322,7 +322,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
 
       {filteredShops.length === 0 && searchTerm && (
         <div className="text-center py-8 bg-white/50 rounded-3xl border border-dashed border-sand">
-          <p className="text-sm font-fangsong text-pencil">No matching shops found.</p>
+          <p className="text-sm font-fangsong text-pencil">找不到符合的店家。</p>
         </div>
       )}
 
@@ -332,7 +332,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
             <div className="space-y-3 animate-fade-in">
               <input
                 type="text"
-                placeholder="Shop Name"
+                placeholder="商店名稱 Shop Name"
                 className="w-full bg-white/50 border-none rounded-xl px-4 py-2 text-ink focus:ring-1 focus:ring-clay"
                 value={editShopData.name || ''}
                 onChange={e => setEditShopData({...editShopData, name: e.target.value})}
@@ -369,7 +369,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
                 onChange={e => setEditShopData({...editShopData, contact: e.target.value})}
               />
               <textarea
-                placeholder="Pricing Info"
+                placeholder="收費資訊 Pricing"
                 className="w-full bg-white/50 border-none rounded-xl px-4 py-2 text-ink focus:ring-1 focus:ring-clay min-h-[80px] whitespace-pre-wrap"
                 value={editShopData.pricingInfo || ''}
                 onChange={e => setEditShopData({...editShopData, pricingInfo: e.target.value})}
@@ -423,12 +423,12 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
           {/* Visits Section */}
           <div className="pt-4 border-t border-sand/30">
             <div className="flex justify-between items-center mb-3">
-              <h5 className="text-sm font-medium text-ink/80">Visit History ({shop.visits.length})</h5>
-              <button 
+              <h5 className="text-sm font-medium text-ink/80">造訪紀錄 <span className="text-ink/50">({shop.visits.length})</span></h5>
+              <button
                 onClick={() => setAddingVisitTo(shop.id)}
                 className="text-xs text-clay hover:text-clay/80 flex items-center gap-1"
               >
-                <Plus size={14} /> Add Visit
+                <Plus size={14} /> <span>新增造訪</span>
               </button>
             </div>
 
@@ -451,13 +451,13 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
                 </div>
                 <input
                   type="text"
-                  placeholder="Purpose (e.g., Full Grooming, 3-night stay)"
+                  placeholder="用途（如：全套美容、住宿 3 晚...）"
                   className="w-full bg-white/60 border-none rounded-lg px-3 py-1.5 text-sm text-ink focus:ring-1 focus:ring-clay"
                   value={newVisit.purpose || ''}
                   onChange={e => setNewVisit({...newVisit, purpose: e.target.value})}
                 />
                 <textarea
-                  placeholder="Notes"
+                  placeholder="備註..."
                   className="w-full bg-white/60 border-none rounded-lg px-3 py-1.5 text-sm text-ink focus:ring-1 focus:ring-clay min-h-[60px] whitespace-pre-wrap"
                   value={newVisit.notes || ''}
                   onChange={e => setNewVisit({...newVisit, notes: e.target.value})}
@@ -475,8 +475,8 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
                 <input type="file" ref={fileInputRef} onChange={(e) => handleImageUpload(e, false)} accept="image/*" className="hidden" />
                 
                 <div className="flex justify-end gap-2">
-                  <button onClick={() => setAddingVisitTo(null)} className="px-3 py-1 text-xs text-ink/60 hover:text-ink">Cancel</button>
-                  <button onClick={() => handleAddVisit(shop.id)} className="px-3 py-1 text-xs bg-clay text-white rounded-lg hover:bg-clay/90">Save</button>
+                  <button onClick={() => setAddingVisitTo(null)} className="px-3 py-1 text-xs text-ink/60 hover:text-ink">取消</button>
+                  <button onClick={() => handleAddVisit(shop.id)} className="px-3 py-1 text-xs bg-clay text-white rounded-lg hover:bg-clay/90">儲存</button>
                 </div>
               </div>
             )}
@@ -509,7 +509,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
                         onChange={e => setEditVisitData({...editVisitData, purpose: e.target.value})}
                       />
                       <textarea
-                        placeholder="Notes"
+                        placeholder="備註..."
                         className="w-full bg-white/60 border-none rounded-lg px-3 py-1.5 text-sm text-ink focus:ring-1 focus:ring-clay min-h-[60px] whitespace-pre-wrap"
                         value={editVisitData.notes || ''}
                         onChange={e => setEditVisitData({...editVisitData, notes: e.target.value})}

@@ -54,7 +54,7 @@ const App: React.FC = () => {
   // --- State ---
   const [activeTab, setActiveTab] = useState<TabView>('profile');
   const [healthSubTab, setHealthSubTab] = useState<'health' | 'physical'>('health');
-  const [financeSubTab, setFinanceSubTab] = useState<'finance' | 'shops'>('finance');
+  const [financeSubTab, setFinanceSubTab] = useState<'finance' | 'shops'>('shops');
   const [scrolled, setScrolled] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -299,7 +299,7 @@ const App: React.FC = () => {
         {activeTab === 'finance' && (
           <div className="animate-fade-in">
             <SubToggle
-              options={[{ value: 'finance', label: '財務與服務' }, { value: 'shops', label: '住宿與美容' }]}
+              options={[{ value: 'shops', label: '住宿與美容' }, { value: 'finance', label: '財務與服務' }]}
               active={financeSubTab}
               onChange={(v) => setFinanceSubTab(v as 'finance' | 'shops')}
             />

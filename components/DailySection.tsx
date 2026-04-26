@@ -1,7 +1,7 @@
 import React, { useState, useRef, useMemo } from 'react';
 import { DailyLog } from '../types';
 import { generateId, formatDate } from '../utils';
-import { Plus, Trash2, Edit2, X, Camera, Droplets, Utensils, Activity, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Trash2, Edit2, X, Camera, Droplets, Utensils, Activity, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 
 interface DailySectionProps {
   logs: DailyLog[];
@@ -27,6 +27,13 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
 
   const prevMonth = () => setCurrentDate(new Date(year, month - 1, 1));
   const nextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
+
+  const [showPicker, setShowPicker] = useState(false);
+  const [pickerYear, setPickerYear] = useState(new Date().getFullYear());
+  const handleTogglePicker = () => {
+    if (!showPicker) setPickerYear(year);
+    setShowPicker(v => !v);
+  };
 
   const handleDateClick = (day: number) => {
     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
@@ -101,22 +108,54 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
         <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-petal/10 to-transparent rounded-bl-[5rem] pointer-events-none" />
 
         {/* Month navigation */}
-        <div className="flex justify-between items-center mb-5 relative z-10">
+        <div className="flex justify-between items-center mb-4 relative z-10">
           <button onClick={prevMonth} className="p-2 text-pencil hover:text-ink transition-colors">
             <ChevronLeft size={20} />
           </button>
-          <div className="text-center">
+          <button onClick={handleTogglePicker} className="text-center group">
             <div className="text-[10px] font-sans uppercase tracking-[0.3em] text-gold/60 mb-1">
               {currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
             </div>
-            <div className="text-xl font-fangsong text-ink tracking-wide">
+            <div className="text-xl font-fangsong text-ink tracking-wide flex items-center gap-1 justify-center">
               {currentDate.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long' })}
+              <ChevronDown size={13} className={`text-pencil/50 transition-transform duration-300 ${showPicker ? 'rotate-180' : ''}`} />
             </div>
-          </div>
+          </button>
           <button onClick={nextMonth} className="p-2 text-pencil hover:text-ink transition-colors">
             <ChevronRight size={20} />
           </button>
         </div>
+
+        {/* Quick Year / Month Picker */}
+        {showPicker && (
+          <div className="mb-4 pt-3 border-t border-sand/30 animate-fade-in">
+            <div className="flex items-center justify-between mb-3 px-1">
+              <button onClick={() => setPickerYear(y => y - 1)} className="p-1.5 rounded-lg text-pencil hover:text-ink hover:bg-sand/30 transition-colors">
+                <ChevronLeft size={15} />
+              </button>
+              <span className="font-fangsong text-lg text-ink">{pickerYear} 年</span>
+              <button onClick={() => setPickerYear(y => y + 1)} className="p-1.5 rounded-lg text-pencil hover:text-ink hover:bg-sand/30 transition-colors">
+                <ChevronRight size={15} />
+              </button>
+            </div>
+            <div className="grid grid-cols-4 gap-1">
+              {Array.from({ length: 12 }, (_, i) => {
+                const isActive = year === pickerYear && month === i;
+                return (
+                  <button
+                    key={i}
+                    onClick={() => { setCurrentDate(new Date(pickerYear, i, 1)); setShowPicker(false); }}
+                    className={`py-2 rounded-xl text-sm font-fangsong transition-all ${
+                      isActive ? 'bg-clay text-white shadow-sm' : 'hover:bg-sand/30 text-ink'
+                    }`}
+                  >
+                    {i + 1}月
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Days of week header */}
         <div className="grid grid-cols-7 mb-1">
