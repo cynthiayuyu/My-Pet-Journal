@@ -288,9 +288,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
               </div>
             </div>
             <div className="flex-1 overflow-y-auto px-8 pb-4">
-             </div>
-
-             <div className="grid grid-cols-2 gap-6 mb-8">
+              <div className="grid grid-cols-2 gap-6 mb-8">
                 <div className="col-span-2">
                    <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Date</label>
                    <input 
@@ -351,9 +349,8 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
                     className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-xl rounded-none placeholder-sand/50"
                    />
                 </div>
-             </div>
-
-            </div>{/* end scrollable */}
+              </div>
+            </div>
             <div className="flex-shrink-0 px-8 pb-24 pt-4 border-t border-sand/20">
               <button type="submit" className="w-full py-3.5 btn-warm">
                 {editingRecordId ? '更新' : '儲存'}
