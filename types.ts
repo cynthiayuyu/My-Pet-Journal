@@ -60,6 +60,7 @@ export interface InventoryItem {
   unit: string; // e.g., 'g', 'pills'
   caloriesPerUnit?: number; // kcal per unit (e.g., per 100g)
   ingredients?: string;
+  purchaseLocation?: string; // e.g., 寵物店、網路商店
 }
 
 export interface PrepaidService {

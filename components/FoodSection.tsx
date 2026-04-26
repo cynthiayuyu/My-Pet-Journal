@@ -37,6 +37,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
         unit: newItem.unit || 'g',
         caloriesPerUnit: newItem.caloriesPerUnit ? Number(newItem.caloriesPerUnit) : undefined,
         ingredients: newItem.ingredients || '',
+        purchaseLocation: newItem.purchaseLocation || '',
       };
 
       if (editingItemId) {
@@ -189,6 +190,13 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
                             </div>
                         </div>
 
+                        {item.purchaseLocation && (
+                          <div className="mt-2 flex items-center gap-1.5 text-xs text-pencil font-fangsong">
+                            <span className="text-[10px] font-sans uppercase tracking-widest text-pencil/70">購入來源</span>
+                            <span className="text-ink">{item.purchaseLocation}</span>
+                          </div>
+                        )}
+
                         {suggestedAmount && (
                           <div className="mt-3 bg-clay/5 border border-clay/20 px-3 py-2 rounded-lg flex items-center justify-between">
                             <span className="text-xs text-clay font-sans font-medium">Daily Amount</span>
@@ -245,10 +253,21 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
                 <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Item Name 品名</label>
                 <input
                   type="text" required
-                  placeholder="e.g. 渴望 Orijen Original"
+                  placeholder="e.g. 皇家 Royal Canin Maxi"
                   value={newItem.name || ''}
                   onChange={e => setNewItem({ ...newItem, name: e.target.value })}
                   className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-xl rounded-none placeholder-sand/50"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">購入來源 Purchase Location</label>
+                <input
+                  type="text"
+                  placeholder="e.g. 寵物店、網路商城、動物醫院..."
+                  value={newItem.purchaseLocation || ''}
+                  onChange={e => setNewItem({ ...newItem, purchaseLocation: e.target.value })}
+                  className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none placeholder-sand/50"
                 />
               </div>
 
