@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { PetProfile, PhysicalRecord, HealthRecord, TabView, InventoryItem, InsurancePolicy, PrepaidService, PetShop, DailyLog } from './types';
+import { PetProfile, PhysicalRecord, HealthRecord, TabView, InventoryItem, InsurancePolicy, PrepaidService, PetShop, DailyLog, WardrobeItem } from './types';
 import { ProfileSection } from './components/ProfileSection';
 import { PhysicalSection } from './components/PhysicalSection';
 import { HealthSection } from './components/HealthSection';
@@ -7,6 +7,7 @@ import { FoodSection } from './components/FoodSection';
 import { FinanceSection } from './components/FinanceSection';
 import { ShopSection } from './components/ShopSection';
 import { DailySection } from './components/DailySection';
+import { WardrobeSection } from './components/WardrobeSection';
 import { User, Heart, PawPrint, Utensils, Wallet, CalendarDays, Download, Upload } from 'lucide-react';
 
 const SubToggle = ({ options, active, onChange }: {
@@ -54,6 +55,7 @@ const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabView>('profile');
   const [healthSubTab, setHealthSubTab] = useState<'health' | 'physical'>('health');
   const [financeSubTab, setFinanceSubTab] = useState<'finance' | 'shops'>('shops');
+  const [foodSubTab, setFoodSubTab] = useState<'food' | 'wardrobe'>('food');
   const [scrolled, setScrolled] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -105,6 +107,11 @@ const App: React.FC = () => {
     return saved ? JSON.parse(saved) : [];
   });
 
+  const [wardrobeItems, setWardrobeItems] = useState<WardrobeItem[]>(() => {
+    const saved = localStorage.getItem('pawprint_wardrobe');
+    return saved ? JSON.parse(saved) : [];
+  });
+
   const latestWeight = useMemo(() => {
     if (physicalRecords.length === 0) return undefined;
     return [...physicalRecords].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0].weight;
@@ -120,6 +127,7 @@ const App: React.FC = () => {
   useEffect(() => localStorage.setItem('pawprint_prepaid', JSON.stringify(prepaidServices)), [prepaidServices]);
   useEffect(() => localStorage.setItem('pawprint_shops', JSON.stringify(shops)), [shops]);
   useEffect(() => localStorage.setItem('pawprint_daily', JSON.stringify(dailyLogs)), [dailyLogs]);
+  useEffect(() => localStorage.setItem('pawprint_wardrobe', JSON.stringify(wardrobeItems)), [wardrobeItems]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -274,15 +282,29 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* ── Food ── */}
+        {/* ── Food + Wardrobe ── */}
         {activeTab === 'food' && (
           <div className="animate-fade-in">
-            <SectionHeader en="Pantry & Diet" zh="食物庫存" />
-            <FoodSection
-              items={inventoryItems}
-              setItems={setInventoryItems}
-              profile={profile}
+            <SubToggle
+              options={[{ value: 'food', label: '食物庫存' }, { value: 'wardrobe', label: '衣物配件' }]}
+              active={foodSubTab}
+              onChange={v => setFoodSubTab(v as 'food' | 'wardrobe')}
             />
+            {foodSubTab === 'food' ? (
+              <>
+                <SectionHeader en="Pantry & Diet" zh="食物庫存" />
+                <FoodSection
+                  items={inventoryItems}
+                  setItems={setInventoryItems}
+                  profile={profile}
+                />
+              </>
+            ) : (
+              <>
+                <SectionHeader en="Wardrobe" zh="衣物配件" />
+                <WardrobeSection items={wardrobeItems} setItems={setWardrobeItems} />
+              </>
+            )}
           </div>
         )}
 

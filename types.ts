@@ -77,6 +77,19 @@ export interface ChatMessage {
   text: string;
 }
 
+export interface WardrobeItem {
+  id: string;
+  name: string;
+  category: 'Clothing' | 'Accessory' | 'Bag' | 'Other';
+  brand?: string;
+  color?: string;
+  size?: string;
+  purchaseDate?: string;
+  price?: number;
+  notes?: string;
+  photoUrl?: string;
+}
+
 export interface ShopVisitService {
   name: string;
   cost: number;
