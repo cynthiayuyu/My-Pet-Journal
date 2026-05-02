@@ -77,13 +77,19 @@ export interface ChatMessage {
   text: string;
 }
 
+export interface ShopVisitService {
+  name: string;
+  cost: number;
+}
+
 export interface ShopVisit {
   id: string;
   date: string;
   cost: number;
   purpose: string;
+  services?: ShopVisitService[];
   notes?: string;
-  photoUrl?: string; // Added for attachments
+  photoUrl?: string;
 }
 
 export interface PetShop {
