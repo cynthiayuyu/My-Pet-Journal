@@ -18,6 +18,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
   const [selectedDateStr, setSelectedDateStr] = useState(new Date().toISOString().split('T')[0]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingRecordId, setEditingRecordId] = useState<string | null>(null);
+  const [activeFilter, setActiveFilter] = useState<'Vaccine' | 'Deworming' | 'Checkup' | null>(null);
   
   // Form State
   const [activeType, setActiveType] = useState<'Vaccine' | 'Deworming' | 'Checkup' | 'Vet Visit'>('Vaccine');
@@ -345,15 +346,22 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
             const hasAnyEvent = hasVaccine || hasDeworm || hasCheckupOrVet;
             const hasReminder = records.some(r => r.nextDueDate === dateStr);
 
+            const matchesFilter = !activeFilter
+              || (activeFilter === 'Vaccine' && hasVaccine)
+              || (activeFilter === 'Deworming' && hasDeworm)
+              || (activeFilter === 'Checkup' && hasCheckupOrVet);
+
             return (
-              <div key={day} className="flex flex-col items-center gap-[3px] py-0.5">
+              <div key={day} className={`flex flex-col items-center gap-[3px] py-0.5 transition-opacity duration-200 ${activeFilter && !matchesFilter && !isSelected ? 'opacity-30' : ''}`}>
                 <button
                   onClick={() => handleDateClick(day)}
                   className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-fangsong transition-all duration-300 border
                     ${isSelected
                         ? 'bg-clay text-white border-clay shadow-md scale-105'
-                        : hasReminder && !isSelected
-                            ? 'bg-white border-clay/60 text-ink'
+                        : activeFilter && matchesFilter && hasAnyEvent
+                            ? 'bg-white border-clay/50 text-ink shadow-sm'
+                            : hasReminder && !isSelected
+                            ? 'bg-white border-clay/40 text-ink'
                             : isToday
                             ? 'border-sage/50 bg-sage/10 text-ink border'
                             : 'border-transparent text-ink hover:bg-sand/30'
@@ -363,18 +371,18 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
                   {day}
                 </button>
 
-                {/* Event indicator dots — below the button, always in normal flow */}
+                {/* Event indicator dots */}
                 <div className="flex gap-0.5 h-[6px] items-center">
-                  {hasVaccine && (
+                  {hasVaccine && (!activeFilter || activeFilter === 'Vaccine') && (
                     <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white/90' : 'bg-clay'}`} />
                   )}
-                  {hasDeworm && (
+                  {hasDeworm && (!activeFilter || activeFilter === 'Deworming') && (
                     <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white/90' : 'bg-sage'}`} />
                   )}
-                  {hasCheckupOrVet && (
+                  {hasCheckupOrVet && (!activeFilter || activeFilter === 'Checkup') && (
                     <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white/90' : 'bg-gold'}`} />
                   )}
-                  {hasReminder && !hasAnyEvent && (
+                  {hasReminder && !hasAnyEvent && !activeFilter && (
                     <span className={`w-1.5 h-1.5 rounded-full border ${isSelected ? 'border-white/80' : 'border-clay'}`} />
                   )}
                 </div>
@@ -384,11 +392,26 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
         </div>
 
         {/* Legend */}
-        <div className="mt-5 pt-4 border-t border-sand/30 flex flex-wrap justify-center gap-x-4 gap-y-1.5 text-[10px] uppercase font-bold tracking-wider text-pencil font-sans">
-          <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-clay inline-block"></span> 疫苗</div>
-          <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-sage inline-block"></span> 驅蟲</div>
-          <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-gold inline-block"></span> 健檢/看診</div>
-          <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full border border-clay inline-block"></span> 提醒到期</div>
+        <div className="mt-5 pt-4 border-t border-sand/30 flex flex-wrap justify-center gap-x-2 gap-y-2 text-[10px] uppercase font-bold tracking-wider font-sans">
+          {([
+            { type: 'Vaccine' as const, label: '疫苗', color: 'bg-clay', active: 'bg-clay/15 text-clay border-clay/40', inactive: 'text-pencil border-transparent hover:border-sand/60' },
+            { type: 'Deworming' as const, label: '驅蟲', color: 'bg-sage', active: 'bg-sage/15 text-sage border-sage/40', inactive: 'text-pencil border-transparent hover:border-sand/60' },
+            { type: 'Checkup' as const, label: '健檢/看診', color: 'bg-gold', active: 'bg-gold/15 text-gold border-gold/40', inactive: 'text-pencil border-transparent hover:border-sand/60' },
+          ]).map(({ type, label, color, active, inactive }) => (
+            <button
+              key={type}
+              type="button"
+              onClick={() => setActiveFilter(f => f === type ? null : type)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-all duration-200 ${activeFilter === type ? active : inactive}`}
+            >
+              <span className={`w-2 h-2 rounded-full ${color} inline-block flex-shrink-0`}></span>
+              {label}
+            </button>
+          ))}
+          <div className="flex items-center gap-1.5 px-3 py-1.5 text-pencil/60">
+            <span className="w-2 h-2 rounded-full border border-clay/60 inline-block flex-shrink-0"></span>
+            下次回診
+          </div>
         </div>
       </div>
 
