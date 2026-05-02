@@ -1,7 +1,7 @@
 import React, { useState, useRef, useMemo } from 'react';
 import { DailyLog } from '../types';
 import { generateId, formatDate } from '../utils';
-import { Plus, Trash2, Edit2, X, Camera, Droplets, Utensils, Activity, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
+import { Plus, Trash2, Edit2, X, Camera, Droplets, Utensils, Activity, ChevronLeft, ChevronRight, ChevronDown, Search } from 'lucide-react';
 
 interface DailySectionProps {
   logs: DailyLog[];
@@ -99,10 +99,87 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
 
   const todayStr = new Date().toISOString().split('T')[0];
 
+  const [searchTerm, setSearchTerm] = useState('');
+  const searchResults = useMemo(() => {
+    if (!searchTerm) return [];
+    const term = searchTerm.toLowerCase();
+    return logs.filter(l =>
+      l.notes?.toLowerCase().includes(term) ||
+      l.foodIntake?.toLowerCase().includes(term) ||
+      l.waterIntake?.toLowerCase().includes(term) ||
+      l.date.includes(term)
+    ).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }, [logs, searchTerm]);
+
   return (
     <div className="space-y-6 animate-fade-in">
 
-      {/* ── Calendar Card ── */}
+      {/* ── Search Bar ── */}
+      <div className="relative">
+        <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-pencil">
+          <Search size={18} />
+        </div>
+        <input
+          type="text"
+          placeholder="搜尋紀錄..."
+          value={searchTerm}
+          onChange={e => setSearchTerm(e.target.value)}
+          className="w-full pl-12 pr-4 py-3 bg-white/80 backdrop-blur-md border border-white rounded-2xl shadow-sm focus:outline-none text-ink font-fangsong transition-all"
+        />
+        {searchTerm && (
+          <button onClick={() => setSearchTerm('')} className="absolute inset-y-0 right-4 flex items-center text-pencil hover:text-ink">
+            <X size={16} />
+          </button>
+        )}
+      </div>
+
+      {searchTerm ? (
+        <div className="space-y-4">
+          <h3 className="text-xs font-bold tracking-[0.2em] text-pencil uppercase font-sans px-2">
+            搜尋結果（{searchResults.length}）
+          </h3>
+          {searchResults.length === 0 ? (
+            <div className="text-center py-8 bg-white/50 rounded-3xl border border-dashed border-sand">
+              <p className="text-sm font-fangsong text-pencil">找不到符合的紀錄</p>
+            </div>
+          ) : (
+            searchResults.map(log => (
+              <div key={log.id} className="card-warm rounded-2xl p-5 relative group animate-fade-in">
+                <div className="absolute top-4 right-4 flex gap-2 z-10">
+                  <button onClick={() => { setSearchTerm(''); handleOpenForm(log); }} className="text-sand hover:text-clay transition-colors p-1 bg-white/80 rounded-full backdrop-blur-sm">
+                    <Edit2 size={16} />
+                  </button>
+                  <button onClick={() => deleteLog(log.id)} className="text-sand hover:text-clay transition-colors p-1 bg-white/80 rounded-full backdrop-blur-sm">
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+                <div className="text-[10px] font-bold tracking-widest text-pencil uppercase font-sans mb-2">{log.date}</div>
+                {log.photoUrl && (
+                  <div className="w-full h-32 rounded-xl overflow-hidden mb-3 border border-sand/30">
+                    <img src={log.photoUrl} alt="Daily Log" className="w-full h-full object-cover" />
+                  </div>
+                )}
+                <div className="grid grid-cols-2 gap-2">
+                  {log.foodIntake && (
+                    <div className="bg-clay/8 p-2.5 rounded-xl border border-clay/15">
+                      <div className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-widest text-clay font-sans mb-1"><Utensils size={10} /> Food</div>
+                      <div className="text-sm font-fangsong text-ink">{log.foodIntake}</div>
+                    </div>
+                  )}
+                  {log.waterIntake && (
+                    <div className="bg-sage/8 p-2.5 rounded-xl border border-sage/15">
+                      <div className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-widest text-sage font-sans mb-1"><Droplets size={10} /> Water</div>
+                      <div className="text-sm font-fangsong text-ink">{log.waterIntake}</div>
+                    </div>
+                  )}
+                </div>
+                {log.notes && <div className="mt-2 text-sm font-fangsong text-ink/80 pr-16">{log.notes}</div>}
+              </div>
+            ))
+          )}
+        </div>
+      ) : (
+      <>{/* ── Calendar Card ── */}
       <div className="card-warm rounded-[2rem] p-6 relative overflow-hidden">
         {/* Decorative corner */}
         <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-petal/10 to-transparent rounded-bl-[5rem] pointer-events-none" />
@@ -292,6 +369,9 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
           </div>
         ))}
       </div>
+
+      </> /* end search else */
+      )}
 
       {/* ── Slide-up Form ── */}
       {isFormOpen && (

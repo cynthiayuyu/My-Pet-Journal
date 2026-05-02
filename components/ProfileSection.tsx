@@ -180,17 +180,17 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
             <div className="group">
               <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">Gender</label>
                <div className="flex gap-1 pt-1">
-                  {(['Male', 'Female', 'Other'] as const).map((g) => (
+                  {(['Male', 'Female'] as const).map((g) => (
                     <button
                       key={g}
                       onClick={() => setProfile({...profile, gender: g})}
                       className={`flex-1 py-1.5 text-sm transition-all duration-300 font-fangsong border-b-2 ${
-                        profile.gender === g 
-                          ? 'border-ink text-ink font-semibold' 
+                        profile.gender === g
+                          ? 'border-ink text-ink font-semibold'
                           : 'border-transparent text-pencil hover:text-ink/70'
                       }`}
                     >
-                      {g === 'Male' ? 'Male' : g === 'Female' ? 'Female' : 'Other'}
+                      {g === 'Male' ? 'Male' : 'Female'}
                     </button>
                   ))}
                </div>

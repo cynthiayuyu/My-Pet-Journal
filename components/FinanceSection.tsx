@@ -225,15 +225,15 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
       <div className="flex bg-white/50 backdrop-blur-md p-1 rounded-2xl shadow-soft border border-white">
         <button 
           onClick={() => setActiveTab('Insurance')}
-          className={`flex-1 py-3 rounded-xl text-sm font-bold tracking-widest uppercase font-sans transition-all duration-300 ${
+          className={`flex-1 py-3 rounded-xl text-sm font-semibold font-fangsong transition-all duration-300 ${
               activeTab === 'Insurance' ? 'bg-white text-ink shadow-sm' : 'text-pencil hover:text-ink/70'
           }`}
         >
           保險 Insurance
         </button>
-        <button 
+        <button
           onClick={() => setActiveTab('Prepaid')}
-          className={`flex-1 py-3 rounded-xl text-sm font-bold tracking-widest uppercase font-sans transition-all duration-300 ${
+          className={`flex-1 py-3 rounded-xl text-sm font-semibold font-fangsong transition-all duration-300 ${
               activeTab === 'Prepaid' ? 'bg-white text-ink shadow-sm' : 'text-pencil hover:text-ink/70'
           }`}
         >

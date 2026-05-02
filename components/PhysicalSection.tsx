@@ -215,19 +215,19 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
             const isToday = dateStr === new Date().toISOString().split('T')[0];
 
             return (
-              <div key={day} className="flex flex-col items-center">
+              <div key={day} className="flex flex-col items-center gap-1 py-0.5">
                 <button
                   onClick={() => handleDateClick(day)}
-                  className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-fangsong transition-all duration-300 relative
+                  className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-fangsong transition-all duration-300
                     ${isSelected ? 'bg-clay text-white shadow-md scale-105' : 'text-ink hover:bg-sand/30'}
                     ${isToday && !isSelected ? 'border border-gold text-gold' : ''}
                   `}
                 >
                   {day}
-                  {hasRecord && (
-                    <span className={`absolute bottom-1.5 w-1 h-1 rounded-full ${isSelected ? 'bg-gold' : 'bg-clay'}`} />
-                  )}
                 </button>
+                <span className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                  hasRecord ? (isSelected ? 'bg-white/80' : 'bg-clay') : 'opacity-0'
+                }`} />
               </div>
             );
           })}

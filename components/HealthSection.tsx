@@ -158,6 +158,15 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
 
   const allLocations = useMemo(() => [...shopLocations, ...otherLocations], [shopLocations, otherLocations]);
 
+  const filteredRecordsList = useMemo(() => {
+    if (!activeFilter) return [];
+    return records.filter(r =>
+      activeFilter === 'Vaccine' ? r.type === 'Vaccine' :
+      activeFilter === 'Deworming' ? r.type === 'Deworming' :
+      r.type === 'Checkup' || r.type === 'Vet Visit'
+    ).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }, [records, activeFilter]);
+
   const getEventTypeName = (type: string) => {
     switch(type) {
       case 'Vaccine': return 'Vaccine';
@@ -414,6 +423,52 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
           </div>
         </div>
       </div>
+
+      {/* ── Filtered Records List (shown when a legend filter is active) ── */}
+      {activeFilter && (
+        <div className="space-y-3 animate-fade-in">
+          <div className="flex items-center justify-between px-2">
+            <h4 className="text-xs font-bold tracking-[0.2em] text-clay uppercase font-sans">
+              全部{activeFilter === 'Vaccine' ? '疫苗' : activeFilter === 'Deworming' ? '驅蟲' : '健檢/看診'}紀錄（{filteredRecordsList.length}）
+            </h4>
+            <button onClick={() => setActiveFilter(null)} className="text-xs text-pencil/60 hover:text-ink font-sans transition-colors">
+              清除篩選 ×
+            </button>
+          </div>
+          {filteredRecordsList.length === 0 ? (
+            <div className="text-center py-6 bg-white/50 rounded-3xl border border-dashed border-sand">
+              <p className="text-sm font-fangsong text-pencil">尚無相關紀錄</p>
+            </div>
+          ) : (
+            filteredRecordsList.map(record => (
+              <div
+                key={record.id}
+                className={`card-warm rounded-2xl p-4 flex items-center gap-3 cursor-pointer transition-all animate-fade-in ${record.date === selectedDateStr ? 'border border-clay/30 shadow-sm' : ''}`}
+                onClick={() => { setSelectedDateStr(record.date); setCurrentDate(new Date(record.date + 'T12:00:00')); }}
+              >
+                <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${
+                  record.type === 'Vaccine' ? 'icon-clay' :
+                  record.type === 'Deworming' ? 'icon-sage' : 'icon-gold'
+                }`}>
+                  {record.type === 'Vaccine' ? <Syringe size={15} /> :
+                   record.type === 'Deworming' ? <Bug size={15} /> : <Activity size={15} />}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[10px] font-bold tracking-widest text-pencil uppercase font-sans">{formatDate(record.date)}</div>
+                  <div className="text-base font-fangsong text-ink truncate">{record.title}</div>
+                  {record.location && <div className="text-xs text-pencil/55 font-fangsong truncate">{record.location}</div>}
+                </div>
+                {record.nextDueDate && (
+                  <div className="text-[10px] text-clay font-sans text-right flex-shrink-0 flex items-center gap-0.5">
+                    <Clock size={10} />
+                    {record.nextDueDate}
+                  </div>
+                )}
+              </div>
+            ))
+          )}
+        </div>
+      )}
 
       {/* Selected Day Details */}
       <div className="space-y-4">

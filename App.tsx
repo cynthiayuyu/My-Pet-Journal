@@ -7,8 +7,7 @@ import { FoodSection } from './components/FoodSection';
 import { FinanceSection } from './components/FinanceSection';
 import { ShopSection } from './components/ShopSection';
 import { DailySection } from './components/DailySection';
-import { ChatSection } from './components/ChatSection';
-import { User, Heart, PawPrint, Utensils, Wallet, CalendarDays, Download, Upload, MessageSquare } from 'lucide-react';
+import { User, Heart, PawPrint, Utensils, Wallet, CalendarDays, Download, Upload } from 'lucide-react';
 
 const SubToggle = ({ options, active, onChange }: {
   options: { value: string; label: string }[];
@@ -287,14 +286,6 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* ── Chat ── */}
-        {activeTab === 'chat' && (
-          <div className="animate-fade-in">
-            <SectionHeader en="AI Assistant" zh="智能助手" />
-            <ChatSection profile={profile} latestWeight={latestWeight} />
-          </div>
-        )}
-
         {/* ── Finance + Shops ── */}
         {activeTab === 'finance' && (
           <div className="animate-fade-in">
@@ -341,7 +332,6 @@ const App: React.FC = () => {
           <NavBtn active={activeTab === 'health'} onClick={() => setActiveTab('health')} icon={Heart} label="健康" />
           <NavBtn active={activeTab === 'food'} onClick={() => setActiveTab('food')} icon={Utensils} label="飲食" />
           <NavBtn active={activeTab === 'finance'} onClick={() => setActiveTab('finance')} icon={Wallet} label="財務" />
-          <NavBtn active={activeTab === 'chat'} onClick={() => setActiveTab('chat')} icon={MessageSquare} label="助手" />
         </div>
       </nav>
 

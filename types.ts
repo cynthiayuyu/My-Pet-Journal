@@ -8,7 +8,7 @@ export interface VetContact {
 export interface PetProfile {
   name: string;
   breed: string;
-  gender: 'Male' | 'Female' | 'Other';
+  gender: 'Male' | 'Female';
   birthDate: string; // ISO string YYYY-MM-DD
   microchipId: string;
   photoUrl: string | null;
@@ -106,4 +106,4 @@ export interface DailyLog {
   photoUrl?: string;
 }
 
-export type TabView = 'dashboard' | 'daily' | 'profile' | 'physical' | 'health' | 'food' | 'finance' | 'shops' | 'chat';
+export type TabView = 'dashboard' | 'daily' | 'profile' | 'physical' | 'health' | 'food' | 'finance' | 'shops';

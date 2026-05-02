@@ -64,6 +64,16 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
     setEditingCategory(null);
   };
 
+  const categoryStats = useMemo(() => {
+    const stats: Record<string, { count: number; total: number }> = {};
+    shops.forEach(shop => {
+      if (!stats[shop.type]) stats[shop.type] = { count: 0, total: 0 };
+      stats[shop.type].count += 1;
+      stats[shop.type].total += shop.visits.reduce((sum, v) => sum + (v.cost || 0), 0);
+    });
+    return Object.entries(stats).filter(([, s]) => s.total > 0).sort((a, b) => b[1].total - a[1].total);
+  }, [shops]);
+
   const filteredShops = useMemo(() => {
     if (!searchTerm) return shops;
     const term = searchTerm.toLowerCase();
@@ -305,6 +315,21 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
         </div>
       )}
 
+      {/* ── Category Cost Summary ── */}
+      {categoryStats.length > 0 && !searchTerm && (
+        <div className="overflow-x-auto -mx-1 px-1">
+          <div className="flex gap-2 pb-1">
+            {categoryStats.map(([type, { count, total }]) => (
+              <div key={type} className="flex-shrink-0 bg-white/70 border border-white/90 rounded-2xl px-4 py-3 min-w-[110px] shadow-sm">
+                <div className="text-[9px] text-pencil/60 uppercase tracking-widest font-sans mb-1 truncate">{type}</div>
+                <div className="text-lg font-fangsong text-clay">${total.toLocaleString()}</div>
+                <div className="text-[10px] text-pencil/50 font-sans">{count} 家</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* No results */}
       {filteredShops.length === 0 && searchTerm && (
         <div className="text-center py-8 bg-white/50 rounded-3xl border border-dashed border-sand">
@@ -317,6 +342,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
         const lastVisit = shop.visits.length > 0
           ? [...shop.visits].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0]
           : null;
+        const totalCost = shop.visits.reduce((sum, v) => sum + (v.cost || 0), 0);
         return (
           <div
             key={shop.id}
@@ -339,9 +365,16 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
               </div>
             </div>
             <div className="mt-3 flex items-center justify-between">
-              <span className="text-xs text-pencil font-sans px-2 py-0.5 bg-sand/20 rounded-full">
-                {shop.visits.length} 次造訪
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-pencil font-sans px-2 py-0.5 bg-sand/20 rounded-full">
+                  {shop.visits.length} 次造訪
+                </span>
+                {totalCost > 0 && (
+                  <span className="text-xs text-clay font-sans px-2 py-0.5 bg-clay/8 rounded-full">
+                    ${totalCost.toLocaleString()}
+                  </span>
+                )}
+              </div>
               {lastVisit && (
                 <span className="text-xs text-pencil/65 font-fangsong">最近：{lastVisit.date}</span>
               )}
