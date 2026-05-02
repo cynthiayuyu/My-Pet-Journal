@@ -47,7 +47,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
       <div className="flex flex-col items-center text-center relative pt-4 pb-2">
         
         <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-          <div className="w-44 h-44 rounded-full shadow-soft border-[5px] border-white bg-white overflow-hidden relative transform transition-all duration-500 hover:scale-[1.02] hover:shadow-float ring-1 ring-sand/40">
+          <div className="w-44 h-44 rounded-full shadow-soft border-[5px] border-white bg-white overflow-hidden relative transform transition-all duration-500 hover:scale-[1.02] hover:shadow-float">
             {profile.photoUrl ? (
               <img src={profile.photoUrl} alt="Pet" className="w-full h-full object-cover" />
             ) : (
