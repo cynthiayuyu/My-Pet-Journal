@@ -2,6 +2,7 @@ import React, { useState, useMemo, useRef } from 'react';
 import { WardrobeItem } from '../types';
 import { generateId } from '../utils';
 import { Plus, Trash2, X, Camera, Search, Tag } from 'lucide-react';
+import { ImageCropper } from './ImageCropper';
 
 interface WardrobeSectionProps {
   items: WardrobeItem[];
@@ -15,23 +16,7 @@ const CATEGORIES: { value: WardrobeItem['category']; label: string }[] = [
   { value: 'Other',     label: '其他' },
 ];
 
-const compressImage = (file: File, maxPx = 800, quality = 0.78): Promise<string> =>
-  new Promise(resolve => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const img = new Image();
-      img.onload = () => {
-        const scale = Math.min(maxPx / img.width, maxPx / img.height, 1);
-        const canvas = document.createElement('canvas');
-        canvas.width  = Math.round(img.width  * scale);
-        canvas.height = Math.round(img.height * scale);
-        canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
-        resolve(canvas.toDataURL('image/jpeg', quality));
-      };
-      img.src = reader.result as string;
-    };
-    reader.readAsDataURL(file);
-  });
+type SortOrder = 'default' | 'az' | 'za' | 'price_asc' | 'price_desc';
 
 export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItems }) => {
   const [isFormOpen, setIsFormOpen]   = useState(false);
@@ -39,15 +24,22 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
   const [newItem, setNewItem]         = useState<Partial<WardrobeItem>>({ category: 'Clothing' });
   const [searchTerm, setSearchTerm]   = useState('');
   const [filterCat, setFilterCat]     = useState<WardrobeItem['category'] | null>(null);
+  const [sortOrder, setSortOrder]     = useState<SortOrder>('default');
+  const [cropperDataUrl, setCropperDataUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const compressed = await compressImage(file);
-    setNewItem(prev => ({ ...prev, photoUrl: compressed }));
-    // reset so same file can be selected again
+    const reader = new FileReader();
+    reader.onloadend = () => setCropperDataUrl(reader.result as string);
+    reader.readAsDataURL(file);
     e.target.value = '';
+  };
+
+  const handleCropConfirm = (croppedUrl: string) => {
+    setNewItem(prev => ({ ...prev, photoUrl: croppedUrl }));
+    setCropperDataUrl(null);
   };
 
   const handleOpenForm = (item?: WardrobeItem) => {
@@ -98,8 +90,13 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
         i.notes?.toLowerCase().includes(t)
       );
     }
+    result = [...result];
+    if (sortOrder === 'az') result.sort((a, b) => a.name.localeCompare(b.name, 'zh-TW'));
+    else if (sortOrder === 'za') result.sort((a, b) => b.name.localeCompare(a.name, 'zh-TW'));
+    else if (sortOrder === 'price_asc') result.sort((a, b) => (a.price || 0) - (b.price || 0));
+    else if (sortOrder === 'price_desc') result.sort((a, b) => (b.price || 0) - (a.price || 0));
     return result;
-  }, [items, filterCat, searchTerm]);
+  }, [items, filterCat, searchTerm, sortOrder]);
 
   const catLabel = (cat: WardrobeItem['category']) =>
     CATEGORIES.find(c => c.value === cat)?.label ?? cat;
@@ -111,6 +108,15 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
 
   return (
     <div className="space-y-5 animate-fade-in">
+
+      {/* Image Cropper overlay */}
+      {cropperDataUrl && (
+        <ImageCropper
+          imageDataUrl={cropperDataUrl}
+          onConfirm={handleCropConfirm}
+          onCancel={() => setCropperDataUrl(null)}
+        />
+      )}
 
       {/* Search */}
       <div className="relative">
@@ -131,7 +137,7 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
         )}
       </div>
 
-      {/* Category filter + stats + Add */}
+      {/* Category filter + Add button */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex gap-1.5 overflow-x-auto pb-0.5 flex-1 min-w-0">
           <button
@@ -161,6 +167,24 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
           <Plus size={17} />
         </button>
       </div>
+
+      {/* Sort control */}
+      {items.length > 1 && (
+        <div className="flex items-center justify-end gap-2">
+          <span className="text-[10px] text-pencil/55 font-sans uppercase tracking-widest">排序</span>
+          <select
+            value={sortOrder}
+            onChange={e => setSortOrder(e.target.value as SortOrder)}
+            className="text-xs font-sans text-pencil bg-white/70 border border-sand/30 rounded-full px-3 py-1 focus:outline-none appearance-none cursor-pointer"
+          >
+            <option value="default">預設順序</option>
+            <option value="az">名稱 A → Z</option>
+            <option value="za">名稱 Z → A</option>
+            <option value="price_asc">價格 由低到高</option>
+            <option value="price_desc">價格 由高到低</option>
+          </select>
+        </div>
+      )}
 
       {/* Total value banner */}
       {totalValue > 0 && !filterCat && !searchTerm && (
@@ -246,7 +270,7 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-8 pb-4 space-y-5">
+            <div className="flex-1 overflow-y-auto px-8 pb-4 space-y-5" style={{ overscrollBehavior: 'contain' }}>
               {/* Photo */}
               <div
                 onClick={() => fileInputRef.current?.click()}
@@ -263,7 +287,7 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
                   <>
                     <Camera size={26} className="mb-2" />
                     <span className="text-xs font-sans">點擊上傳照片</span>
-                    <span className="text-[10px] text-pencil/40 font-sans mt-0.5">自動壓縮至 800px</span>
+                    <span className="text-[10px] text-pencil/40 font-sans mt-0.5">可裁切調整範圍</span>
                   </>
                 )}
               </div>
@@ -301,7 +325,7 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
 
               <div className="grid grid-cols-2 gap-5">
                 <div>
-                  <label className="text-[10px] text-pencil font-bold tracking-widests uppercase mb-1 block font-sans">品牌</label>
+                  <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">品牌</label>
                   <input
                     type="text"
                     placeholder="e.g. RC Pet"
@@ -370,7 +394,7 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
               </div>
             </div>
 
-            <div className="flex-shrink-0 px-8 pb-24 pt-4 border-t border-sand/20">
+            <div className="flex-shrink-0 px-8 pt-4 border-t border-sand/20" style={{ paddingBottom: 'calc(5.5rem + env(safe-area-inset-bottom))' }}>
               <button type="submit" className="w-full py-3.5 btn-warm">
                 {editingId ? '更新' : '儲存'}
               </button>

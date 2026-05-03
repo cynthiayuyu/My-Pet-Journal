@@ -1,7 +1,8 @@
 import React, { useState, useRef, useMemo } from 'react';
 import { PetShop, ShopVisit, ShopVisitService } from '../types';
 import { generateId } from '../utils';
-import { Plus, Trash2, MapPin, DollarSign, Calendar, Edit2, Save, X, Search, Camera, Settings, ChevronRight } from 'lucide-react';
+import { Plus, Trash2, MapPin, DollarSign, Calendar, Edit2, Save, X, Search, Camera, Settings, ChevronRight, ChevronLeft } from 'lucide-react';
+import { ImageCropper } from './ImageCropper';
 
 interface ShopSectionProps {
   shops: PetShop[];
@@ -23,6 +24,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedShopId, setSelectedShopId] = useState<string | null>(null);
+  const [cropperState, setCropperState] = useState<{ dataUrl: string; target: 'new' | 'edit' } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const editFileInputRef = useRef<HTMLInputElement>(null);
 
@@ -89,17 +91,20 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, isEditing: boolean) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        if (isEditing) {
-          setEditVisitData(prev => ({ ...prev, photoUrl: reader.result as string }));
-        } else {
-          setNewVisit(prev => ({ ...prev, photoUrl: reader.result as string }));
-        }
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => setCropperState({ dataUrl: reader.result as string, target: isEditing ? 'edit' : 'new' });
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
+  const handleCropConfirm = (croppedUrl: string) => {
+    if (cropperState?.target === 'edit') {
+      setEditVisitData(prev => ({ ...prev, photoUrl: croppedUrl }));
+    } else {
+      setNewVisit(prev => ({ ...prev, photoUrl: croppedUrl }));
     }
+    setCropperState(null);
   };
 
   const handleAddShop = () => {
@@ -208,6 +213,15 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
 
   return (
     <div className="space-y-4">
+
+      {/* Image Cropper overlay */}
+      {cropperState && (
+        <ImageCropper
+          imageDataUrl={cropperState.dataUrl}
+          onConfirm={handleCropConfirm}
+          onCancel={() => setCropperState(null)}
+        />
+      )}
 
       {/* ── Header ── */}
       <div className="flex justify-between items-center">
@@ -410,9 +424,16 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
             className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] shadow-2xl pointer-events-auto animate-fade-in relative flex flex-col"
             style={{ maxHeight: '88vh' }}
           >
-            {/* Drag handle */}
-            <div className="pt-5 pb-0 flex justify-center flex-shrink-0">
+            {/* Drag handle + close button */}
+            <div className="pt-4 pb-0 px-5 flex items-center justify-between flex-shrink-0">
+              <button
+                onClick={closeSheet}
+                className="w-9 h-9 rounded-full bg-sand/30 flex items-center justify-center text-ink hover:bg-sand transition-colors"
+              >
+                <ChevronLeft size={18} />
+              </button>
               <div className="w-12 h-1 bg-sand rounded-full opacity-50" />
+              <div className="w-9 h-9" />
             </div>
 
             {editingShopId === selectedShop.id ? (
@@ -422,7 +443,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
                   <h3 className="font-fangsong text-xl text-ink">編輯店家</h3>
                   <button onClick={() => setEditingShopId(null)} className="text-ink/40 hover:text-ink"><X size={20} /></button>
                 </div>
-                <div className="flex-1 overflow-y-auto px-6 pb-4 space-y-3">
+                <div className="flex-1 overflow-y-auto px-6 pb-4 space-y-3" style={{ overscrollBehavior: 'contain' }}>
                   <input
                     type="text" placeholder="商店名稱 Shop Name"
                     className="w-full bg-white/70 border border-sand/50 rounded-xl px-4 py-2.5 text-ink focus:ring-1 focus:ring-clay"
@@ -503,7 +524,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
                 </div>
 
                 {/* Visit history — scrollable */}
-                <div className="flex-1 overflow-y-auto px-6 pb-4">
+                <div className="flex-1 overflow-y-auto px-6 pb-4" style={{ overscrollBehavior: 'contain' }}>
                   <div className="flex justify-between items-center py-4">
                     <h5 className="font-fangsong text-lg text-ink">
                       造訪紀錄
