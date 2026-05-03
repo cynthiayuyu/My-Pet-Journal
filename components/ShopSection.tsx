@@ -1,5 +1,5 @@
 import React, { useState, useRef, useMemo } from 'react';
-import { PetShop, ShopVisit } from '../types';
+import { PetShop, ShopVisit, ShopVisitService } from '../types';
 import { generateId } from '../utils';
 import { Plus, Trash2, MapPin, DollarSign, Calendar, Edit2, Save, X, Search, Camera, Settings, ChevronRight } from 'lucide-react';
 
@@ -16,8 +16,10 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
 
   const [addingVisitTo, setAddingVisitTo] = useState<string | null>(null);
   const [newVisit, setNewVisit] = useState<Partial<ShopVisit>>({ date: new Date().toISOString().split('T')[0] });
+  const [newVisitServices, setNewVisitServices] = useState<{name: string; cost: string}[]>([{name: '', cost: ''}]);
   const [editingVisitId, setEditingVisitId] = useState<string | null>(null);
   const [editVisitData, setEditVisitData] = useState<Partial<ShopVisit>>({});
+  const [editVisitServices, setEditVisitServices] = useState<{name: string; cost: string}[]>([{name: '', cost: ''}]);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedShopId, setSelectedShopId] = useState<string | null>(null);
@@ -127,26 +129,43 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
   };
 
   const handleAddVisit = (shopId: string) => {
-    if (!newVisit.date || !newVisit.purpose) return;
+    if (!newVisit.date) return;
+    const services: ShopVisitService[] = newVisitServices
+      .filter(s => s.name.trim())
+      .map(s => ({ name: s.name.trim(), cost: Number(s.cost) || 0 }));
+    if (services.length === 0) return;
     const visit: ShopVisit = {
       id: generateId(),
       date: newVisit.date,
-      cost: Number(newVisit.cost) || 0,
-      purpose: newVisit.purpose,
+      cost: services.reduce((sum, s) => sum + s.cost, 0),
+      purpose: services.map(s => s.name).join('、'),
+      services,
       notes: newVisit.notes,
-      photoUrl: newVisit.photoUrl
+      photoUrl: newVisit.photoUrl,
     };
     setShops(shops.map(s => s.id === shopId ? { ...s, visits: [...s.visits, visit] } : s));
     setNewVisit({ date: new Date().toISOString().split('T')[0] });
+    setNewVisitServices([{name: '', cost: ''}]);
     setAddingVisitTo(null);
   };
 
   const handleSaveVisit = (shopId: string, visitId: string) => {
+    const services: ShopVisitService[] = editVisitServices
+      .filter(s => s.name.trim())
+      .map(s => ({ name: s.name.trim(), cost: Number(s.cost) || 0 }));
     setShops(shops.map(s => {
       if (s.id !== shopId) return s;
       return {
         ...s,
-        visits: s.visits.map(v => v.id === visitId ? { ...v, ...editVisitData, cost: Number(editVisitData.cost) || 0 } : v)
+        visits: s.visits.map(v => v.id === visitId ? {
+          ...v,
+          date: editVisitData.date || v.date,
+          cost: services.reduce((sum, sv) => sum + sv.cost, 0),
+          purpose: services.map(s => s.name).join('、'),
+          services,
+          notes: editVisitData.notes,
+          photoUrl: editVisitData.photoUrl,
+        } : v),
       };
     }));
     setEditingVisitId(null);
@@ -500,30 +519,52 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
 
                   {/* Add visit form */}
                   {addingVisitTo === selectedShop.id && (
-                    <div className="bg-white/60 border border-sand/30 p-4 rounded-2xl mb-4 space-y-2.5 animate-fade-in">
-                      <div className="flex gap-2">
-                        <input
-                          type="date"
-                          className="flex-1 bg-white/80 border border-sand/50 rounded-xl px-3 py-2 text-sm text-ink focus:ring-1 focus:ring-clay"
-                          value={newVisit.date || ''}
-                          onChange={e => setNewVisit({ ...newVisit, date: e.target.value })}
-                        />
-                        <input
-                          type="number" placeholder="花費"
-                          className="w-24 bg-white/80 border border-sand/50 rounded-xl px-3 py-2 text-sm text-ink focus:ring-1 focus:ring-clay"
-                          value={newVisit.cost || ''}
-                          onChange={e => setNewVisit({ ...newVisit, cost: Number(e.target.value) })}
-                        />
-                      </div>
+                    <div className="bg-white/60 border border-sand/30 p-4 rounded-2xl mb-4 space-y-3 animate-fade-in">
                       <input
-                        type="text" placeholder="用途（如：全套美容、住宿 3 晚...）"
+                        type="date"
                         className="w-full bg-white/80 border border-sand/50 rounded-xl px-3 py-2 text-sm text-ink focus:ring-1 focus:ring-clay"
-                        value={newVisit.purpose || ''}
-                        onChange={e => setNewVisit({ ...newVisit, purpose: e.target.value })}
+                        value={newVisit.date || ''}
+                        onChange={e => setNewVisit({ ...newVisit, date: e.target.value })}
                       />
+                      {/* Service line items */}
+                      <div>
+                        <label className="text-[9px] font-bold tracking-widest uppercase text-pencil/60 font-sans block mb-2">服務項目</label>
+                        <div className="space-y-1.5">
+                          {newVisitServices.map((svc, idx) => (
+                            <div key={idx} className="flex gap-1.5 items-center">
+                              <input
+                                type="text" placeholder="服務名稱（美容、住宿⋯）"
+                                className="flex-1 bg-white/80 border border-sand/50 rounded-xl px-3 py-2 text-sm text-ink focus:ring-1 focus:ring-clay"
+                                value={svc.name}
+                                onChange={e => { const u = [...newVisitServices]; u[idx] = {...u[idx], name: e.target.value}; setNewVisitServices(u); }}
+                              />
+                              <div className="relative w-24 flex-shrink-0">
+                                <span className="absolute left-2.5 top-2 text-pencil/40 text-sm pointer-events-none">$</span>
+                                <input
+                                  type="number" placeholder="0" min="0"
+                                  className="w-full bg-white/80 border border-sand/50 rounded-xl pl-6 pr-2 py-2 text-sm text-ink focus:ring-1 focus:ring-clay"
+                                  value={svc.cost}
+                                  onChange={e => { const u = [...newVisitServices]; u[idx] = {...u[idx], cost: e.target.value}; setNewVisitServices(u); }}
+                                />
+                              </div>
+                              {newVisitServices.length > 1 && (
+                                <button type="button" onClick={() => setNewVisitServices(newVisitServices.filter((_, i) => i !== idx))} className="p-1 text-clay/40 hover:text-clay flex-shrink-0"><X size={14}/></button>
+                              )}
+                            </div>
+                          ))}
+                          <button type="button" onClick={() => setNewVisitServices([...newVisitServices, {name: '', cost: ''}])} className="flex items-center gap-1 text-xs text-clay/70 hover:text-clay pt-0.5">
+                            <Plus size={13} /> 新增項目
+                          </button>
+                        </div>
+                        {newVisitServices.some(s => Number(s.cost) > 0) && (
+                          <div className="mt-1.5 text-xs text-right text-pencil/55 font-sans">
+                            合計 ${newVisitServices.reduce((sum, s) => sum + (Number(s.cost) || 0), 0).toLocaleString()}
+                          </div>
+                        )}
+                      </div>
                       <textarea
                         placeholder="備註..."
-                        className="w-full bg-white/80 border border-sand/50 rounded-xl px-3 py-2 text-sm text-ink focus:ring-1 focus:ring-clay min-h-[60px] whitespace-pre-wrap"
+                        className="w-full bg-white/80 border border-sand/50 rounded-xl px-3 py-2 text-sm text-ink focus:ring-1 focus:ring-clay min-h-[56px] whitespace-pre-wrap"
                         value={newVisit.notes || ''}
                         onChange={e => setNewVisit({ ...newVisit, notes: e.target.value })}
                       />
@@ -538,7 +579,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
                       </div>
                       <input type="file" ref={fileInputRef} onChange={e => handleImageUpload(e, false)} accept="image/*" className="hidden" />
                       <div className="flex justify-end gap-2 pt-1">
-                        <button onClick={() => setAddingVisitTo(null)} className="px-3 py-1.5 text-xs text-ink/60 hover:text-ink">取消</button>
+                        <button onClick={() => { setAddingVisitTo(null); setNewVisitServices([{name: '', cost: ''}]); }} className="px-3 py-1.5 text-xs text-ink/60 hover:text-ink">取消</button>
                         <button onClick={() => handleAddVisit(selectedShop.id)} className="px-4 py-1.5 text-xs bg-clay text-white rounded-lg hover:bg-clay/90">儲存</button>
                       </div>
                     </div>
@@ -565,29 +606,51 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
                         <div key={visit.id} className="bg-white/55 border border-sand/30 p-4 rounded-2xl relative">
                           {editingVisitId === visit.id ? (
                             <div className="space-y-2.5 animate-fade-in">
-                              <div className="flex gap-2">
-                                <input
-                                  type="date"
-                                  className="flex-1 bg-white/80 border border-sand/50 rounded-xl px-3 py-2 text-sm text-ink focus:ring-1 focus:ring-clay"
-                                  value={editVisitData.date || ''}
-                                  onChange={e => setEditVisitData({ ...editVisitData, date: e.target.value })}
-                                />
-                                <input
-                                  type="number" placeholder="花費"
-                                  className="w-24 bg-white/80 border border-sand/50 rounded-xl px-3 py-2 text-sm text-ink focus:ring-1 focus:ring-clay"
-                                  value={editVisitData.cost || ''}
-                                  onChange={e => setEditVisitData({ ...editVisitData, cost: Number(e.target.value) })}
-                                />
-                              </div>
                               <input
-                                type="text" placeholder="用途"
+                                type="date"
                                 className="w-full bg-white/80 border border-sand/50 rounded-xl px-3 py-2 text-sm text-ink focus:ring-1 focus:ring-clay"
-                                value={editVisitData.purpose || ''}
-                                onChange={e => setEditVisitData({ ...editVisitData, purpose: e.target.value })}
+                                value={editVisitData.date || ''}
+                                onChange={e => setEditVisitData({ ...editVisitData, date: e.target.value })}
                               />
+                              {/* Edit service line items */}
+                              <div>
+                                <label className="text-[9px] font-bold tracking-widest uppercase text-pencil/60 font-sans block mb-2">服務項目</label>
+                                <div className="space-y-1.5">
+                                  {editVisitServices.map((svc, idx) => (
+                                    <div key={idx} className="flex gap-1.5 items-center">
+                                      <input
+                                        type="text" placeholder="服務名稱"
+                                        className="flex-1 bg-white/80 border border-sand/50 rounded-xl px-3 py-2 text-sm text-ink focus:ring-1 focus:ring-clay"
+                                        value={svc.name}
+                                        onChange={e => { const u = [...editVisitServices]; u[idx] = {...u[idx], name: e.target.value}; setEditVisitServices(u); }}
+                                      />
+                                      <div className="relative w-24 flex-shrink-0">
+                                        <span className="absolute left-2.5 top-2 text-pencil/40 text-sm pointer-events-none">$</span>
+                                        <input
+                                          type="number" placeholder="0" min="0"
+                                          className="w-full bg-white/80 border border-sand/50 rounded-xl pl-6 pr-2 py-2 text-sm text-ink focus:ring-1 focus:ring-clay"
+                                          value={svc.cost}
+                                          onChange={e => { const u = [...editVisitServices]; u[idx] = {...u[idx], cost: e.target.value}; setEditVisitServices(u); }}
+                                        />
+                                      </div>
+                                      {editVisitServices.length > 1 && (
+                                        <button type="button" onClick={() => setEditVisitServices(editVisitServices.filter((_, i) => i !== idx))} className="p-1 text-clay/40 hover:text-clay flex-shrink-0"><X size={14}/></button>
+                                      )}
+                                    </div>
+                                  ))}
+                                  <button type="button" onClick={() => setEditVisitServices([...editVisitServices, {name: '', cost: ''}])} className="flex items-center gap-1 text-xs text-clay/70 hover:text-clay pt-0.5">
+                                    <Plus size={13} /> 新增項目
+                                  </button>
+                                </div>
+                                {editVisitServices.some(s => Number(s.cost) > 0) && (
+                                  <div className="mt-1.5 text-xs text-right text-pencil/55 font-sans">
+                                    合計 ${editVisitServices.reduce((sum, s) => sum + (Number(s.cost) || 0), 0).toLocaleString()}
+                                  </div>
+                                )}
+                              </div>
                               <textarea
                                 placeholder="備註..."
-                                className="w-full bg-white/80 border border-sand/50 rounded-xl px-3 py-2 text-sm text-ink focus:ring-1 focus:ring-clay min-h-[60px] whitespace-pre-wrap"
+                                className="w-full bg-white/80 border border-sand/50 rounded-xl px-3 py-2 text-sm text-ink focus:ring-1 focus:ring-clay min-h-[56px] whitespace-pre-wrap"
                                 value={editVisitData.notes || ''}
                                 onChange={e => setEditVisitData({ ...editVisitData, notes: e.target.value })}
                               />
@@ -608,21 +671,48 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
                             </div>
                           ) : (
                             <>
-                              <div className="flex justify-between items-start pr-14">
-                                <div>
-                                  <div className="flex items-center gap-2 mb-1">
-                                    <Calendar size={13} className="text-clay/60" />
-                                    <span className="text-sm font-medium text-ink font-fangsong">{visit.date}</span>
-                                  </div>
-                                  <div className="text-sm text-ink/85 font-fangsong">{visit.purpose}</div>
-                                  {visit.notes && (
-                                    <div className="text-xs text-ink/50 mt-1 whitespace-pre-wrap font-fangsong">{visit.notes}</div>
-                                  )}
+                              <div className="pr-16">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <Calendar size={13} className="text-clay/60" />
+                                  <span className="text-sm font-medium text-ink font-fangsong">{visit.date}</span>
                                 </div>
-                                <span className="text-sm font-medium text-gold font-fangsong">${visit.cost}</span>
+                                {visit.services && visit.services.length > 0 ? (
+                                  <div className="space-y-1">
+                                    {visit.services.map((svc, idx) => (
+                                      <div key={idx} className="flex justify-between items-center">
+                                        <span className="text-sm text-ink/80 font-fangsong">{svc.name}</span>
+                                        <span className="text-sm text-gold font-fangsong ml-4">${svc.cost.toLocaleString()}</span>
+                                      </div>
+                                    ))}
+                                    {visit.services.length > 1 && (
+                                      <div className="flex justify-between items-center border-t border-sand/40 pt-1 mt-0.5">
+                                        <span className="text-[10px] text-pencil/50 font-sans uppercase tracking-wider">合計</span>
+                                        <span className="text-sm font-bold text-gold font-fangsong">${visit.cost.toLocaleString()}</span>
+                                      </div>
+                                    )}
+                                  </div>
+                                ) : (
+                                  <div className="flex justify-between items-center">
+                                    <span className="text-sm text-ink/80 font-fangsong">{visit.purpose}</span>
+                                    <span className="text-sm font-medium text-gold font-fangsong">${visit.cost.toLocaleString()}</span>
+                                  </div>
+                                )}
+                                {visit.notes && (
+                                  <div className="text-xs text-ink/45 mt-1.5 whitespace-pre-wrap font-fangsong">{visit.notes}</div>
+                                )}
                               </div>
                               <div className="absolute top-3 right-3 flex gap-0.5">
-                                <button onClick={() => { setEditingVisitId(visit.id); setEditVisitData(visit); }} className="p-1.5 text-ink/25 hover:text-clay transition-colors"><Edit2 size={14} /></button>
+                                <button
+                                  onClick={() => {
+                                    setEditingVisitId(visit.id);
+                                    setEditVisitData(visit);
+                                    setEditVisitServices(
+                                      visit.services?.map(s => ({name: s.name, cost: String(s.cost)})) ||
+                                      [{name: visit.purpose, cost: String(visit.cost)}]
+                                    );
+                                  }}
+                                  className="p-1.5 text-ink/25 hover:text-clay transition-colors"
+                                ><Edit2 size={14} /></button>
                                 <button onClick={() => handleDeleteVisit(selectedShop.id, visit.id)} className="p-1.5 text-ink/25 hover:text-clay transition-colors"><Trash2 size={14} /></button>
                               </div>
                               {visit.photoUrl && (
