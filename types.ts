@@ -8,7 +8,7 @@ export interface VetContact {
 export interface PetProfile {
   name: string;
   breed: string;
-  gender: 'Male' | 'Female' | 'Other';
+  gender: 'Male' | 'Female';
   birthDate: string; // ISO string YYYY-MM-DD
   microchipId: string;
   photoUrl: string | null;
@@ -60,6 +60,7 @@ export interface InventoryItem {
   unit: string; // e.g., 'g', 'pills'
   caloriesPerUnit?: number; // kcal per unit (e.g., per 100g)
   ingredients?: string;
+  purchaseLocation?: string; // e.g., 寵物店、網路商店
 }
 
 export interface PrepaidService {
@@ -76,13 +77,32 @@ export interface ChatMessage {
   text: string;
 }
 
+export interface WardrobeItem {
+  id: string;
+  name: string;
+  category: 'Clothing' | 'Accessory' | 'Bag' | 'Other';
+  brand?: string;
+  color?: string;
+  size?: string;
+  purchaseDate?: string;
+  price?: number;
+  notes?: string;
+  photoUrl?: string;
+}
+
+export interface ShopVisitService {
+  name: string;
+  cost: number;
+}
+
 export interface ShopVisit {
   id: string;
   date: string;
   cost: number;
   purpose: string;
+  services?: ShopVisitService[];
   notes?: string;
-  photoUrl?: string; // Added for attachments
+  photoUrl?: string;
 }
 
 export interface PetShop {
@@ -105,4 +125,4 @@ export interface DailyLog {
   photoUrl?: string;
 }
 
-export type TabView = 'dashboard' | 'daily' | 'profile' | 'physical' | 'health' | 'food' | 'finance' | 'shops' | 'chat';
+export type TabView = 'dashboard' | 'daily' | 'profile' | 'physical' | 'health' | 'food' | 'finance' | 'shops';

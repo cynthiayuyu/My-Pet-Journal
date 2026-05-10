@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { PhysicalRecord, PetProfile } from '../types';
 import { generateId, formatDate } from '../utils';
-import { Weight, Ruler, ChevronLeft, ChevronRight, Plus, Trash2, X, AlertTriangle, TrendingUp, TrendingDown, Edit2 } from 'lucide-react';
+import { Weight, Ruler, ChevronLeft, ChevronRight, ChevronDown, Plus, Trash2, X, AlertTriangle, TrendingUp, TrendingDown, Edit2 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
 interface PhysicalSectionProps {
@@ -31,6 +31,13 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
   
   const prevMonth = () => setCurrentDate(new Date(year, month - 1, 1));
   const nextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
+
+  const [showPicker, setShowPicker] = useState(false);
+  const [pickerYear, setPickerYear] = useState(new Date().getFullYear());
+  const handleTogglePicker = () => {
+    if (!showPicker) setPickerYear(year);
+    setShowPicker(v => !v);
+  };
 
   // Get records for the selected date
   const selectedRecords = records.filter(r => r.date === selectedDateStr);
@@ -100,7 +107,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
     
     if (percentDiff > 10) return { type: 'overweight', message: `Overweight by ${diff.toFixed(1)}kg (${percentDiff.toFixed(0)}%)`, color: 'text-clay', bg: 'bg-clay/10', icon: TrendingUp };
     if (percentDiff < -10) return { type: 'underweight', message: `Underweight by ${Math.abs(diff).toFixed(1)}kg (${Math.abs(percentDiff).toFixed(0)}%)`, color: 'text-pencil', bg: 'bg-sand/20', icon: TrendingDown };
-    return { type: 'ideal', message: 'Ideal Weight!', color: 'text-[#6A9A6A]', bg: 'bg-sage/15', icon: Weight };
+    return { type: 'ideal', message: 'Ideal Weight!', color: 'text-[#5E8A55]', bg: 'bg-sage/15', icon: Weight };
   }, [profile.idealWeight, latestRecord]);
 
   return (
@@ -126,17 +133,17 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
           <div className="h-48 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E6E2D8" />
-                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#8C8680', fontFamily: 'DM Sans' }} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#8C8680', fontFamily: 'DM Sans' }} />
-                <Tooltip 
-                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px -2px rgba(62, 58, 54, 0.1)', fontFamily: 'DM Sans', fontSize: '12px' }}
-                  itemStyle={{ color: '#3E3A36', fontWeight: 'bold' }}
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#DDD5C8" />
+                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#8A7870', fontFamily: 'Raleway' }} dy={10} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#8A7870', fontFamily: 'Raleway' }} />
+                <Tooltip
+                  contentStyle={{ borderRadius: '10px', border: 'none', boxShadow: '0 4px 20px -2px rgba(43, 33, 26, 0.10)', fontFamily: 'Raleway', fontSize: '12px', background: '#FDFAF5' }}
+                  itemStyle={{ color: '#2B211A', fontWeight: '600' }}
                 />
                 {profile.idealWeight && (
-                  <ReferenceLine y={profile.idealWeight} stroke="#B5C1A6" strokeDasharray="3 3" label={{ position: 'insideTopLeft', value: 'Ideal', fill: '#B5C1A6', fontSize: 10 }} />
+                  <ReferenceLine y={profile.idealWeight} stroke="#7A9870" strokeDasharray="3 3" label={{ position: 'insideTopLeft', value: 'Ideal', fill: '#7A9870', fontSize: 10 }} />
                 )}
-                <Line type="monotone" dataKey="weight" stroke="#C79A78" strokeWidth={3} dot={{ r: 4, fill: '#C79A78', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6, fill: '#BFA884', stroke: '#fff', strokeWidth: 2 }} />
+                <Line type="monotone" dataKey="weight" stroke="#B87068" strokeWidth={2.5} dot={{ r: 4, fill: '#B87068', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6, fill: '#B89050', stroke: '#fff', strokeWidth: 2 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -146,14 +153,48 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
       {/* Calendar Card */}
       <div className="card-warm rounded-[2rem] p-6">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center mb-4">
           <button onClick={prevMonth} className="p-2 text-pencil hover:text-ink transition-colors"><ChevronLeft size={20}/></button>
-          <h3 className="text-xl font-fangsong text-ink font-medium tracking-wide text-center">
+          <button onClick={handleTogglePicker} className="text-center group">
             <div className="text-sm text-pencil font-sans uppercase tracking-widest mb-1">{currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</div>
-            <div>{currentDate.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long' })}</div>
-          </h3>
+            <div className="text-xl font-fangsong text-ink font-medium tracking-wide flex items-center gap-1 justify-center">
+              {currentDate.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long' })}
+              <ChevronDown size={13} className={`text-pencil/50 transition-transform duration-300 ${showPicker ? 'rotate-180' : ''}`} />
+            </div>
+          </button>
           <button onClick={nextMonth} className="p-2 text-pencil hover:text-ink transition-colors"><ChevronRight size={20}/></button>
         </div>
+
+        {/* Quick Year / Month Picker */}
+        {showPicker && (
+          <div className="mb-4 pt-3 border-t border-sand/30 animate-fade-in">
+            <div className="flex items-center justify-between mb-3 px-1">
+              <button onClick={() => setPickerYear(y => y - 1)} className="p-1.5 rounded-lg text-pencil hover:text-ink hover:bg-sand/30 transition-colors">
+                <ChevronLeft size={15} />
+              </button>
+              <span className="font-fangsong text-lg text-ink">{pickerYear} 年</span>
+              <button onClick={() => setPickerYear(y => y + 1)} className="p-1.5 rounded-lg text-pencil hover:text-ink hover:bg-sand/30 transition-colors">
+                <ChevronRight size={15} />
+              </button>
+            </div>
+            <div className="grid grid-cols-4 gap-1">
+              {Array.from({ length: 12 }, (_, i) => {
+                const isActive = year === pickerYear && month === i;
+                return (
+                  <button
+                    key={i}
+                    onClick={() => { setCurrentDate(new Date(pickerYear, i, 1)); setShowPicker(false); }}
+                    className={`py-2 rounded-xl text-sm font-fangsong transition-all ${
+                      isActive ? 'bg-clay text-white shadow-sm' : 'hover:bg-sand/30 text-ink'
+                    }`}
+                  >
+                    {i + 1}月
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Days of Week */}
         <div className="grid grid-cols-7 mb-2">
@@ -174,19 +215,19 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
             const isToday = dateStr === new Date().toISOString().split('T')[0];
 
             return (
-              <div key={day} className="flex flex-col items-center">
+              <div key={day} className="flex flex-col items-center gap-1 py-0.5">
                 <button
                   onClick={() => handleDateClick(day)}
-                  className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-fangsong transition-all duration-300 relative
+                  className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-fangsong transition-all duration-300
                     ${isSelected ? 'bg-clay text-white shadow-md scale-105' : 'text-ink hover:bg-sand/30'}
                     ${isToday && !isSelected ? 'border border-gold text-gold' : ''}
                   `}
                 >
                   {day}
-                  {hasRecord && (
-                    <span className={`absolute bottom-1.5 w-1 h-1 rounded-full ${isSelected ? 'bg-gold' : 'bg-clay'}`} />
-                  )}
                 </button>
+                <span className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                  hasRecord ? (isSelected ? 'bg-white/80' : 'bg-clay') : 'opacity-0'
+                }`} />
               </div>
             );
           })}
@@ -277,17 +318,18 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
       {isFormOpen && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsFormOpen(false)} />
-          <form onSubmit={handleSubmit} className="bg-[#FEFCF8] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative">
-             <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-8 opacity-50" />
-             
-             <div className="flex justify-between items-center mb-8">
-               <h3 className="font-fangsong text-2xl text-ink">{editingRecordId ? 'Edit Record' : 'New Measurement'}</h3>
-               <button type="button" onClick={() => setIsFormOpen(false)} className="w-8 h-8 rounded-full bg-sand/30 flex items-center justify-center text-ink hover:bg-sand transition-colors">
-                  <X size={16}/>
-               </button>
-             </div>
-
-             <div className="grid grid-cols-2 gap-6 mb-8">
+          <form onSubmit={handleSubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] shadow-2xl pointer-events-auto animate-fade-in relative flex flex-col" style={{ maxHeight: '90vh' }}>
+            <div className="flex-shrink-0 px-8 pt-6 pb-4">
+              <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-5 opacity-50" />
+              <div className="flex justify-between items-center">
+                <h3 className="font-fangsong text-2xl text-ink">{editingRecordId ? '編輯紀錄' : '新增量測'}</h3>
+                <button type="button" onClick={() => setIsFormOpen(false)} className="w-8 h-8 rounded-full bg-sand/30 flex items-center justify-center text-ink hover:bg-sand transition-colors">
+                  <X size={16} />
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto px-8 pb-4">
+              <div className="grid grid-cols-2 gap-6 mb-8">
                 <div className="col-span-2">
                    <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Date</label>
                    <input 
@@ -348,11 +390,13 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
                     className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-xl rounded-none placeholder-sand/50"
                    />
                 </div>
-             </div>
-
-             <button type="submit" className="w-full py-4 btn-warm">
-               {editingRecordId ? 'Update' : 'Save'}
-             </button>
+              </div>
+            </div>
+            <div className="flex-shrink-0 px-8 pb-24 pt-4 border-t border-sand/20">
+              <button type="submit" className="w-full py-3.5 btn-warm">
+                {editingRecordId ? '更新' : '儲存'}
+              </button>
+            </div>
           </form>
         </div>
       )}

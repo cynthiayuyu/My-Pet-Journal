@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useRef } from 'react';
 import { HealthRecord, PetShop } from '../types';
 import { generateId, formatDate } from '../utils';
-import { ChevronLeft, ChevronRight, Plus, Trash2, X, Syringe, Bug, Clock, MapPin, Stethoscope, FileText, Activity, Edit2, Search, Camera, DollarSign } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ChevronDown, Plus, Trash2, X, Syringe, Bug, Clock, MapPin, Stethoscope, FileText, Activity, Edit2, Search, Camera, DollarSign } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface HealthSectionProps {
@@ -18,6 +18,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
   const [selectedDateStr, setSelectedDateStr] = useState(new Date().toISOString().split('T')[0]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingRecordId, setEditingRecordId] = useState<string | null>(null);
+  const [activeFilter, setActiveFilter] = useState<'Vaccine' | 'Deworming' | 'Checkup' | null>(null);
   
   // Form State
   const [activeType, setActiveType] = useState<'Vaccine' | 'Deworming' | 'Checkup' | 'Vet Visit'>('Vaccine');
@@ -46,6 +47,13 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
   
   const prevMonth = () => setCurrentDate(new Date(year, month - 1, 1));
   const nextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
+
+  const [showPicker, setShowPicker] = useState(false);
+  const [pickerYear, setPickerYear] = useState(new Date().getFullYear());
+  const handleTogglePicker = () => {
+    if (!showPicker) setPickerYear(year);
+    setShowPicker(v => !v);
+  };
 
   const handleDateClick = (day: number) => {
     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
@@ -149,6 +157,15 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
   }, [records, shops]);
 
   const allLocations = useMemo(() => [...shopLocations, ...otherLocations], [shopLocations, otherLocations]);
+
+  const filteredRecordsList = useMemo(() => {
+    if (!activeFilter) return [];
+    return records.filter(r =>
+      activeFilter === 'Vaccine' ? r.type === 'Vaccine' :
+      activeFilter === 'Deworming' ? r.type === 'Deworming' :
+      r.type === 'Checkup' || r.type === 'Vet Visit'
+    ).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }, [records, activeFilter]);
 
   const getEventTypeName = (type: string) => {
     switch(type) {
@@ -271,14 +288,48 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
         <div className="absolute top-0 left-0 w-20 h-20 bg-gradient-to-br from-sage/10 to-transparent rounded-br-[4rem] pointer-events-none"></div>
 
         {/* Header */}
-        <div className="flex justify-between items-center mb-6 relative z-10">
+        <div className="flex justify-between items-center mb-4 relative z-10">
           <button onClick={prevMonth} className="p-2 text-pencil hover:text-ink transition-colors"><ChevronLeft size={20}/></button>
-          <h3 className="text-xl font-fangsong text-ink font-medium tracking-wide text-center">
+          <button onClick={handleTogglePicker} className="text-center group">
             <div className="text-sm text-pencil font-sans uppercase tracking-widest mb-1">{currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</div>
-            <div>{currentDate.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long' })}</div>
-          </h3>
+            <div className="text-xl font-fangsong text-ink font-medium tracking-wide flex items-center gap-1 justify-center">
+              {currentDate.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long' })}
+              <ChevronDown size={13} className={`text-pencil/50 transition-transform duration-300 ${showPicker ? 'rotate-180' : ''}`} />
+            </div>
+          </button>
           <button onClick={nextMonth} className="p-2 text-pencil hover:text-ink transition-colors"><ChevronRight size={20}/></button>
         </div>
+
+        {/* Quick Year / Month Picker */}
+        {showPicker && (
+          <div className="mb-4 pt-3 border-t border-sand/30 animate-fade-in">
+            <div className="flex items-center justify-between mb-3 px-1">
+              <button onClick={() => setPickerYear(y => y - 1)} className="p-1.5 rounded-lg text-pencil hover:text-ink hover:bg-sand/30 transition-colors">
+                <ChevronLeft size={15} />
+              </button>
+              <span className="font-fangsong text-lg text-ink">{pickerYear} 年</span>
+              <button onClick={() => setPickerYear(y => y + 1)} className="p-1.5 rounded-lg text-pencil hover:text-ink hover:bg-sand/30 transition-colors">
+                <ChevronRight size={15} />
+              </button>
+            </div>
+            <div className="grid grid-cols-4 gap-1">
+              {Array.from({ length: 12 }, (_, i) => {
+                const isActive = year === pickerYear && month === i;
+                return (
+                  <button
+                    key={i}
+                    onClick={() => { setCurrentDate(new Date(pickerYear, i, 1)); setShowPicker(false); }}
+                    className={`py-2 rounded-xl text-sm font-fangsong transition-all ${
+                      isActive ? 'bg-clay text-white shadow-sm' : 'hover:bg-sand/30 text-ink'
+                    }`}
+                  >
+                    {i + 1}月
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Days of Week */}
         <div className="grid grid-cols-7 mb-2 relative z-10">
@@ -288,60 +339,136 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
         </div>
 
         {/* Days Grid */}
-        <div className="grid grid-cols-7 gap-y-2 relative z-10">
+        <div className="grid grid-cols-7 gap-y-0.5 relative z-10">
           {Array.from({ length: firstDayOfMonth }).map((_, i) => <div key={`empty-${i}`} />)}
-          
+
           {Array.from({ length: daysInMonth }).map((_, i) => {
             const day = i + 1;
             const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
             const isSelected = dateStr === selectedDateStr;
             const isToday = dateStr === new Date().toISOString().split('T')[0];
-            
-            // Check for events on this day
+
             const dayEvents = records.filter(r => r.date === dateStr);
             const hasVaccine = dayEvents.some(r => r.type === 'Vaccine');
             const hasDeworm = dayEvents.some(r => r.type === 'Deworming');
             const hasCheckupOrVet = dayEvents.some(r => r.type === 'Checkup' || r.type === 'Vet Visit');
-            
-            // Check for reminders (Next Due)
+            const hasAnyEvent = hasVaccine || hasDeworm || hasCheckupOrVet;
             const hasReminder = records.some(r => r.nextDueDate === dateStr);
 
+            const matchesFilter = !activeFilter
+              || (activeFilter === 'Vaccine' && hasVaccine)
+              || (activeFilter === 'Deworming' && hasDeworm)
+              || (activeFilter === 'Checkup' && hasCheckupOrVet);
+
             return (
-              <div key={day} className="flex flex-col items-center">
+              <div key={day} className={`flex flex-col items-center gap-[3px] py-0.5 transition-opacity duration-200 ${activeFilter && !matchesFilter && !isSelected ? 'opacity-30' : ''}`}>
                 <button
                   onClick={() => handleDateClick(day)}
-                  className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-fangsong transition-all duration-300 relative border-2 
-                    ${isSelected 
-                        ? 'bg-clay text-white border-clay shadow-md scale-105' 
-                        : hasReminder 
-                            ? 'bg-white border-clay text-ink' // Outline for reminders
+                  className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-fangsong transition-all duration-300 border
+                    ${isSelected
+                        ? 'bg-clay text-white border-clay shadow-md scale-105'
+                        : activeFilter && matchesFilter && hasAnyEvent
+                            ? 'bg-white border-clay/50 text-ink shadow-sm'
+                            : hasReminder && !isSelected
+                            ? 'bg-white border-clay/40 text-ink'
+                            : isToday
+                            ? 'border-sage/50 bg-sage/10 text-ink border'
                             : 'border-transparent text-ink hover:bg-sand/30'
                     }
-                    ${isToday && !isSelected && !hasReminder ? 'border-sage/50 bg-sage/10' : ''}
                   `}
                 >
                   {day}
-                  
-                  {/* Event Indicators */}
-                  <div className="absolute -bottom-1 flex gap-0.5 justify-center">
-                    {hasVaccine && <span className={`w-1 h-1 rounded-full ${isSelected ? 'bg-gold' : 'bg-clay/50'}`} />}
-                    {hasDeworm && <span className={`w-1 h-1 rounded-full ${isSelected ? 'bg-gold' : 'bg-sage/60'}`} />}
-                    {hasCheckupOrVet && <span className={`w-1 h-1 rounded-full ${isSelected ? 'bg-gold' : 'bg-gold/50'}`} />}
-                  </div>
                 </button>
+
+                {/* Event indicator dots */}
+                <div className="flex gap-0.5 h-[6px] items-center">
+                  {hasVaccine && (!activeFilter || activeFilter === 'Vaccine') && (
+                    <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white/90' : 'bg-clay'}`} />
+                  )}
+                  {hasDeworm && (!activeFilter || activeFilter === 'Deworming') && (
+                    <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white/90' : 'bg-sage'}`} />
+                  )}
+                  {hasCheckupOrVet && (!activeFilter || activeFilter === 'Checkup') && (
+                    <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white/90' : 'bg-gold'}`} />
+                  )}
+                  {hasReminder && !hasAnyEvent && !activeFilter && (
+                    <span className={`w-1.5 h-1.5 rounded-full border ${isSelected ? 'border-white/80' : 'border-clay'}`} />
+                  )}
+                </div>
               </div>
             );
           })}
         </div>
-        
+
         {/* Legend */}
-        <div className="mt-6 pt-4 border-t border-sand/30 flex justify-center gap-4 text-[10px] uppercase font-bold tracking-wider text-pencil font-sans">
-             <div className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-clay/50"></span> Vaccine</div>
-             <div className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-sage/60"></span> Deworm</div>
-             <div className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-gold/50"></span> Vet/Checkup</div>
-             <div className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full border border-clay"></span> Due</div>
+        <div className="mt-5 pt-4 border-t border-sand/30 flex flex-wrap justify-center gap-x-2 gap-y-2 text-[10px] uppercase font-bold tracking-wider font-sans">
+          {([
+            { type: 'Vaccine' as const, label: '疫苗', color: 'bg-clay', active: 'bg-clay/15 text-clay border-clay/40', inactive: 'text-pencil border-transparent hover:border-sand/60' },
+            { type: 'Deworming' as const, label: '驅蟲', color: 'bg-sage', active: 'bg-sage/15 text-sage border-sage/40', inactive: 'text-pencil border-transparent hover:border-sand/60' },
+            { type: 'Checkup' as const, label: '健檢/看診', color: 'bg-gold', active: 'bg-gold/15 text-gold border-gold/40', inactive: 'text-pencil border-transparent hover:border-sand/60' },
+          ]).map(({ type, label, color, active, inactive }) => (
+            <button
+              key={type}
+              type="button"
+              onClick={() => setActiveFilter(f => f === type ? null : type)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-all duration-200 ${activeFilter === type ? active : inactive}`}
+            >
+              <span className={`w-2 h-2 rounded-full ${color} inline-block flex-shrink-0`}></span>
+              {label}
+            </button>
+          ))}
+          <div className="flex items-center gap-1.5 px-3 py-1.5 text-pencil/60">
+            <span className="w-2 h-2 rounded-full border border-clay/60 inline-block flex-shrink-0"></span>
+            下次回診
+          </div>
         </div>
       </div>
+
+      {/* ── Filtered Records List (shown when a legend filter is active) ── */}
+      {activeFilter && (
+        <div className="space-y-3 animate-fade-in">
+          <div className="flex items-center justify-between px-2">
+            <h4 className="text-xs font-bold tracking-[0.2em] text-clay uppercase font-sans">
+              全部{activeFilter === 'Vaccine' ? '疫苗' : activeFilter === 'Deworming' ? '驅蟲' : '健檢/看診'}紀錄（{filteredRecordsList.length}）
+            </h4>
+            <button onClick={() => setActiveFilter(null)} className="text-xs text-pencil/60 hover:text-ink font-sans transition-colors">
+              清除篩選 ×
+            </button>
+          </div>
+          {filteredRecordsList.length === 0 ? (
+            <div className="text-center py-6 bg-white/50 rounded-3xl border border-dashed border-sand">
+              <p className="text-sm font-fangsong text-pencil">尚無相關紀錄</p>
+            </div>
+          ) : (
+            filteredRecordsList.map(record => (
+              <div
+                key={record.id}
+                className={`card-warm rounded-2xl p-4 flex items-center gap-3 cursor-pointer transition-all animate-fade-in ${record.date === selectedDateStr ? 'border border-clay/30 shadow-sm' : ''}`}
+                onClick={() => { setSelectedDateStr(record.date); setCurrentDate(new Date(record.date + 'T12:00:00')); }}
+              >
+                <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${
+                  record.type === 'Vaccine' ? 'icon-clay' :
+                  record.type === 'Deworming' ? 'icon-sage' : 'icon-gold'
+                }`}>
+                  {record.type === 'Vaccine' ? <Syringe size={15} /> :
+                   record.type === 'Deworming' ? <Bug size={15} /> : <Activity size={15} />}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[10px] font-bold tracking-widest text-pencil uppercase font-sans">{formatDate(record.date)}</div>
+                  <div className="text-base font-fangsong text-ink truncate">{record.title}</div>
+                  {record.location && <div className="text-xs text-pencil/55 font-fangsong truncate">{record.location}</div>}
+                </div>
+                {record.nextDueDate && (
+                  <div className="text-[10px] text-clay font-sans text-right flex-shrink-0 flex items-center gap-0.5">
+                    <Clock size={10} />
+                    {record.nextDueDate}
+                  </div>
+                )}
+              </div>
+            ))
+          )}
+        </div>
+      )}
 
       {/* Selected Day Details */}
       <div className="space-y-4">
@@ -371,7 +498,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
 
         {/* Render "Due" Items First */}
         {selectedDayReminders.map(record => (
-             <div key={`remind-${record.id}`} className="bg-[#FAF6F2] rounded-2xl p-5 shadow-sm border border-clay/30 relative flex gap-4 animate-fade-in pr-16">
+             <div key={`remind-${record.id}`} className="bg-[#F9F4EE] rounded-2xl p-5 shadow-sm border border-clay/30 relative flex gap-4 animate-fade-in pr-16">
                 <div className="w-10 h-10 rounded-full bg-white border border-clay/20 flex items-center justify-center text-clay flex-shrink-0">
                    <Clock size={18} />
                 </div>
@@ -482,14 +609,14 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
             <div className="h-48 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={trendData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E6E2D8" />
-                  <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#8C8680', fontFamily: 'DM Sans' }} dy={10} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#8C8680', fontFamily: 'DM Sans' }} />
-                  <Tooltip 
-                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px -2px rgba(62, 58, 54, 0.1)', fontFamily: 'DM Sans', fontSize: '12px' }}
-                    itemStyle={{ color: '#3E3A36', fontWeight: 'bold' }}
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#DDD5C8" />
+                  <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#8A7870', fontFamily: 'Raleway' }} dy={10} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#8A7870', fontFamily: 'Raleway' }} />
+                  <Tooltip
+                    contentStyle={{ borderRadius: '10px', border: 'none', boxShadow: '0 4px 20px -2px rgba(43, 33, 26, 0.10)', fontFamily: 'Raleway', fontSize: '12px', background: '#FDFAF5' }}
+                    itemStyle={{ color: '#2B211A', fontWeight: '600' }}
                   />
-                  <Line type="monotone" dataKey="value" stroke="#B5C1A6" strokeWidth={3} dot={{ r: 4, fill: '#B5C1A6', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6, fill: '#8C8680', stroke: '#fff', strokeWidth: 2 }} />
+                  <Line type="monotone" dataKey="value" stroke="#7A9870" strokeWidth={2.5} dot={{ r: 4, fill: '#7A9870', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6, fill: '#5E8A55', stroke: '#fff', strokeWidth: 2 }} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -503,15 +630,20 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
       {isFormOpen && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsFormOpen(false)} />
-          <form onSubmit={handleSubmit} className="bg-[#FEFCF8] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative max-h-[90vh] overflow-y-auto">
-             <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-8 opacity-50" />
-             
-             <div className="flex justify-between items-center mb-6">
-               <h3 className="font-fangsong text-2xl text-ink">{editingRecordId ? 'Edit Record' : 'New Record'}</h3>
-               <button type="button" onClick={() => setIsFormOpen(false)} className="w-8 h-8 rounded-full bg-sand/30 flex items-center justify-center text-ink hover:bg-sand transition-colors">
-                  <X size={16}/>
-               </button>
-             </div>
+          <form onSubmit={handleSubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] shadow-2xl pointer-events-auto animate-fade-in relative flex flex-col" style={{ maxHeight: '90vh' }}>
+            {/* Fixed header */}
+            <div className="flex-shrink-0 px-8 pt-6 pb-4">
+              <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-5 opacity-50" />
+              <div className="flex justify-between items-center">
+                <h3 className="font-fangsong text-2xl text-ink">{editingRecordId ? '編輯紀錄' : '新增紀錄'}</h3>
+                <button type="button" onClick={() => setIsFormOpen(false)} className="w-8 h-8 rounded-full bg-sand/30 flex items-center justify-center text-ink hover:bg-sand transition-colors">
+                  <X size={16} />
+                </button>
+              </div>
+            </div>
+            {/* Scrollable content wrapper — opened below */}
+            <div className="flex-1 overflow-y-auto px-8 pb-4">
+            <div className="space-y-0">
 
              {/* Type Selector */}
              <div className="flex flex-wrap bg-sand/20 p-1 rounded-xl mb-6 gap-1">
@@ -691,9 +823,14 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
                  </div>
               </div>
 
-             <button type="submit" className="w-full py-4 mt-8 btn-warm">
-               {editingRecordId ? 'Update' : 'Save'}
-             </button>
+            </div>{/* close space-y-0 */}
+            </div>{/* close flex-1 overflow-y-auto */}
+            {/* Sticky submit */}
+            <div className="flex-shrink-0 px-8 pb-24 pt-4 border-t border-sand/20">
+              <button type="submit" className="w-full py-3.5 btn-warm">
+                {editingRecordId ? '更新' : '儲存'}
+              </button>
+            </div>
           </form>
         </div>
       )}
