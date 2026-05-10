@@ -1,15 +1,18 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useMemo } from 'react';
 import { PetProfile } from '../types';
 import { calculateAge } from '../utils';
 import { Camera, Award, Stethoscope, Cloud, Upload, Download, Copy, CheckCircle, AlertCircle, RefreshCw, X } from 'lucide-react';
+import { ImageCropper } from './ImageCropper';
 
 interface ProfileSectionProps {
   profile: PetProfile;
   setProfile: (profile: PetProfile) => void;
+  storageUsedBytes: number;
 }
 
-export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProfile }) => {
+export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProfile, storageUsedBytes }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [cropperDataUrl, setCropperDataUrl] = useState<string | null>(null);
 
   const handleInputChange = (field: keyof PetProfile, value: string) => {
     setProfile({ ...profile, [field]: value });
@@ -32,11 +35,15 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfile({ ...profile, photoUrl: reader.result as string });
-      };
+      reader.onloadend = () => { setCropperDataUrl(reader.result as string); };
       reader.readAsDataURL(file);
     }
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const handleCropConfirm = (url: string) => {
+    setProfile({ ...profile, photoUrl: url });
+    setCropperDataUrl(null);
   };
 
   const age = calculateAge(profile.birthDate);
@@ -110,7 +117,19 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
     }
   };
 
+  const storageMB = storageUsedBytes / (1024 * 1024);
+  const storagePct = Math.min((storageUsedBytes / (5 * 1024 * 1024)) * 100, 100);
+  const storageWarn = storagePct >= 70;
+
   return (
+    <>
+    {cropperDataUrl && (
+      <ImageCropper
+        imageDataUrl={cropperDataUrl}
+        onConfirm={handleCropConfirm}
+        onCancel={() => setCropperDataUrl(null)}
+      />
+    )}
     <div className="flex flex-col gap-8 animate-fade-in pb-8">
       {/* Photo & Main Info Card */}
       <div className="flex flex-col items-center text-center relative pt-4 pb-2">
@@ -422,6 +441,33 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
           </div>
         </div>
       </div>
+
+      {/* Storage Bar */}
+      <div className="card-warm rounded-[2rem] p-6 shadow-soft border border-white">
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-[10px] font-bold tracking-[0.2em] text-pencil/60 uppercase font-sans">本機儲存空間</p>
+          <p className={`text-xs font-mono font-semibold ${storageWarn ? 'text-clay' : 'text-pencil/50'}`}>
+            {storageMB.toFixed(2)} / 5.00 MB
+          </p>
+        </div>
+        <div className="h-2 bg-sand/40 rounded-full overflow-hidden">
+          <div
+            className="h-full rounded-full transition-all duration-500"
+            style={{
+              width: `${storagePct}%`,
+              background: storageWarn
+                ? 'linear-gradient(90deg, #B87068, #A86060)'
+                : 'linear-gradient(90deg, #7A9870, #5E8A55)',
+            }}
+          />
+        </div>
+        {storageWarn && (
+          <p className="text-[10px] text-clay/80 mt-2 font-sans leading-relaxed">
+            ⚠ 儲存空間已使用 {storagePct.toFixed(0)}%，請考慮清理舊紀錄或匯出備份。
+          </p>
+        )}
+      </div>
     </div>
+    </>
   );
 };

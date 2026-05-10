@@ -126,3 +126,15 @@ export interface DailyLog {
 }
 
 export type TabView = 'dashboard' | 'daily' | 'profile' | 'physical' | 'health' | 'food' | 'finance' | 'shops';
+export interface PetData {
+  id: string;
+  profile: PetProfile;
+  physicalRecords: PhysicalRecord[];
+  healthRecords: HealthRecord[];
+  inventoryItems: InventoryItem[];
+  policies: InsurancePolicy[];
+  services: PrepaidService[];
+  shops: PetShop[];
+  dailyLogs: DailyLog[];
+  wardrobeItems: WardrobeItem[];
+}

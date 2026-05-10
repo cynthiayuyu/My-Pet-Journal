@@ -392,7 +392,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
                 </div>
               </div>
             </div>
-            <div className="flex-shrink-0 px-8 pb-24 pt-4 border-t border-sand/20">
+            <div className="flex-shrink-0 px-8 pt-4 border-t border-sand/20" style={{ paddingBottom: 'calc(7rem + env(safe-area-inset-bottom))' }}>
               <button type="submit" className="w-full py-3.5 btn-warm">
                 {editingRecordId ? '更新' : '儲存'}
               </button>
