@@ -119,7 +119,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
 
   const storageMB = storageUsedBytes / (1024 * 1024);
   const storagePct = Math.min((storageUsedBytes / (5 * 1024 * 1024)) * 100, 100);
-  const storageWarn = storagePct >= 70;
+  const storageWarn = storagePct >= 85;
 
   return (
     <>
