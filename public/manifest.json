@@ -1,0 +1,19 @@
+{
+  "name": "毛孩日記 My Pet Journal",
+  "short_name": "毛孩日記",
+  "description": "記錄寵物的健康、飲食、日常與回憶",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#F7F4F0",
+  "theme_color": "#B87068",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

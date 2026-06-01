@@ -1,12 +1,20 @@
 import React, { useState, useMemo } from 'react';
 import { InventoryItem, PetProfile } from '../types';
 import { generateId, formatDate } from '../utils';
-import { Plus, Trash2, X, Package, AlertCircle, Calculator, Utensils, Edit2 } from 'lucide-react';
+import { Plus, Trash2, X, Package, Calculator, Utensils, Edit2, AlertTriangle } from 'lucide-react';
 
 interface FoodSectionProps {
   items: InventoryItem[];
   setItems: (items: InventoryItem[]) => void;
   profile: PetProfile;
+}
+
+function estimateRemaining(item: InventoryItem): { remainingQty: number; daysLeft: number } | null {
+  if (!item.purchaseDate || !item.dailyUsage || item.dailyUsage <= 0) return null;
+  const daysElapsed = Math.max(0, (Date.now() - new Date(item.purchaseDate).getTime()) / 86400000);
+  const remainingQty = Math.max(0, item.quantity - daysElapsed * item.dailyUsage);
+  const daysLeft = Math.floor(remainingQty / item.dailyUsage);
+  return { remainingQty, daysLeft };
 }
 
 export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profile }) => {
@@ -27,50 +35,35 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newItem.name && newItem.expiryDate && newItem.quantity) {
-      const itemData = {
-        id: editingItemId || generateId(),
-        name: newItem.name,
-        type: newItem.type as 'Food' | 'Supplement',
-        expiryDate: newItem.expiryDate,
-        quantity: Number(newItem.quantity),
-        unit: newItem.unit || 'g',
-        caloriesPerUnit: newItem.caloriesPerUnit ? Number(newItem.caloriesPerUnit) : undefined,
-        ingredients: newItem.ingredients || '',
-        purchaseLocation: newItem.purchaseLocation || '',
-      };
-
-      if (editingItemId) {
-        setItems(items.map(i => i.id === editingItemId ? itemData : i));
-      } else {
-        setItems([...items, itemData]);
-      }
-      
-      setIsFormOpen(false);
-      setNewItem({ type: 'Food', unit: 'g' });
-      setEditingItemId(null);
+    if (!newItem.name || !newItem.expiryDate || !newItem.quantity) return;
+    const itemData: InventoryItem = {
+      id: editingItemId || generateId(),
+      name: newItem.name,
+      type: (newItem.type as 'Food' | 'Supplement') || 'Food',
+      expiryDate: newItem.expiryDate,
+      quantity: Number(newItem.quantity),
+      unit: newItem.unit || 'g',
+      caloriesPerUnit: newItem.caloriesPerUnit ? Number(newItem.caloriesPerUnit) : undefined,
+      ingredients: newItem.ingredients || undefined,
+      purchaseLocation: newItem.purchaseLocation || undefined,
+      purchaseDate: newItem.purchaseDate || undefined,
+      dailyUsage: newItem.dailyUsage ? Number(newItem.dailyUsage) : undefined,
+    };
+    if (editingItemId) {
+      setItems(items.map(i => i.id === editingItemId ? itemData : i));
+    } else {
+      setItems([...items, itemData]);
     }
+    setIsFormOpen(false);
+    setNewItem({ type: 'Food', unit: 'g' });
+    setEditingItemId(null);
   };
 
-  const deleteItem = (id: string) => {
-    setItems(items.filter(i => i.id !== id));
-  };
-
-  // Sort items by expiry date (earliest first) to suggest usage order
-  const sortedItems = useMemo(() => {
-    return [...items].sort((a, b) => new Date(a.expiryDate).getTime() - new Date(b.expiryDate).getTime());
-  }, [items]);
-
-  // Calorie Calculator (RER / MER)
   const calorieInfo = useMemo(() => {
     if (!profile.idealWeight) return null;
-    
-    // RER = 70 * (weight in kg)^0.75
     const rer = 70 * Math.pow(profile.idealWeight, 0.75);
-    
-    // MER Multipliers (approximate for dogs/cats)
-    let multiplier = 1.6; // default neutered adult
-    switch(profile.activityLevel) {
+    let multiplier = 1.6;
+    switch (profile.activityLevel) {
       case 'resting': multiplier = 1.2; break;
       case 'neutered_adult': multiplier = 1.6; break;
       case 'intact_adult': multiplier = 1.8; break;
@@ -79,15 +72,95 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
       case 'weight_loss': multiplier = 1.0; break;
       case 'weight_gain': multiplier = 1.8; break;
     }
-    
-    const mer = rer * multiplier;
-    return { rer: Math.round(rer), mer: Math.round(mer) };
+    return { rer: Math.round(rer), mer: Math.round(rer * multiplier) };
   }, [profile.idealWeight, profile.activityLevel]);
+
+  // Sort by expiry within each group
+  const sorted = useMemo(() =>
+    [...items].sort((a, b) => new Date(a.expiryDate).getTime() - new Date(b.expiryDate).getTime()),
+    [items]
+  );
+  const foods = sorted.filter(i => i.type === 'Food');
+  const supplements = sorted.filter(i => i.type === 'Supplement');
+
+  const renderItem = (item: InventoryItem, isFirst: boolean) => {
+    const isExpiringSoon = new Date(item.expiryDate).getTime() - Date.now() < 30 * 86400000;
+    const est = estimateRemaining(item);
+    const isLow = est !== null && est.daysLeft <= 7;
+    const suggestedAmount = item.type === 'Food' && item.caloriesPerUnit && calorieInfo
+      ? Math.round(calorieInfo.mer / item.caloriesPerUnit)
+      : null;
+
+    return (
+      <div key={item.id} className="card-warm rounded-2xl p-4 relative group animate-fade-in">
+        <div className="absolute top-3.5 right-3.5 flex gap-1.5">
+          <button onClick={() => handleOpenForm(item)} className="text-sand hover:text-clay transition-colors p-1">
+            <Edit2 size={15} />
+          </button>
+          <button onClick={() => setItems(items.filter(i => i.id !== item.id))} className="text-sand hover:text-clay transition-colors p-1">
+            <Trash2 size={15} />
+          </button>
+        </div>
+
+        <div className="flex gap-3 pr-14">
+          <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${item.type === 'Food' ? 'icon-clay' : 'bg-sage/15 text-sage'}`}>
+            {item.type === 'Food' ? <Utensils size={16} /> : <Package size={16} />}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-0.5">
+              {isFirst && item.type === 'Food' && (
+                <span className="text-[8px] font-bold uppercase tracking-widest bg-gold/20 text-gold px-2 py-0.5 rounded-full">Use First</span>
+              )}
+            </div>
+            <div className="text-lg font-fangsong text-ink leading-snug">{item.name}</div>
+            {item.purchaseLocation && (
+              <div className="text-[10px] text-pencil/55 font-sans mt-0.5">{item.purchaseLocation}</div>
+            )}
+
+            <div className="mt-2.5 grid grid-cols-2 gap-2">
+              <div className="bg-sand/10 px-2.5 py-1.5 rounded-lg">
+                <div className="text-[9px] text-pencil font-sans uppercase tracking-widest mb-0.5">購買量</div>
+                <div className="text-sm font-fangsong text-ink">{item.quantity} {item.unit}</div>
+              </div>
+              <div className={`px-2.5 py-1.5 rounded-lg ${isExpiringSoon ? 'bg-clay/10' : 'bg-sand/10'}`}>
+                <div className={`text-[9px] font-sans uppercase tracking-widest mb-0.5 ${isExpiringSoon ? 'text-clay font-bold' : 'text-pencil'}`}>效期</div>
+                <div className={`text-sm font-fangsong font-medium ${isExpiringSoon ? 'text-clay' : 'text-ink'}`}>
+                  {formatDate(item.expiryDate)}
+                </div>
+              </div>
+            </div>
+
+            {/* Auto-estimate remaining */}
+            {est !== null && (
+              <div className={`mt-2 px-2.5 py-2 rounded-lg flex items-center justify-between ${isLow ? 'bg-clay/8 border border-clay/20' : 'bg-sage/8'}`}>
+                <div>
+                  <div className={`text-[9px] font-sans uppercase tracking-widest ${isLow ? 'text-clay' : 'text-sage'}`}>預估剩餘</div>
+                  <div className={`text-sm font-fangsong font-medium mt-0.5 ${isLow ? 'text-clay' : 'text-ink'}`}>
+                    {est.remainingQty.toFixed(0)} {item.unit}
+                    <span className="text-xs ml-1 font-sans text-pencil/60">· 約 {est.daysLeft} 天</span>
+                  </div>
+                </div>
+                {isLow && <AlertTriangle size={15} className="text-clay flex-shrink-0" />}
+              </div>
+            )}
+
+            {/* Daily amount from calorie calc */}
+            {suggestedAmount && !est && (
+              <div className="mt-2 bg-clay/5 border border-clay/15 px-2.5 py-1.5 rounded-lg flex items-center justify-between">
+                <span className="text-[9px] text-clay font-sans uppercase tracking-widest">建議每日用量</span>
+                <span className="text-sm font-fangsong text-ink font-medium">{suggestedAmount} {item.unit}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="space-y-6 animate-fade-in">
-      
-      {/* Calorie Calculator Card */}
+
+      {/* Calorie Calculator */}
       <div className="card-warm rounded-[2rem] p-6">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-8 h-8 rounded-full bg-clay/10 flex items-center justify-center text-clay">
@@ -95,7 +168,6 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
           </div>
           <h3 className="text-xs font-bold tracking-[0.2em] text-gold uppercase font-sans opacity-80">Calorie Needs</h3>
         </div>
-        
         {calorieInfo ? (
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-sand/10 rounded-xl p-4 text-center">
@@ -108,109 +180,61 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
             </div>
           </div>
         ) : (
-          <p className="text-sm text-pencil font-fangsong text-center py-4">Please set Ideal Weight and Activity Level in Profile to calculate calories.</p>
+          <p className="text-sm text-pencil font-fangsong text-center py-4">在資料頁設定理想體重與活動等級即可計算。</p>
         )}
       </div>
 
-      {/* Inventory List */}
-      <div className="flex justify-between items-end px-2">
-         <div>
-           <span className="text-xs font-bold tracking-[0.2em] text-pencil uppercase font-sans">Inventory</span>
-           <h4 className="text-2xl font-fangsong text-ink mt-1">庫存管理</h4>
-         </div>
-         <button 
-            onClick={() => handleOpenForm()}
-            className="w-10 h-10 rounded-full bg-white border border-sand flex items-center justify-center text-ink shadow-sm hover:bg-sand/20 transition-colors"
-         >
-            <Plus size={18} />
-         </button>
+      {/* Header */}
+      <div className="flex justify-between items-end px-1">
+        <div>
+          <span className="text-xs font-bold tracking-[0.2em] text-pencil uppercase font-sans">Inventory</span>
+          <h4 className="text-2xl font-fangsong text-ink mt-0.5">庫存管理</h4>
+        </div>
+        <button
+          onClick={() => handleOpenForm()}
+          className="w-10 h-10 rounded-full bg-white border border-sand flex items-center justify-center text-ink shadow-sm hover:bg-sand/20 transition-colors"
+        >
+          <Plus size={18} />
+        </button>
       </div>
 
-      {sortedItems.length === 0 && !isFormOpen && (
-         <div className="bg-white/50 border border-dashed border-sand rounded-3xl p-8 flex flex-col items-center justify-center text-center gap-4 group hover:border-gold/50 hover:bg-white/80 transition-all cursor-pointer" onClick={() => handleOpenForm()}>
-           <div className="w-12 h-12 rounded-full bg-sand/20 flex items-center justify-center text-pencil group-hover:text-gold group-hover:scale-110 transition-all duration-500">
-             <Package size={24} />
-           </div>
-           <p className="text-sm font-fangsong text-pencil">Pantry is empty. Add food or supplements.</p>
+      {items.length === 0 && !isFormOpen && (
+        <div
+          className="bg-white/50 border border-dashed border-sand rounded-3xl p-8 flex flex-col items-center justify-center text-center gap-4 group hover:border-gold/50 hover:bg-white/80 transition-all cursor-pointer"
+          onClick={() => handleOpenForm()}
+        >
+          <div className="w-12 h-12 rounded-full bg-sand/20 flex items-center justify-center text-pencil group-hover:text-gold group-hover:scale-110 transition-all duration-500">
+            <Package size={24} />
+          </div>
+          <p className="text-sm font-fangsong text-pencil">庫存空空如也，點擊新增</p>
         </div>
       )}
 
-      <div className="space-y-4">
-        {sortedItems.map((item, index) => {
-          const isExpiringSoon = new Date(item.expiryDate).getTime() - new Date().getTime() < 30 * 24 * 60 * 60 * 1000;
-          const isFirstFood = index === sortedItems.findIndex(i => i.type === 'Food');
-          
-          let suggestedAmount = null;
-          if (item.type === 'Food' && item.caloriesPerUnit && calorieInfo) {
-            suggestedAmount = Math.round(calorieInfo.mer / item.caloriesPerUnit);
-          }
+      {/* Food group */}
+      {foods.length > 0 && (
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 px-1">
+            <Utensils size={12} className="text-clay" />
+            <span className="text-[10px] font-bold tracking-[0.2em] text-clay uppercase font-sans">飼料 · 食物</span>
+            <span className="text-[10px] text-pencil/40 font-sans">{foods.length} 項</span>
+          </div>
+          {foods.map((item, i) => renderItem(item, i === 0))}
+        </div>
+      )}
 
-          return (
-            <div key={item.id} className="card-warm rounded-2xl p-5 relative group animate-fade-in">
-                <div className="absolute top-4 right-4 flex gap-2">
-                  <button 
-                    onClick={() => handleOpenForm(item)}
-                    className="text-sand hover:text-clay transition-colors p-1"
-                  >
-                    <Edit2 size={16} />
-                  </button>
-                  <button 
-                    onClick={() => deleteItem(item.id)}
-                    className="text-sand hover:text-clay transition-colors p-1"
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </div>
+      {/* Supplement group */}
+      {supplements.length > 0 && (
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 px-1">
+            <Package size={12} className="text-sage" />
+            <span className="text-[10px] font-bold tracking-[0.2em] text-sage uppercase font-sans">補充品</span>
+            <span className="text-[10px] text-pencil/40 font-sans">{supplements.length} 項</span>
+          </div>
+          {supplements.map(item => renderItem(item, false))}
+        </div>
+      )}
 
-                <div className="flex gap-4 pr-16">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                        item.type === 'Food' ? 'icon-clay' : 'bg-sage/20 text-sage'
-                    }`}>
-                        {item.type === 'Food' ? <Utensils size={18} /> : <Package size={18} />}
-                    </div>
-                    <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-[10px] font-bold uppercase tracking-widest text-pencil font-sans">{item.type}</span>
-                          {isFirstFood && item.type === 'Food' && (
-                            <span className="text-[8px] font-bold uppercase tracking-widest bg-gold/20 text-gold px-2 py-0.5 rounded-full">Use First</span>
-                          )}
-                        </div>
-                        <div className="text-xl font-fangsong text-ink">{item.name}</div>
-                        
-                        <div className="mt-3 grid grid-cols-2 gap-2">
-                            <div className="bg-sand/10 px-3 py-2 rounded-lg">
-                                <div className="text-[10px] text-pencil font-sans uppercase tracking-widest mb-0.5">Remaining</div>
-                                <div className="text-sm font-fangsong text-ink font-medium">{item.quantity} {item.unit}</div>
-                            </div>
-                            <div className={`px-3 py-2 rounded-lg ${isExpiringSoon ? 'bg-clay/10' : 'bg-sand/10'}`}>
-                                <div className={`text-[10px] font-sans uppercase tracking-widest mb-0.5 ${isExpiringSoon ? 'text-clay font-bold' : 'text-pencil'}`}>Expires</div>
-                                <div className={`text-sm font-fangsong font-medium ${isExpiringSoon ? 'text-clay' : 'text-ink'}`}>
-                                  {formatDate(item.expiryDate)}
-                                </div>
-                            </div>
-                        </div>
-
-                        {item.purchaseLocation && (
-                          <div className="mt-2 flex items-center gap-1.5 text-xs text-pencil font-fangsong">
-                            <span className="text-[10px] font-sans uppercase tracking-widest text-pencil/70">購入來源</span>
-                            <span className="text-ink">{item.purchaseLocation}</span>
-                          </div>
-                        )}
-
-                        {suggestedAmount && (
-                          <div className="mt-3 bg-clay/5 border border-clay/20 px-3 py-2 rounded-lg flex items-center justify-between">
-                            <span className="text-xs text-clay font-sans font-medium">Daily Amount</span>
-                            <span className="text-sm font-fangsong text-ink font-bold">{suggestedAmount} {item.unit}</span>
-                          </div>
-                        )}
-                    </div>
-                </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Slide Up Form */}
+      {/* Form */}
       {isFormOpen && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsFormOpen(false)} />
@@ -219,7 +243,6 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
             className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] shadow-2xl pointer-events-auto animate-fade-in relative flex flex-col"
             style={{ maxHeight: '90vh' }}
           >
-            {/* Fixed header */}
             <div className="flex-shrink-0 px-8 pt-6 pb-4">
               <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-5 opacity-50" />
               <div className="flex justify-between items-center mb-4">
@@ -228,91 +251,109 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
                   <X size={16} />
                 </button>
               </div>
-              {/* Type Selector */}
               <div className="flex bg-sand/20 p-1 rounded-xl">
-                <button
-                  type="button"
-                  onClick={() => setNewItem({ ...newItem, type: 'Food' })}
-                  className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all duration-300 font-fangsong ${newItem.type === 'Food' ? 'bg-white text-ink shadow-sm' : 'text-pencil'}`}
-                >
-                  Food 飼料
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setNewItem({ ...newItem, type: 'Supplement' })}
-                  className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all duration-300 font-fangsong ${newItem.type === 'Supplement' ? 'bg-white text-ink shadow-sm' : 'text-pencil'}`}
-                >
-                  Supplement 補充品
-                </button>
+                {(['Food', 'Supplement'] as const).map(t => (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => setNewItem(prev => ({ ...prev, type: t }))}
+                    className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all duration-300 font-fangsong ${newItem.type === t ? 'bg-white text-ink shadow-sm' : 'text-pencil'}`}
+                  >
+                    {t === 'Food' ? 'Food 飼料' : 'Supplement 補充品'}
+                  </button>
+                ))}
               </div>
             </div>
 
-            {/* Scrollable fields */}
-            <div className="flex-1 overflow-y-auto px-8 pb-4 space-y-6">
+            <div className="flex-1 overflow-y-auto px-8 pb-4 space-y-6" style={{ overscrollBehavior: 'contain' }}>
               <div>
-                <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Item Name 品名</label>
+                <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">品名</label>
                 <input
                   type="text" required
-                  placeholder="e.g. 皇家 Royal Canin Maxi"
+                  placeholder="e.g. 皇家 Royal Canin"
                   value={newItem.name || ''}
-                  onChange={e => setNewItem({ ...newItem, name: e.target.value })}
-                  className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-xl rounded-none placeholder-sand/50"
+                  onChange={e => setNewItem(prev => ({ ...prev, name: e.target.value }))}
+                  className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-xl rounded-none placeholder-sand/50 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">購入來源 Purchase Location</label>
+                <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">購入來源</label>
                 <input
                   type="text"
-                  placeholder="e.g. 寵物店、網路商城、動物醫院..."
+                  placeholder="e.g. 寵物店、網路商城..."
                   value={newItem.purchaseLocation || ''}
-                  onChange={e => setNewItem({ ...newItem, purchaseLocation: e.target.value })}
-                  className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none placeholder-sand/50"
+                  onChange={e => setNewItem(prev => ({ ...prev, purchaseLocation: e.target.value }))}
+                  className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none placeholder-sand/50 focus:outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Quantity 數量</label>
+                  <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">購買數量</label>
                   <input
                     type="number" step="0.1" required
                     placeholder="0"
                     value={newItem.quantity || ''}
-                    onChange={e => setNewItem({ ...newItem, quantity: Number(e.target.value) })}
-                    className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none"
+                    onChange={e => setNewItem(prev => ({ ...prev, quantity: Number(e.target.value) }))}
+                    className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Unit 單位</label>
+                  <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">單位</label>
                   <input
                     type="text" required
-                    placeholder="g, kg, 顆…"
+                    placeholder="g, kg, 顆..."
                     value={newItem.unit || ''}
-                    onChange={e => setNewItem({ ...newItem, unit: e.target.value })}
-                    className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none"
+                    onChange={e => setNewItem(prev => ({ ...prev, unit: e.target.value }))}
+                    className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none focus:outline-none"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Expiry Date 效期</label>
+                  <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">購買日期</label>
+                  <input
+                    type="date"
+                    value={newItem.purchaseDate || ''}
+                    onChange={e => setNewItem(prev => ({ ...prev, purchaseDate: e.target.value }))}
+                    className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">效期</label>
                   <input
                     type="date" required
                     value={newItem.expiryDate || ''}
-                    onChange={e => setNewItem({ ...newItem, expiryDate: e.target.value })}
-                    className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none"
+                    onChange={e => setNewItem(prev => ({ ...prev, expiryDate: e.target.value }))}
+                    className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">
+                    每日用量 ({newItem.unit || 'g'})
+                  </label>
+                  <input
+                    type="number" step="0.1"
+                    placeholder="自動估算剩餘量"
+                    value={newItem.dailyUsage || ''}
+                    onChange={e => setNewItem(prev => ({ ...prev, dailyUsage: e.target.value ? Number(e.target.value) : undefined }))}
+                    className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none placeholder-sand/40 focus:outline-none"
                   />
                 </div>
                 {newItem.type === 'Food' && (
                   <div>
-                    <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Kcal / Unit</label>
+                    <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Kcal / 單位</label>
                     <input
                       type="number" step="0.01"
                       placeholder="e.g. 3.5"
                       value={newItem.caloriesPerUnit || ''}
-                      onChange={e => setNewItem({ ...newItem, caloriesPerUnit: Number(e.target.value) })}
-                      className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none placeholder-sand/50"
+                      onChange={e => setNewItem(prev => ({ ...prev, caloriesPerUnit: e.target.value ? Number(e.target.value) : undefined }))}
+                      className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none placeholder-sand/50 focus:outline-none"
                     />
                   </div>
                 )}
@@ -324,14 +365,13 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
                   rows={2}
                   placeholder="主要成分或備註..."
                   value={newItem.ingredients || ''}
-                  onChange={e => setNewItem({ ...newItem, ingredients: e.target.value })}
-                  className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none placeholder-sand/50 resize-none"
+                  onChange={e => setNewItem(prev => ({ ...prev, ingredients: e.target.value }))}
+                  className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none placeholder-sand/50 resize-none focus:outline-none"
                 />
               </div>
             </div>
 
-            {/* Sticky submit button */}
-            <div className="flex-shrink-0 px-8 pt-4 border-t border-sand/20" style={{ paddingBottom: 'calc(5.5rem + env(safe-area-inset-bottom))' }}>
+            <div className="flex-shrink-0 px-8 pt-4 border-t border-sand/20" style={{ paddingBottom: 'calc(7rem + env(safe-area-inset-bottom))' }}>
               <button type="submit" className="w-full py-3.5 btn-warm">
                 {editingItemId ? '更新' : '儲存'}
               </button>

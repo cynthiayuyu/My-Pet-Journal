@@ -1,7 +1,8 @@
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { DailyLog } from '../types';
 import { generateId, formatDate } from '../utils';
-import { Plus, Trash2, Edit2, X, Camera, Droplets, Utensils, Activity, ChevronLeft, ChevronRight, ChevronDown, Search } from 'lucide-react';
+import { Plus, Trash2, Edit2, X, Droplets, Utensils, Activity, ChevronLeft, ChevronRight, ChevronDown, Search } from 'lucide-react';
+import { PhotoGallery, PhotoStrip } from './PhotoGallery';
 
 interface DailySectionProps {
   logs: DailyLog[];
@@ -14,7 +15,6 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingLogId, setEditingLogId] = useState<string | null>(null);
   const [newLog, setNewLog] = useState<Partial<DailyLog>>({});
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Calendar state
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -75,7 +75,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
         waterIntake: newLog.waterIntake,
         potty: newLog.potty,
         notes: newLog.notes,
-        photoUrl: newLog.photoUrl,
+        photos: newLog.photos,
       };
       if (editingLogId) {
         updateLog(logData as DailyLog);
@@ -85,15 +85,6 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
       setIsFormOpen(false);
       setNewLog({});
       setEditingLogId(null);
-    }
-  };
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setNewLog({ ...newLog, photoUrl: reader.result as string });
-      reader.readAsDataURL(file);
     }
   };
 
@@ -154,11 +145,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
                   </button>
                 </div>
                 <div className="text-[10px] font-bold tracking-widest text-pencil uppercase font-sans mb-2">{log.date}</div>
-                {log.photoUrl && (
-                  <div className="w-full h-32 rounded-xl overflow-hidden mb-3 border border-sand/30">
-                    <img src={log.photoUrl} alt="Daily Log" className="w-full h-full object-cover" />
-                  </div>
-                )}
+                <PhotoStrip photos={log.photos || []} photoUrl={log.photoUrl} />
                 <div className="grid grid-cols-2 gap-2">
                   {log.foodIntake && (
                     <div className="bg-clay/8 p-2.5 rounded-xl border border-clay/15">
@@ -320,11 +307,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
               </button>
             </div>
 
-            {log.photoUrl && (
-              <div className="w-full h-48 rounded-xl overflow-hidden mb-4 border border-sand/30">
-                <img src={log.photoUrl} alt="Daily Log" className="w-full h-full object-cover" />
-              </div>
-            )}
+            <PhotoStrip photos={log.photos || []} photoUrl={log.photoUrl} />
 
             <div className="grid grid-cols-2 gap-3 mb-3">
               {log.foodIntake && (
@@ -406,26 +389,11 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
               </div>
 
               <div>
-                <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-2 block font-sans">Photo (Optional)</label>
-                <div
-                  onClick={() => fileInputRef.current?.click()}
-                  className="w-full h-28 rounded-xl border-2 border-dashed border-sand flex flex-col items-center justify-center text-pencil hover:text-clay hover:border-clay transition-colors cursor-pointer overflow-hidden relative"
-                >
-                  {newLog.photoUrl ? (
-                    <>
-                      <img src={newLog.photoUrl} alt="Preview" className="w-full h-full object-cover" />
-                      <div className="absolute inset-0 bg-ink/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                        <span className="text-white text-xs font-bold uppercase tracking-widest">Change</span>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <Camera size={22} className="mb-1.5" />
-                      <span className="text-xs font-sans">Tap to upload</span>
-                    </>
-                  )}
-                </div>
-                <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" className="hidden" />
+                <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-2 block font-sans">照片</label>
+                <PhotoGallery
+                  photos={newLog.photos || (newLog.photoUrl ? [newLog.photoUrl] : [])}
+                  onChange={photos => setNewLog(prev => ({ ...prev, photos }))}
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-5">
@@ -482,7 +450,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
             </div>
 
             {/* Sticky submit */}
-            <div className="flex-shrink-0 px-8 pb-24 pt-4 border-t border-sand/20">
+            <div className="flex-shrink-0 px-8 pt-4 border-t border-sand/20" style={{ paddingBottom: 'calc(7rem + env(safe-area-inset-bottom))' }}>
               <button type="submit" className="w-full py-3.5 btn-warm">
                 {editingLogId ? '更新' : '儲存'}
               </button>

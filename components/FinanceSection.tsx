@@ -480,7 +480,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
               </div>
             </div>
             {/* Sticky submit */}
-            <div className="flex-shrink-0 px-8 pb-24 pt-4 border-t border-sand/20">
+            <div className="flex-shrink-0 px-8 pt-4 border-t border-sand/20" style={{ paddingBottom: 'calc(7rem + env(safe-area-inset-bottom))' }}>
               <button type="submit" className="w-full py-3.5 btn-warm">
                 {editingPolicyId ? '更新保險 Update Policy' : '儲存保險 Save Policy'}
               </button>
@@ -562,7 +562,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
               </div>
             </div>
             {/* Sticky submit */}
-            <div className="flex-shrink-0 px-8 pb-24 pt-4 border-t border-sand/20">
+            <div className="flex-shrink-0 px-8 pt-4 border-t border-sand/20" style={{ paddingBottom: 'calc(7rem + env(safe-area-inset-bottom))' }}>
               <button type="submit" className="w-full py-3.5 btn-warm">
                 {editingServiceId ? '更新紀錄 Update Record' : '儲存紀錄 Save Record'}
               </button>
