@@ -10,8 +10,14 @@ interface ShopSectionProps {
 }
 
 export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => {
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [isAddingShop, setIsAddingShop] = useState(false);
   const [newShop, setNewShop] = useState<Partial<PetShop>>({ type: 'Boarding' });
+
+  const showToast = (msg: string) => {
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(null), 2000);
+  };
   const [editingShopId, setEditingShopId] = useState<string | null>(null);
   const [editShopData, setEditShopData] = useState<Partial<PetShop>>({});
 
@@ -108,6 +114,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
   };
 
   const handleDeleteShop = (id: string) => {
+    if (!window.confirm('確定要刪除嗎？')) return;
     if (selectedShopId === id) closeSheet();
     setShops(shops.filter(s => s.id !== id));
   };
@@ -128,6 +135,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
       photos: newVisit.photos,
     };
     setShops(shops.map(s => s.id === shopId ? { ...s, visits: [...s.visits, visit] } : s));
+    showToast('已新增 ✓');
     setNewVisit({ date: new Date().toISOString().split('T')[0] });
     setNewVisitServices([{name: '', cost: ''}]);
     setAddingVisitTo(null);
@@ -152,10 +160,12 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
         } : v),
       };
     }));
+    showToast('已更新 ✓');
     setEditingVisitId(null);
   };
 
   const handleDeleteVisit = (shopId: string, visitId: string) => {
+    if (!window.confirm('確定要刪除嗎？')) return;
     setShops(shops.map(s => s.id === shopId ? { ...s, visits: s.visits.filter(v => v.id !== visitId) } : s));
   };
 
@@ -192,6 +202,14 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
 
   return (
     <div className="space-y-4">
+      {toastMsg && (
+        <div
+          className="fixed top-20 left-1/2 -translate-x-1/2 z-[150] bg-ink/80 text-white text-sm px-5 py-2.5 rounded-full shadow-lg font-sans pointer-events-none animate-fade-in"
+          style={{ whiteSpace: 'nowrap' }}
+        >
+          {toastMsg}
+        </div>
+      )}
 
       {/* ── Header ── */}
       <div className="flex justify-between items-center">
@@ -202,14 +220,14 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
             className="flex items-center gap-1 text-sm text-pencil hover:text-clay transition-colors"
           >
             <Settings size={16} />
-            <span>Categories <span className="text-pencil/55">分類</span></span>
+            <span>分類管理</span>
           </button>
           <button
             onClick={() => setIsAddingShop(true)}
             className="flex items-center gap-1 text-sm text-clay hover:text-clay/80 transition-colors"
           >
             <Plus size={16} />
-            <span>Add <span className="text-clay/70">新增</span></span>
+            <span>新增</span>
           </button>
         </div>
       </div>
@@ -221,7 +239,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
         </div>
         <input
           type="text"
-          placeholder="搜尋店家 Search shops..."
+          placeholder="搜尋店家..."
           value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
           className="w-full pl-12 pr-4 py-3 bg-white/80 backdrop-blur-md border border-white rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gold/50 text-ink font-fangsong transition-all"
@@ -269,7 +287,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
             </div>
             <div className="flex gap-2">
               <input
-                type="text" placeholder="新增分類 New Category..."
+                type="text" placeholder="新增分類..."
                 value={newCategory}
                 onChange={e => setNewCategory(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleAddCategory()}
@@ -287,26 +305,26 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
       {isAddingShop && (
         <div className="glass p-4 rounded-2xl animate-fade-in border border-clay/20 space-y-3">
           <input
-            type="text" placeholder="商店名稱 Shop Name"
+            type="text" placeholder="名稱"
             className="w-full bg-white/60 border border-sand/40 rounded-xl px-4 py-2.5 text-ink focus:ring-1 focus:ring-clay"
             value={newShop.name || ''}
             onChange={e => setNewShop({ ...newShop, name: e.target.value })}
           />
           <TypeSelector value={newShop.type} onChange={v => setNewShop({ ...newShop, type: v })} />
           <textarea
-            placeholder="聯絡方式 Contact（電話、地址...）"
+            placeholder="聯絡方式（電話、地址...）"
             className="w-full bg-white/60 border border-sand/40 rounded-xl px-4 py-2.5 text-ink focus:ring-1 focus:ring-clay min-h-[72px] whitespace-pre-wrap"
             value={newShop.contact || ''}
             onChange={e => setNewShop({ ...newShop, contact: e.target.value })}
           />
           <textarea
-            placeholder="收費資訊 Pricing"
+            placeholder="收費資訊"
             className="w-full bg-white/60 border border-sand/40 rounded-xl px-4 py-2.5 text-ink focus:ring-1 focus:ring-clay min-h-[72px] whitespace-pre-wrap"
             value={newShop.pricingInfo || ''}
             onChange={e => setNewShop({ ...newShop, pricingInfo: e.target.value })}
           />
           <textarea
-            placeholder="備註 Notes"
+            placeholder="備註"
             className="w-full bg-white/60 border border-sand/40 rounded-xl px-4 py-2.5 text-ink focus:ring-1 focus:ring-clay min-h-[72px] whitespace-pre-wrap"
             value={newShop.notes || ''}
             onChange={e => setNewShop({ ...newShop, notes: e.target.value })}
@@ -415,26 +433,26 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
                 </div>
                 <div className="flex-1 overflow-y-auto px-6 pb-4 space-y-3" style={{ overscrollBehavior: 'contain' }}>
                   <input
-                    type="text" placeholder="商店名稱 Shop Name"
+                    type="text" placeholder="名稱"
                     className="w-full bg-white/70 border border-sand/50 rounded-xl px-4 py-2.5 text-ink focus:ring-1 focus:ring-clay"
                     value={editShopData.name || ''}
                     onChange={e => setEditShopData({ ...editShopData, name: e.target.value })}
                   />
                   <TypeSelector value={editShopData.type} onChange={v => setEditShopData({ ...editShopData, type: v })} />
                   <textarea
-                    placeholder="聯絡方式 Contact（電話、地址...）"
+                    placeholder="聯絡方式（電話、地址...）"
                     className="w-full bg-white/70 border border-sand/50 rounded-xl px-4 py-2.5 text-ink focus:ring-1 focus:ring-clay min-h-[72px] whitespace-pre-wrap"
                     value={editShopData.contact || ''}
                     onChange={e => setEditShopData({ ...editShopData, contact: e.target.value })}
                   />
                   <textarea
-                    placeholder="收費資訊 Pricing"
+                    placeholder="收費資訊"
                     className="w-full bg-white/70 border border-sand/50 rounded-xl px-4 py-2.5 text-ink focus:ring-1 focus:ring-clay min-h-[72px] whitespace-pre-wrap"
                     value={editShopData.pricingInfo || ''}
                     onChange={e => setEditShopData({ ...editShopData, pricingInfo: e.target.value })}
                   />
                   <textarea
-                    placeholder="備註 Notes"
+                    placeholder="備註"
                     className="w-full bg-white/70 border border-sand/50 rounded-xl px-4 py-2.5 text-ink focus:ring-1 focus:ring-clay min-h-[72px] whitespace-pre-wrap"
                     value={editShopData.notes || ''}
                     onChange={e => setEditShopData({ ...editShopData, notes: e.target.value })}

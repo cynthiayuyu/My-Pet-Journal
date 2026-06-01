@@ -139,7 +139,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
               </div>
             )}
              <div className="absolute inset-0 bg-ink/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-[1px]">
-               <span className="text-white text-xs font-medium tracking-widest uppercase drop-shadow-md">Change Photo</span>
+               <span className="text-white text-xs font-medium tracking-widest uppercase drop-shadow-md">更換照片</span>
              </div>
           </div>
           <input 
@@ -175,13 +175,13 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
 
         <h3 className="text-xs font-bold tracking-[0.2em] text-gold uppercase flex items-center gap-3 mb-6 font-sans opacity-80">
           <Award size={14} />
-          Identity
+          基本資料
         </h3>
         
         <div className="grid grid-cols-1 gap-8">
           <div className="grid grid-cols-2 gap-8">
              <div className="group">
-              <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">Breed</label>
+              <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">品種</label>
               <input
                 type="text"
                 value={profile.breed}
@@ -192,7 +192,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
             </div>
 
             <div className="group">
-              <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">Gender</label>
+              <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">性別</label>
                <div className="flex gap-1 pt-1">
                   {(['Male', 'Female'] as const).map((g) => (
                     <button
@@ -204,7 +204,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
                           : 'border-transparent text-pencil hover:text-ink/70'
                       }`}
                     >
-                      {g === 'Male' ? 'Male' : 'Female'}
+                      {g === 'Male' ? '公' : '母'}
                     </button>
                   ))}
                </div>
@@ -214,7 +214,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
           <div className="grid grid-cols-2 gap-8">
             <div className="group">
               <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">
-                Ideal Weight (kg)
+                理想體重 (kg)
               </label>
               <input
                 type="number"
@@ -226,7 +226,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
               />
             </div>
             <div className="group">
-              <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">Neutered</label>
+              <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">結紮</label>
                <div className="flex gap-1 pt-1">
                   {[true, false].map((n) => (
                     <button
@@ -238,7 +238,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
                           : 'border-transparent text-pencil hover:text-ink/70'
                       }`}
                     >
-                      {n ? 'Yes' : 'No'}
+                      {n ? '是' : '否'}
                     </button>
                   ))}
                </div>
@@ -247,26 +247,26 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
 
           <div className="group">
             <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">
-              Activity Level
+              活動量
             </label>
             <select
               value={profile.activityLevel || 'neutered_adult'}
               onChange={(e) => handleInputChange('activityLevel', e.target.value)}
               className="w-full py-2 bg-transparent border-b border-sand text-ink text-lg focus:border-clay transition-colors rounded-none font-fangsong"
             >
-              <option value="resting">Resting / Inactive</option>
-              <option value="neutered_adult">Neutered Adult</option>
-              <option value="intact_adult">Intact Adult</option>
-              <option value="active">Active / Working</option>
-              <option value="highly_active">Highly Active</option>
-              <option value="weight_loss">Weight Loss</option>
-              <option value="weight_gain">Weight Gain</option>
+              <option value="resting">靜態 / 不活動</option>
+              <option value="neutered_adult">成年結紮</option>
+              <option value="intact_adult">成年未結紮</option>
+              <option value="active">活躍 / 工作犬</option>
+              <option value="highly_active">高度活躍</option>
+              <option value="weight_loss">減重</option>
+              <option value="weight_gain">增重</option>
             </select>
           </div>
 
           <div className="group">
             <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">
-              Birth Date
+              生日
             </label>
             <input
               type="date"
@@ -278,7 +278,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
 
           <div className="group">
             <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">
-              Microchip ID
+              晶片號碼
             </label>
             <input
               type="text"
@@ -295,34 +295,34 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
       <div className="card-warm rounded-[2rem] p-8 shadow-soft border border-white space-y-6 relative">
          <h3 className="text-xs font-bold tracking-[0.2em] text-gold uppercase flex items-center gap-3 mb-6 font-sans opacity-80">
           <Stethoscope size={14} />
-          Care Team
+          醫療聯絡
         </h3>
 
         <div className="space-y-8">
            <div className="group">
-            <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">Clinic Name</label>
+            <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">診所名稱</label>
             <input
               type="text"
               value={profile.vetContact?.clinicName || ''}
               onChange={(e) => handleVetChange('clinicName', e.target.value)}
               className="w-full py-2 bg-transparent border-b border-sand text-ink text-xl font-fangsong focus:border-clay transition-colors rounded-none placeholder-sand"
-              placeholder="Clinic Name"
+              placeholder="診所名稱"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-8">
              <div className="group">
-                <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">Doctor</label>
+                <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">獸醫師</label>
                 <input
                   type="text"
                   value={profile.vetContact?.doctorName || ''}
                   onChange={(e) => handleVetChange('doctorName', e.target.value)}
                   className="w-full py-2 bg-transparent border-b border-sand text-ink text-lg focus:border-clay transition-colors rounded-none placeholder-sand font-fangsong"
-                  placeholder="Dr. Name"
+                  placeholder="醫師姓名"
                 />
              </div>
              <div className="group">
-                <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">Phone</label>
+                <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">電話</label>
                 <input
                   type="tel"
                   value={profile.vetContact?.phone || ''}
@@ -334,7 +334,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
           </div>
 
            <div className="group">
-            <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">Address</label>
+            <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">地址</label>
             <input
               type="text"
               value={profile.vetContact?.address || ''}

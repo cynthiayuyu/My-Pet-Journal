@@ -1,10 +1,40 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#F7F4F0"/>
-  <g transform="translate(256,256)">
-    <ellipse cx="0" cy="55" rx="74" ry="84" fill="#B87068"/>
-    <ellipse cx="-82" cy="-12" rx="37" ry="43" fill="#B87068"/>
-    <ellipse cx="-32" cy="-78" rx="30" ry="36" fill="#B87068"/>
-    <ellipse cx="32" cy="-78" rx="30" ry="36" fill="#B87068"/>
-    <ellipse cx="82" cy="-12" rx="37" ry="43" fill="#B87068"/>
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="15%" y1="0%" x2="85%" y2="100%">
+      <stop offset="0%" stop-color="#D4876E"/>
+      <stop offset="55%" stop-color="#B87068"/>
+      <stop offset="100%" stop-color="#8F4E48"/>
+    </linearGradient>
+    <radialGradient id="shine" cx="38%" cy="28%" r="52%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.22)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
+    <radialGradient id="pawFill" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="rgba(255,251,245,0.96)"/>
+      <stop offset="100%" stop-color="rgba(248,238,228,0.90)"/>
+    </radialGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="rgba(80,30,20,0.20)"/>
+    </filter>
+  </defs>
+
+  <!-- Background rounded square -->
+  <rect width="512" height="512" rx="108" fill="url(#bg)"/>
+  <!-- Subtle top-left highlight -->
+  <rect width="512" height="512" rx="108" fill="url(#shine)"/>
+
+  <!-- Paw print (centered, slight upward offset for visual balance) -->
+  <g filter="url(#shadow)" transform="translate(0,-6)">
+    <!-- Four toe pads -->
+    <ellipse cx="159" cy="224" rx="54" ry="66" fill="url(#pawFill)"/>
+    <ellipse cx="218" cy="172" rx="54" ry="66" fill="url(#pawFill)"/>
+    <ellipse cx="294" cy="172" rx="54" ry="66" fill="url(#pawFill)"/>
+    <ellipse cx="353" cy="224" rx="54" ry="66" fill="url(#pawFill)"/>
+    <!-- Main central pad -->
+    <ellipse cx="256" cy="338" rx="116" ry="97" fill="url(#pawFill)"/>
   </g>
+
+  <!-- Tiny heart inside the main pad -->
+  <path d="M256 360 C256 360 237 344 237 332 C237 324 246 319 256 332 C266 319 275 324 275 332 C275 344 256 360 256 360Z"
+        fill="rgba(184,112,104,0.30)"/>
 </svg>

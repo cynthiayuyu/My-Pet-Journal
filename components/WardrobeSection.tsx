@@ -22,6 +22,12 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
   const [isFormOpen, setIsFormOpen]   = useState(false);
   const [editingId, setEditingId]     = useState<string | null>(null);
   const [newItem, setNewItem]         = useState<Partial<WardrobeItem>>({ category: 'Clothing' });
+  const [toastMsg, setToastMsg]       = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(null), 2000);
+  };
   const [searchTerm, setSearchTerm]   = useState('');
   const [filterCat, setFilterCat]     = useState<WardrobeItem['category'] | null>(null);
   const [sortOrder, setSortOrder]     = useState<SortOrder>('default');
@@ -57,6 +63,7 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
     } else {
       setItems([item, ...items]);
     }
+    showToast(editingId ? '已更新 ✓' : '已新增 ✓');
     setIsFormOpen(false);
     setNewItem({ category: 'Clothing' });
     setEditingId(null);
@@ -108,7 +115,7 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
           </div>
         )}
         <button
-          onClick={e => { e.stopPropagation(); setItems(items.filter(i => i.id !== item.id)); }}
+          onClick={e => { e.stopPropagation(); if (!window.confirm('確定要刪除嗎？')) return; setItems(items.filter(i => i.id !== item.id)); }}
           className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/85 backdrop-blur-sm flex items-center justify-center text-ink/30 hover:text-clay opacity-0 group-hover:opacity-100 transition-all shadow-sm"
         >
           <Trash2 size={13} />
@@ -142,6 +149,14 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
 
   return (
     <div className="space-y-5 animate-fade-in">
+      {toastMsg && (
+        <div
+          className="fixed top-20 left-1/2 -translate-x-1/2 z-[150] bg-ink/80 text-white text-sm px-5 py-2.5 rounded-full shadow-lg font-sans pointer-events-none animate-fade-in"
+          style={{ whiteSpace: 'nowrap' }}
+        >
+          {toastMsg}
+        </div>
+      )}
 
       {/* Search */}
       <div className="relative">

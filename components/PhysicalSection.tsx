@@ -18,6 +18,12 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
   const [selectedDateStr, setSelectedDateStr] = useState(new Date().toISOString().split('T')[0]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingRecordId, setEditingRecordId] = useState<string | null>(null);
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(null), 2000);
+  };
 
   // Form State
   const [newRecord, setNewRecord] = useState<Partial<PhysicalRecord>>({});
@@ -78,6 +84,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
         addRecord(recordData);
       }
       
+      showToast(editingRecordId ? '已更新 ✓' : '已新增 ✓');
       setIsFormOpen(false);
       setNewRecord({});
       setEditingRecordId(null);
@@ -112,7 +119,15 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
 
   return (
     <div className="space-y-6 animate-fade-in">
-      
+      {toastMsg && (
+        <div
+          className="fixed top-20 left-1/2 -translate-x-1/2 z-[150] bg-ink/80 text-white text-sm px-5 py-2.5 rounded-full shadow-lg font-sans pointer-events-none animate-fade-in"
+          style={{ whiteSpace: 'nowrap' }}
+        >
+          {toastMsg}
+        </div>
+      )}
+
       {/* Weight Alert */}
       {weightAlert && (
         <div className={`p-4 rounded-2xl flex items-center gap-4 ${weightAlert.bg} border border-white shadow-soft`}>
@@ -272,8 +287,8 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
                   >
                     <Edit2 size={16} />
                   </button>
-                  <button 
-                    onClick={() => deleteRecord(record.id)}
+                  <button
+                    onClick={() => { if (!window.confirm('確定要刪除嗎？')) return; deleteRecord(record.id); }}
                     className="text-sand hover:text-clay transition-colors p-2"
                   >
                     <Trash2 size={16} />
@@ -296,8 +311,8 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
                           <Ruler size={12} /> Size
                         </div>
                          <div className="space-y-1 mt-2">
-                            {record.height && <div className="text-sm font-fangsong text-ink">Height: {record.height}cm</div>}
-                            {record.chest && <div className="text-sm font-fangsong text-ink">Chest: {record.chest}cm</div>}
+                            {record.height && <div className="text-sm font-fangsong text-ink">身高: {record.height}cm</div>}
+                            {record.chest && <div className="text-sm font-fangsong text-ink">胸圍: {record.chest}cm</div>}
                          </div>
                       </div>
                     )}
@@ -305,8 +320,8 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
                 
                 {(record.neck || record.back) && (
                     <div className="mt-4 pt-4 border-t border-sand/30 flex gap-6 text-sm font-fangsong text-pencil">
-                       {record.neck && <span>Neck: <span className="text-ink">{record.neck}cm</span></span>}
-                       {record.back && <span>Back: <span className="text-ink">{record.back}cm</span></span>}
+                       {record.neck && <span>頸圍: <span className="text-ink">{record.neck}cm</span></span>}
+                       {record.back && <span>背長: <span className="text-ink">{record.back}cm</span></span>}
                     </div>
                 )}
              </div>
@@ -331,7 +346,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
             <div className="flex-1 overflow-y-auto px-8 pb-4" style={{ overscrollBehavior: 'contain' }}>
               <div className="grid grid-cols-2 gap-6 mb-8">
                 <div className="col-span-2">
-                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Date</label>
+                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">日期</label>
                    <input 
                     type="date"
                     required 
@@ -341,7 +356,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
                    />
                 </div>
                 <div>
-                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Weight (kg)</label>
+                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">體重 (kg)</label>
                    <input 
                     type="number" step="0.1" required
                     placeholder="0.0"
@@ -351,7 +366,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
                    />
                 </div>
                 <div>
-                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Height (cm)</label>
+                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">身高 (cm)</label>
                    <input 
                     type="number" step="0.1"
                     placeholder="0.0"
@@ -361,7 +376,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
                    />
                 </div>
                  <div>
-                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Neck (cm)</label>
+                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">頸圍 (cm)</label>
                    <input 
                     type="number" step="0.1"
                     placeholder="-"
@@ -371,7 +386,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
                    />
                 </div>
                  <div>
-                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Back (cm)</label>
+                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">背長 (cm)</label>
                    <input 
                     type="number" step="0.1"
                     placeholder="-"
@@ -381,7 +396,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
                    />
                 </div>
                  <div>
-                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Chest (cm)</label>
+                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">胸圍 (cm)</label>
                    <input 
                     type="number" step="0.1"
                     placeholder="-"

@@ -659,7 +659,7 @@ const App: React.FC = () => {
             label="健康"
             badge={dueHealthRecords.length > 0}
           />
-          <NavBtn active={activeTab === 'food'} onClick={() => setActiveTab('food')} icon={Utensils} label="飲食" />
+          <NavBtn active={activeTab === 'food'} onClick={() => setActiveTab('food')} icon={Utensils} label="物品" />
           <NavBtn active={activeTab === 'finance'} onClick={() => setActiveTab('finance')} icon={Wallet} label="財務" />
         </div>
       </nav>

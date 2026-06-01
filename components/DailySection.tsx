@@ -15,6 +15,12 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingLogId, setEditingLogId] = useState<string | null>(null);
   const [newLog, setNewLog] = useState<Partial<DailyLog>>({});
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(null), 2000);
+  };
 
   // Calendar state
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -82,6 +88,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
       } else {
         addLog(logData as DailyLog);
       }
+      showToast(editingLogId ? '已更新 ✓' : '已新增 ✓');
       setIsFormOpen(false);
       setNewLog({});
       setEditingLogId(null);
@@ -104,6 +111,14 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
 
   return (
     <div className="space-y-6 animate-fade-in">
+      {toastMsg && (
+        <div
+          className="fixed top-20 left-1/2 -translate-x-1/2 z-[150] bg-ink/80 text-white text-sm px-5 py-2.5 rounded-full shadow-lg font-sans pointer-events-none animate-fade-in"
+          style={{ whiteSpace: 'nowrap' }}
+        >
+          {toastMsg}
+        </div>
+      )}
 
       {/* ── Search Bar ── */}
       <div className="relative">
@@ -140,7 +155,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
                   <button onClick={() => { setSearchTerm(''); handleOpenForm(log); }} className="text-sand hover:text-clay transition-colors p-1 bg-white/80 rounded-full backdrop-blur-sm">
                     <Edit2 size={16} />
                   </button>
-                  <button onClick={() => deleteLog(log.id)} className="text-sand hover:text-clay transition-colors p-1 bg-white/80 rounded-full backdrop-blur-sm">
+                  <button onClick={() => { if (!window.confirm('確定要刪除嗎？')) return; deleteLog(log.id); }} className="text-sand hover:text-clay transition-colors p-1 bg-white/80 rounded-full backdrop-blur-sm">
                     <Trash2 size={16} />
                   </button>
                 </div>
@@ -149,13 +164,13 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
                 <div className="grid grid-cols-2 gap-2">
                   {log.foodIntake && (
                     <div className="bg-clay/8 p-2.5 rounded-xl border border-clay/15">
-                      <div className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-widest text-clay font-sans mb-1"><Utensils size={10} /> Food</div>
+                      <div className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-widest text-clay font-sans mb-1"><Utensils size={10} /> 食物</div>
                       <div className="text-sm font-fangsong text-ink">{log.foodIntake}</div>
                     </div>
                   )}
                   {log.waterIntake && (
                     <div className="bg-sage/8 p-2.5 rounded-xl border border-sage/15">
-                      <div className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-widest text-sage font-sans mb-1"><Droplets size={10} /> Water</div>
+                      <div className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-widest text-sage font-sans mb-1"><Droplets size={10} /> 飲水</div>
                       <div className="text-sm font-fangsong text-ink">{log.waterIntake}</div>
                     </div>
                   )}
@@ -302,7 +317,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
               <button onClick={() => handleOpenForm(log)} className="text-sand hover:text-clay transition-colors p-1 bg-white/80 rounded-full backdrop-blur-sm">
                 <Edit2 size={16} />
               </button>
-              <button onClick={() => deleteLog(log.id)} className="text-sand hover:text-clay transition-colors p-1 bg-white/80 rounded-full backdrop-blur-sm">
+              <button onClick={() => { if (!window.confirm('確定要刪除嗎？')) return; deleteLog(log.id); }} className="text-sand hover:text-clay transition-colors p-1 bg-white/80 rounded-full backdrop-blur-sm">
                 <Trash2 size={16} />
               </button>
             </div>
@@ -313,7 +328,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
               {log.foodIntake && (
                 <div className="bg-clay/8 p-3 rounded-xl border border-clay/15">
                   <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.15em] text-clay font-sans mb-1.5">
-                    <Utensils size={11} /> Food
+                    <Utensils size={11} /> 食物
                   </div>
                   <div className="text-sm font-fangsong text-ink whitespace-pre-wrap">{log.foodIntake}</div>
                 </div>
@@ -321,7 +336,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
               {log.waterIntake && (
                 <div className="bg-sage/8 p-3 rounded-xl border border-sage/15">
                   <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.15em] text-sage font-sans mb-1.5">
-                    <Droplets size={11} /> Water
+                    <Droplets size={11} /> 飲水
                   </div>
                   <div className="text-sm font-fangsong text-ink whitespace-pre-wrap">{log.waterIntake}</div>
                 </div>
@@ -332,7 +347,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
               <div className="bg-sand/10 p-3 rounded-xl space-y-2">
                 {log.potty && (
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-pencil font-sans">Potty:</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-pencil font-sans">排泄：</span>
                     <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
                       log.potty === 'Normal' ? 'bg-sage/15 text-[#5E8A55]' :
                       log.potty === 'None' ? 'bg-sand/40 text-pencil' : 'bg-clay/15 text-clay'
@@ -343,7 +358,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
                 )}
                 {log.notes && (
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-pencil font-sans block mb-0.5">Notes:</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-pencil font-sans block mb-0.5">備註：</span>
                     <div className="text-sm font-fangsong text-ink whitespace-pre-wrap">{log.notes}</div>
                   </div>
                 )}
@@ -379,7 +394,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
             {/* Scrollable fields */}
             <div className="flex-1 overflow-y-auto px-8 pb-4 space-y-6" style={{ overscrollBehavior: 'contain' }}>
               <div>
-                <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Date</label>
+                <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">日期</label>
                 <input
                   type="date" required
                   value={newLog.date || ''}
@@ -398,7 +413,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
 
               <div className="grid grid-cols-2 gap-5">
                 <div>
-                  <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Food</label>
+                  <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">食物</label>
                   <textarea
                     rows={2}
                     placeholder="e.g. 100g 飼料"
@@ -408,7 +423,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Water</label>
+                  <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">飲水</label>
                   <textarea
                     rows={2}
                     placeholder="e.g. 喝了很多水"
@@ -420,7 +435,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
               </div>
 
               <div>
-                <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-2 block font-sans">Potty</label>
+                <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-2 block font-sans">排泄</label>
                 <div className="flex flex-wrap gap-2">
                   {(['Normal', 'Diarrhea', 'Constipation', 'None'] as const).map(p => (
                     <button
@@ -438,7 +453,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
               </div>
 
               <div>
-                <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Notes</label>
+                <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">備註</label>
                 <textarea
                   rows={3}
                   placeholder="其他觀察紀錄..."

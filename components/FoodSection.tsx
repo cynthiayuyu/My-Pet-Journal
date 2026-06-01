@@ -21,6 +21,12 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [newItem, setNewItem] = useState<Partial<InventoryItem>>({ type: 'Food', unit: 'g' });
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(null), 2000);
+  };
 
   const handleOpenForm = (item?: InventoryItem) => {
     if (item) {
@@ -54,6 +60,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
     } else {
       setItems([...items, itemData]);
     }
+    showToast(editingItemId ? '已更新 ✓' : '已新增 ✓');
     setIsFormOpen(false);
     setNewItem({ type: 'Food', unit: 'g' });
     setEditingItemId(null);
@@ -97,7 +104,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
           <button onClick={() => handleOpenForm(item)} className="text-sand hover:text-clay transition-colors p-1">
             <Edit2 size={15} />
           </button>
-          <button onClick={() => setItems(items.filter(i => i.id !== item.id))} className="text-sand hover:text-clay transition-colors p-1">
+          <button onClick={() => { if (!window.confirm('確定要刪除嗎？')) return; setItems(items.filter(i => i.id !== item.id)); }} className="text-sand hover:text-clay transition-colors p-1">
             <Trash2 size={15} />
           </button>
         </div>
@@ -159,6 +166,14 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
 
   return (
     <div className="space-y-6 animate-fade-in">
+      {toastMsg && (
+        <div
+          className="fixed top-20 left-1/2 -translate-x-1/2 z-[150] bg-ink/80 text-white text-sm px-5 py-2.5 rounded-full shadow-lg font-sans pointer-events-none animate-fade-in"
+          style={{ whiteSpace: 'nowrap' }}
+        >
+          {toastMsg}
+        </div>
+      )}
 
       {/* Calorie Calculator */}
       <div className="card-warm rounded-[2rem] p-6">

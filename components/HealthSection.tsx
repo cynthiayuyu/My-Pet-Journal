@@ -26,6 +26,12 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
   const [newRecord, setNewRecord] = useState<Partial<HealthRecord>>({});
   const [metricsInput, setMetricsInput] = useState<{key: string, value: string}[]>([{key: '', value: ''}]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(null), 2000);
+  };
 
   // Calendar Logic
   const year = currentDate.getFullYear();
@@ -98,6 +104,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
         addRecord(recordData as HealthRecord);
       }
       
+      showToast(editingRecordId ? '已更新 ✓' : '已新增 ✓');
       setIsFormOpen(false);
       setNewRecord({});
       setEditingRecordId(null);
@@ -158,10 +165,10 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
 
   const getEventTypeName = (type: string) => {
     switch(type) {
-      case 'Vaccine': return 'Vaccine';
-      case 'Deworming': return 'Deworming';
-      case 'Checkup': return 'Checkup';
-      case 'Vet Visit': return 'Vet Visit';
+      case 'Vaccine': return '疫苗';
+      case 'Deworming': return '驅蟲';
+      case 'Checkup': return '健康檢查';
+      case 'Vet Visit': return '就診';
       default: return type;
     }
   };
@@ -186,7 +193,15 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
 
   return (
     <div className="space-y-6 animate-fade-in">
-      
+      {toastMsg && (
+        <div
+          className="fixed top-20 left-1/2 -translate-x-1/2 z-[150] bg-ink/80 text-white text-sm px-5 py-2.5 rounded-full shadow-lg font-sans pointer-events-none animate-fade-in"
+          style={{ whiteSpace: 'nowrap' }}
+        >
+          {toastMsg}
+        </div>
+      )}
+
       {/* Search Bar */}
       <div className="relative">
         <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-pencil">
@@ -221,17 +236,17 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
               <div key={record.id} className="card-warm rounded-2xl p-5 relative group animate-fade-in">
                   <div className="absolute top-4 right-4 flex gap-2">
                     <button onClick={() => handleOpenForm(record)} className="text-sand hover:text-clay transition-colors p-1"><Edit2 size={16} /></button>
-                    <button onClick={() => deleteRecord(record.id)} className="text-sand hover:text-clay transition-colors p-1"><Trash2 size={16} /></button>
+                    <button onClick={() => { if (!window.confirm('確定要刪除嗎？')) return; deleteRecord(record.id); }} className="text-sand hover:text-clay transition-colors p-1"><Trash2 size={16} /></button>
                   </div>
                   <div className="flex gap-4 pr-16">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                          record.type === 'Vaccine' ? 'icon-clay' : 
+                          record.type === 'Vaccine' ? 'icon-clay' :
                           record.type === 'Deworming' ? 'icon-sage' :
                           record.type === 'Checkup' ? 'icon-gold' :
                           'icon-warm'
                       }`}>
-                          {record.type === 'Vaccine' ? <Syringe size={18} /> : 
-                           record.type === 'Deworming' ? <Bug size={18} /> : 
+                          {record.type === 'Vaccine' ? <Syringe size={18} /> :
+                           record.type === 'Deworming' ? <Bug size={18} /> :
                            record.type === 'Checkup' ? <Activity size={18} /> :
                            <Stethoscope size={18} />}
                       </div>
@@ -505,8 +520,8 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
                   >
                     <Edit2 size={16} />
                   </button>
-                  <button 
-                    onClick={() => deleteRecord(record.id)}
+                  <button
+                    onClick={() => { if (!window.confirm('確定要刪除嗎？')) return; deleteRecord(record.id); }}
                     className="text-sand hover:text-clay transition-colors p-1"
                   >
                     <Trash2 size={16} />
@@ -641,14 +656,14 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
                         activeType === type ? 'bg-white text-ink shadow-sm' : 'text-pencil'
                     }`}
                   >
-                    {type === 'Vaccine' ? 'Vaccine' : type === 'Deworming' ? 'Deworming' : type === 'Checkup' ? 'Checkup' : 'Vet Visit'}
+                    {type === 'Vaccine' ? '疫苗' : type === 'Deworming' ? '驅蟲' : type === 'Checkup' ? '健康檢查' : '就診'}
                   </button>
                 ))}
              </div>
 
              <div className="space-y-6">
                  <div>
-                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans whitespace-normal break-words">Treatment / Visit Name</label>
+                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans whitespace-normal break-words">項目名稱</label>
                    <textarea 
                     required
                     rows={2}
@@ -661,8 +676,8 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
 
                  <div className="grid grid-cols-2 gap-6">
                    <div>
-                       <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Date</label>
-                       <input 
+                       <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">日期</label>
+                       <input
                         type="date" required
                         value={newRecord.date}
                         onChange={e => setNewRecord({...newRecord, date: e.target.value})}
@@ -670,7 +685,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
                        />
                    </div>
                    <div>
-                       <label className="text-[10px] text-clay font-bold tracking-widest uppercase mb-1 block font-sans">Next Due</label>
+                       <label className="text-[10px] text-clay font-bold tracking-widest uppercase mb-1 block font-sans">下次到期</label>
                        <input 
                         type="date"
                         value={newRecord.nextDueDate || ''}
@@ -682,7 +697,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
 
                  <div className="grid grid-cols-2 gap-6">
                    <div>
-                     <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Clinic / Location</label>
+                     <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">診所 / 地點</label>
                      <select
                       value={allLocations.includes(newRecord.location || '') ? newRecord.location : (newRecord.location ? 'other' : '')}
                       onChange={e => {
@@ -723,7 +738,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
                      )}
                    </div>
                    <div>
-                     <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Cost</label>
+                     <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">費用</label>
                      <div className="relative">
                        <span className="absolute left-0 top-2.5 text-ink font-fangsong">$</span>
                        <input 
@@ -782,8 +797,8 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
                 )}
 
                  <div>
-                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Notes</label>
-                   <textarea 
+                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">備註</label>
+                   <textarea
                     rows={2}
                     placeholder="Add any additional notes..."
                     value={newRecord.notes || ''}
