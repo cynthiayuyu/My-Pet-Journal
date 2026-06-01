@@ -1,7 +1,8 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo } from 'react';
 import { HealthRecord, PetShop } from '../types';
 import { generateId, formatDate } from '../utils';
-import { ChevronLeft, ChevronRight, ChevronDown, Plus, Trash2, X, Syringe, Bug, Clock, MapPin, Stethoscope, FileText, Activity, Edit2, Search, Camera, DollarSign } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ChevronDown, Plus, Trash2, X, Syringe, Bug, Clock, MapPin, Stethoscope, FileText, Activity, Edit2, Search, DollarSign } from 'lucide-react';
+import { PhotoGallery, PhotoStrip } from './PhotoGallery';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface HealthSectionProps {
@@ -25,18 +26,6 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
   const [newRecord, setNewRecord] = useState<Partial<HealthRecord>>({});
   const [metricsInput, setMetricsInput] = useState<{key: string, value: string}[]>([{key: '', value: ''}]);
   const [searchTerm, setSearchTerm] = useState('');
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setNewRecord({ ...newRecord, photoUrl: reader.result as string });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   // Calendar Logic
   const year = currentDate.getFullYear();
@@ -99,7 +88,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
         nextDueDate: newRecord.nextDueDate,
         notes: newRecord.notes,
         cost: newRecord.cost,
-        photoUrl: newRecord.photoUrl,
+        photos: newRecord.photos,
         metrics: Object.keys(metrics).length > 0 ? metrics : undefined,
       };
 
@@ -269,11 +258,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
                                   )}
                               </div>
                           )}
-                          {record.photoUrl && (
-                            <div className="mt-4 w-full h-32 rounded-xl overflow-hidden border border-sand/30">
-                              <img src={record.photoUrl} alt="Record attachment" className="w-full h-full object-cover" />
-                            </div>
-                          )}
+                          <PhotoStrip photos={record.photos || []} photoUrl={record.photoUrl} />
                       </div>
                   </div>
               </div>
@@ -752,28 +737,13 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
                    </div>
                 </div>
 
-                {/* Photo Upload */}
+                {/* Photos */}
                 <div>
-                   <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-2 block font-sans">Photo / Receipt</label>
-                   <div 
-                     onClick={() => fileInputRef.current?.click()}
-                     className="w-full h-32 rounded-xl border-2 border-dashed border-sand flex flex-col items-center justify-center text-pencil hover:text-clay hover:border-clay transition-colors cursor-pointer overflow-hidden relative"
-                   >
-                     {newRecord.photoUrl ? (
-                       <>
-                         <img src={newRecord.photoUrl} alt="Preview" className="w-full h-full object-cover" />
-                         <div className="absolute inset-0 bg-ink/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                           <span className="text-white text-xs font-bold uppercase tracking-widest">Change Photo</span>
-                         </div>
-                       </>
-                     ) : (
-                       <>
-                         <Camera size={24} className="mb-2" />
-                         <span className="text-xs font-sans">點擊上傳 Tap to upload</span>
-                       </>
-                     )}
-                   </div>
-                   <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" className="hidden" />
+                  <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-2 block font-sans">照片 / 收據</label>
+                  <PhotoGallery
+                    photos={newRecord.photos || (newRecord.photoUrl ? [newRecord.photoUrl] : [])}
+                    onChange={photos => setNewRecord(prev => ({ ...prev, photos }))}
+                  />
                 </div>
 
                 {activeType === 'Checkup' && (

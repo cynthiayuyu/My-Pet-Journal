@@ -1,8 +1,8 @@
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { PetShop, ShopVisit, ShopVisitService } from '../types';
 import { generateId } from '../utils';
-import { Plus, Trash2, MapPin, DollarSign, Calendar, Edit2, Save, X, Search, Camera, Settings, ChevronRight, ChevronLeft } from 'lucide-react';
-import { ImageCropper } from './ImageCropper';
+import { Plus, Trash2, MapPin, DollarSign, Calendar, Edit2, Save, X, Search, Settings, ChevronRight, ChevronLeft } from 'lucide-react';
+import { PhotoGallery, PhotoStrip } from './PhotoGallery';
 
 interface ShopSectionProps {
   shops: PetShop[];
@@ -24,9 +24,6 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedShopId, setSelectedShopId] = useState<string | null>(null);
-  const [cropperState, setCropperState] = useState<{ dataUrl: string; target: 'new' | 'edit' } | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const editFileInputRef = useRef<HTMLInputElement>(null);
 
   const [isManagingCategories, setIsManagingCategories] = useState(false);
   const [editingCategory, setEditingCategory] = useState<string | null>(null);
@@ -89,24 +86,6 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
     );
   }, [shops, searchTerm]);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, isEditing: boolean) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => setCropperState({ dataUrl: reader.result as string, target: isEditing ? 'edit' : 'new' });
-    reader.readAsDataURL(file);
-    e.target.value = '';
-  };
-
-  const handleCropConfirm = (croppedUrl: string) => {
-    if (cropperState?.target === 'edit') {
-      setEditVisitData(prev => ({ ...prev, photoUrl: croppedUrl }));
-    } else {
-      setNewVisit(prev => ({ ...prev, photoUrl: croppedUrl }));
-    }
-    setCropperState(null);
-  };
-
   const handleAddShop = () => {
     if (!newShop.name) return;
     const shop: PetShop = {
@@ -146,7 +125,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
       purpose: services.map(s => s.name).join('、'),
       services,
       notes: newVisit.notes,
-      photoUrl: newVisit.photoUrl,
+      photos: newVisit.photos,
     };
     setShops(shops.map(s => s.id === shopId ? { ...s, visits: [...s.visits, visit] } : s));
     setNewVisit({ date: new Date().toISOString().split('T')[0] });
@@ -169,7 +148,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
           purpose: services.map(s => s.name).join('、'),
           services,
           notes: editVisitData.notes,
-          photoUrl: editVisitData.photoUrl,
+          photos: editVisitData.photos,
         } : v),
       };
     }));
@@ -213,15 +192,6 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
 
   return (
     <div className="space-y-4">
-
-      {/* Image Cropper overlay */}
-      {cropperState && (
-        <ImageCropper
-          imageDataUrl={cropperState.dataUrl}
-          onConfirm={handleCropConfirm}
-          onCancel={() => setCropperState(null)}
-        />
-      )}
 
       {/* ── Header ── */}
       <div className="flex justify-between items-center">
@@ -589,16 +559,11 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
                         value={newVisit.notes || ''}
                         onChange={e => setNewVisit({ ...newVisit, notes: e.target.value })}
                       />
-                      <div
-                        onClick={() => fileInputRef.current?.click()}
-                        className="w-full h-20 rounded-xl border border-dashed border-clay/40 flex items-center justify-center text-clay/60 hover:text-clay hover:border-clay transition-colors cursor-pointer overflow-hidden relative bg-white/40"
-                      >
-                        {newVisit.photoUrl
-                          ? <img src={newVisit.photoUrl} alt="Preview" className="w-full h-full object-cover" />
-                          : <div className="flex items-center gap-2 text-xs"><Camera size={14} /> 新增照片</div>
-                        }
-                      </div>
-                      <input type="file" ref={fileInputRef} onChange={e => handleImageUpload(e, false)} accept="image/*" className="hidden" />
+                      <PhotoGallery
+                        photos={newVisit.photos || (newVisit.photoUrl ? [newVisit.photoUrl] : [])}
+                        onChange={photos => setNewVisit(prev => ({ ...prev, photos }))}
+                        maxPhotos={5}
+                      />
                       <div className="flex justify-end gap-2 pt-1">
                         <button onClick={() => { setAddingVisitTo(null); setNewVisitServices([{name: '', cost: ''}]); }} className="px-3 py-1.5 text-xs text-ink/60 hover:text-ink">取消</button>
                         <button onClick={() => handleAddVisit(selectedShop.id)} className="px-4 py-1.5 text-xs bg-clay text-white rounded-lg hover:bg-clay/90">儲存</button>
@@ -675,16 +640,11 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
                                 value={editVisitData.notes || ''}
                                 onChange={e => setEditVisitData({ ...editVisitData, notes: e.target.value })}
                               />
-                              <div
-                                onClick={() => editFileInputRef.current?.click()}
-                                className="w-full h-20 rounded-xl border border-dashed border-clay/40 flex items-center justify-center text-clay/60 hover:text-clay hover:border-clay transition-colors cursor-pointer overflow-hidden relative bg-white/40"
-                              >
-                                {editVisitData.photoUrl
-                                  ? <img src={editVisitData.photoUrl} alt="Preview" className="w-full h-full object-cover" />
-                                  : <div className="flex items-center gap-2 text-xs"><Camera size={14} /> 新增照片</div>
-                                }
-                              </div>
-                              <input type="file" ref={editFileInputRef} onChange={e => handleImageUpload(e, true)} accept="image/*" className="hidden" />
+                              <PhotoGallery
+                                photos={editVisitData.photos || (editVisitData.photoUrl ? [editVisitData.photoUrl] : [])}
+                                onChange={photos => setEditVisitData(prev => ({ ...prev, photos }))}
+                                maxPhotos={5}
+                              />
                               <div className="flex justify-end gap-2 pt-1">
                                 <button onClick={() => setEditingVisitId(null)} className="p-1.5 text-ink/60 hover:text-ink"><X size={15} /></button>
                                 <button onClick={() => handleSaveVisit(selectedShop.id, visit.id)} className="p-1.5 text-clay"><Save size={15} /></button>
@@ -736,11 +696,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
                                 ><Edit2 size={14} /></button>
                                 <button onClick={() => handleDeleteVisit(selectedShop.id, visit.id)} className="p-1.5 text-ink/25 hover:text-clay transition-colors"><Trash2 size={14} /></button>
                               </div>
-                              {visit.photoUrl && (
-                                <div className="w-full h-32 rounded-xl overflow-hidden border border-sand/30 mt-3">
-                                  <img src={visit.photoUrl} alt="Visit" className="w-full h-full object-cover" />
-                                </div>
-                              )}
+                              <PhotoStrip photos={visit.photos || []} photoUrl={visit.photoUrl} />
                             </>
                           )}
                         </div>
