@@ -1,8 +1,8 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo } from 'react';
 import { WardrobeItem } from '../types';
 import { generateId } from '../utils';
-import { Plus, Trash2, X, Camera, Search, Tag } from 'lucide-react';
-import { ImageCropper } from './ImageCropper';
+import { Plus, Trash2, X, Search, Tag } from 'lucide-react';
+import { PhotoGallery, PhotoStrip } from './PhotoGallery';
 
 interface WardrobeSectionProps {
   items: WardrobeItem[];
@@ -25,22 +25,6 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
   const [searchTerm, setSearchTerm]   = useState('');
   const [filterCat, setFilterCat]     = useState<WardrobeItem['category'] | null>(null);
   const [sortOrder, setSortOrder]     = useState<SortOrder>('default');
-  const [cropperDataUrl, setCropperDataUrl] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => setCropperDataUrl(reader.result as string);
-    reader.readAsDataURL(file);
-    e.target.value = '';
-  };
-
-  const handleCropConfirm = (croppedUrl: string) => {
-    setNewItem(prev => ({ ...prev, photoUrl: croppedUrl }));
-    setCropperDataUrl(null);
-  };
 
   const handleOpenForm = (item?: WardrobeItem) => {
     if (item) {
@@ -66,7 +50,7 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
       purchaseDate: newItem.purchaseDate || undefined,
       price: newItem.price || undefined,
       notes: newItem.notes || undefined,
-      photoUrl: newItem.photoUrl || undefined,
+      photos: newItem.photos?.length ? newItem.photos : (newItem.photoUrl ? [newItem.photoUrl] : undefined),
     };
     if (editingId) {
       setItems(items.map(i => i.id === editingId ? item : i));
@@ -108,15 +92,6 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
 
   return (
     <div className="space-y-5 animate-fade-in">
-
-      {/* Image Cropper overlay */}
-      {cropperDataUrl && (
-        <ImageCropper
-          imageDataUrl={cropperDataUrl}
-          onConfirm={handleCropConfirm}
-          onCancel={() => setCropperDataUrl(null)}
-        />
-      )}
 
       {/* Search */}
       <div className="relative">
@@ -217,19 +192,22 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
             className="card-warm rounded-2xl overflow-hidden relative group cursor-pointer active:scale-[0.98] transition-transform"
             onClick={() => handleOpenForm(item)}
           >
-            {item.photoUrl ? (
-              <div className="w-full aspect-square overflow-hidden bg-sand/10">
-                <img
-                  src={item.photoUrl}
-                  alt={item.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-            ) : (
-              <div className="w-full aspect-square bg-gradient-to-br from-sand/20 to-sand/5 flex items-center justify-center">
-                <Tag size={28} className="text-pencil/25" />
-              </div>
-            )}
+            {(() => {
+              const firstPhoto = item.photos?.[0] || item.photoUrl;
+              return firstPhoto && !firstPhoto.startsWith('http') ? (
+                <div className="w-full aspect-square overflow-hidden bg-sand/10">
+                  <img src={firstPhoto} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                </div>
+              ) : firstPhoto ? (
+                <div className="w-full aspect-square overflow-hidden bg-sand/10 flex items-center justify-center">
+                  <img src={firstPhoto} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={e => { (e.target as HTMLImageElement).style.display='none'; }} />
+                </div>
+              ) : (
+                <div className="w-full aspect-square bg-gradient-to-br from-sand/20 to-sand/5 flex items-center justify-center">
+                  <Tag size={28} className="text-pencil/25" />
+                </div>
+              );
+            })()}
             <button
               onClick={e => { e.stopPropagation(); setItems(items.filter(i => i.id !== item.id)); }}
               className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/85 backdrop-blur-sm flex items-center justify-center text-ink/30 hover:text-clay opacity-0 group-hover:opacity-100 transition-all shadow-sm"
@@ -271,27 +249,14 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
             </div>
 
             <div className="flex-1 overflow-y-auto px-8 pb-4 space-y-5" style={{ overscrollBehavior: 'contain' }}>
-              {/* Photo */}
-              <div
-                onClick={() => fileInputRef.current?.click()}
-                className="w-full h-44 rounded-2xl border-2 border-dashed border-sand flex flex-col items-center justify-center text-pencil hover:text-clay hover:border-clay transition-colors cursor-pointer overflow-hidden relative"
-              >
-                {newItem.photoUrl ? (
-                  <>
-                    <img src={newItem.photoUrl} alt="Preview" className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-ink/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                      <span className="text-white text-xs font-bold uppercase tracking-widest">更換照片</span>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <Camera size={26} className="mb-2" />
-                    <span className="text-xs font-sans">點擊上傳照片</span>
-                    <span className="text-[10px] text-pencil/40 font-sans mt-0.5">可裁切調整範圍</span>
-                  </>
-                )}
+              {/* Photos */}
+              <div>
+                <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-2 block font-sans">照片</label>
+                <PhotoGallery
+                  photos={newItem.photos || (newItem.photoUrl ? [newItem.photoUrl] : [])}
+                  onChange={photos => setNewItem(prev => ({ ...prev, photos }))}
+                />
               </div>
-              <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" className="hidden" />
 
               {/* Category */}
               <div>

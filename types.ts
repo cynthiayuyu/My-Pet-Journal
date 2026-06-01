@@ -33,13 +33,14 @@ export interface HealthRecord {
   id: string;
   type: 'Vaccine' | 'Deworming' | 'Vet Visit' | 'Checkup' | 'Other';
   date: string;
-  title: string; // e.g., "Rabies Shot" or "Heartgard"
+  title: string;
   location?: string;
-  nextDueDate?: string; // For reminders
+  nextDueDate?: string;
   notes?: string;
-  metrics?: Record<string, number>; // For checkup results like WBC, RBC
-  cost?: number; // Added for expense tracking
-  photoUrl?: string; // Added for attachments
+  metrics?: Record<string, number>;
+  cost?: number;
+  photoUrl?: string; // legacy
+  photos?: string[]; // base64 or external URLs
 }
 
 export interface InsurancePolicy {
@@ -57,10 +58,12 @@ export interface InventoryItem {
   type: 'Food' | 'Supplement';
   expiryDate: string;
   quantity: number;
-  unit: string; // e.g., 'g', 'pills'
-  caloriesPerUnit?: number; // kcal per unit (e.g., per 100g)
+  unit: string;
+  caloriesPerUnit?: number;
   ingredients?: string;
-  purchaseLocation?: string; // e.g., 寵物店、網路商店
+  purchaseLocation?: string;
+  purchaseDate?: string;
+  dailyUsage?: number; // amount consumed per day (same unit as quantity)
 }
 
 export interface PrepaidService {
@@ -87,7 +90,8 @@ export interface WardrobeItem {
   purchaseDate?: string;
   price?: number;
   notes?: string;
-  photoUrl?: string;
+  photoUrl?: string; // legacy
+  photos?: string[]; // base64 or external URLs
 }
 
 export interface ShopVisitService {
@@ -102,7 +106,8 @@ export interface ShopVisit {
   purpose: string;
   services?: ShopVisitService[];
   notes?: string;
-  photoUrl?: string;
+  photoUrl?: string; // legacy
+  photos?: string[]; // base64 or external URLs
 }
 
 export interface PetShop {
@@ -122,10 +127,12 @@ export interface DailyLog {
   waterIntake?: string;
   potty?: 'Normal' | 'Diarrhea' | 'Constipation' | 'None';
   notes?: string;
-  photoUrl?: string;
+  photoUrl?: string; // legacy
+  photos?: string[]; // base64 or external URLs
 }
 
 export type TabView = 'dashboard' | 'daily' | 'profile' | 'physical' | 'health' | 'food' | 'finance' | 'shops';
+
 export interface PetData {
   id: string;
   profile: PetProfile;
