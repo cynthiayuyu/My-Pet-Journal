@@ -386,7 +386,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
         </div>
 
         {/* Legend */}
-        <div className="mt-5 pt-4 border-t border-sand/30 flex flex-wrap justify-center gap-x-2 gap-y-2 text-[10px] uppercase font-bold tracking-wider font-sans">
+        <div className="mt-4 pt-4 border-t border-sand/30 flex items-center justify-between text-[9px] uppercase font-bold tracking-wide font-sans">
           {([
             { type: 'Vaccine' as const, label: '疫苗', color: 'bg-clay', active: 'bg-clay/15 text-clay border-clay/40', inactive: 'text-pencil border-transparent hover:border-sand/60' },
             { type: 'Deworming' as const, label: '驅蟲', color: 'bg-sage', active: 'bg-sage/15 text-sage border-sage/40', inactive: 'text-pencil border-transparent hover:border-sand/60' },
@@ -396,15 +396,15 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
               key={type}
               type="button"
               onClick={() => setActiveFilter(f => f === type ? null : type)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-all duration-200 ${activeFilter === type ? active : inactive}`}
+              className={`flex items-center gap-1 px-2 py-1 rounded-full border transition-all duration-200 ${activeFilter === type ? active : inactive}`}
             >
-              <span className={`w-2 h-2 rounded-full ${color} inline-block flex-shrink-0`}></span>
+              <span className={`w-1.5 h-1.5 rounded-full ${color} inline-block flex-shrink-0`}></span>
               {label}
             </button>
           ))}
-          <div className="flex items-center gap-1.5 px-3 py-1.5 text-pencil/60">
-            <span className="w-2 h-2 rounded-full border border-clay/60 inline-block flex-shrink-0"></span>
-            下次回診
+          <div className="flex items-center gap-1 px-2 py-1 text-pencil/55">
+            <span className="w-1.5 h-1.5 rounded-full border border-clay/55 inline-block flex-shrink-0"></span>
+            回診
           </div>
         </div>
       </div>
@@ -627,7 +627,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
               </div>
             </div>
             {/* Scrollable content wrapper — opened below */}
-            <div className="flex-1 overflow-y-auto px-8 pb-4">
+            <div className="flex-1 overflow-y-auto px-8 pb-4" style={{ overscrollBehavior: 'contain' }}>
             <div className="space-y-0">
 
              {/* Type Selector */}
@@ -796,7 +796,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
             </div>{/* close space-y-0 */}
             </div>{/* close flex-1 overflow-y-auto */}
             {/* Sticky submit */}
-            <div className="flex-shrink-0 px-8 pt-4 border-t border-sand/20" style={{ paddingBottom: 'calc(7rem + env(safe-area-inset-bottom))' }}>
+            <div className="flex-shrink-0 px-8 pt-4 border-t border-sand/20" style={{ paddingBottom: 'max(0.75rem, calc(0.5rem + env(safe-area-inset-bottom)))' }}>
               <button type="submit" className="w-full py-3.5 btn-warm">
                 {editingRecordId ? '更新' : '儲存'}
               </button>

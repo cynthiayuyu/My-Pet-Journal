@@ -455,17 +455,17 @@ const App: React.FC = () => {
         scrolled ? 'glass shadow-sm py-3' : 'bg-transparent py-5'
       }`}>
         <div className="flex items-center gap-2">
-          {/* Pet photo → navigate to profile */}
+          {/* Paw icon → navigate to profile */}
           <button onClick={() => setActiveTab('profile')} className={`transition-all duration-300 ${scrolled ? 'scale-90' : 'scale-100'}`}>
-            {activePet.profile.photoUrl ? (
-              <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-white shadow-md flex-shrink-0">
-                <img src={activePet.profile.photoUrl} alt="Profile" className="w-full h-full object-cover" />
-              </div>
-            ) : (
-              <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center shadow-sm border border-sand flex-shrink-0">
-                <PawPrint className="text-clay" fill="currentColor" size={18} strokeWidth={0} />
-              </div>
-            )}
+            <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center shadow-sm border border-sand/60 flex-shrink-0">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="9" cy="5.5" rx="2" ry="2.7" fill="#B87068" opacity="0.85" />
+                <ellipse cx="15" cy="5.5" rx="2" ry="2.7" fill="#B87068" opacity="0.85" />
+                <ellipse cx="5.5" cy="10" rx="1.6" ry="2.2" fill="#B87068" opacity="0.85" />
+                <ellipse cx="18.5" cy="10" rx="1.6" ry="2.2" fill="#B87068" opacity="0.85" />
+                <path d="M12 9c-3.5 0-6 2.2-5.5 5.5.3 2 1.8 3.8 3.5 4.5 1.2.5 2.8.5 4 0 1.7-.7 3.2-2.5 3.5-4.5C18 11.2 15.5 9 12 9z" fill="#B87068" opacity="0.9" />
+              </svg>
+            </div>
           </button>
 
           {/* Pet name → open pet switcher */}
@@ -515,7 +515,6 @@ const App: React.FC = () => {
             <ProfileSection
               profile={activePet.profile}
               setProfile={setProfile}
-              storageUsedBytes={storageUsedBytes}
             />
           </div>
         )}

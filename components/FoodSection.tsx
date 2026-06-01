@@ -371,7 +371,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
               </div>
             </div>
 
-            <div className="flex-shrink-0 px-8 pt-4 border-t border-sand/20" style={{ paddingBottom: 'calc(7rem + env(safe-area-inset-bottom))' }}>
+            <div className="flex-shrink-0 px-8 pt-4 border-t border-sand/20" style={{ paddingBottom: 'max(0.75rem, calc(0.5rem + env(safe-area-inset-bottom)))' }}>
               <button type="submit" className="w-full py-3.5 btn-warm">
                 {editingItemId ? '更新' : '儲存'}
               </button>

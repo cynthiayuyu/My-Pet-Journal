@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import ReactDOM from 'react-dom';
 import { Camera, Link, X, ExternalLink } from 'lucide-react';
 import { ImageCropper } from './ImageCropper';
 
@@ -46,12 +47,13 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({ photos, onChange, ma
 
   return (
     <>
-      {cropperDataUrl && (
+      {cropperDataUrl && ReactDOM.createPortal(
         <ImageCropper
           imageDataUrl={cropperDataUrl}
           onConfirm={handleCropConfirm}
           onCancel={() => setCropperDataUrl(null)}
-        />
+        />,
+        document.body
       )}
 
       <div className="space-y-3">
@@ -119,7 +121,7 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({ photos, onChange, ma
               value={linkValue}
               onChange={e => setLinkValue(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleAddLink(); } }}
-              placeholder="貼上 Google Photos / iCloud / Imgur 連結..."
+              placeholder="貼上 Imgur / Cloudinary / 直連圖片 URL（Google Drive 不支援直接顯示）"
               className="flex-1 py-2 bg-transparent border-b border-sand focus:border-clay text-ink text-sm font-sans rounded-none placeholder-sand/50 focus:outline-none"
               autoFocus
             />

@@ -440,7 +440,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
                     onChange={e => setEditShopData({ ...editShopData, notes: e.target.value })}
                   />
                 </div>
-                <div className="flex-shrink-0 px-6 pt-3 border-t border-sand/20" style={{ paddingBottom: 'calc(7rem + env(safe-area-inset-bottom))' }}>
+                <div className="flex-shrink-0 px-6 pt-3 border-t border-sand/20" style={{ paddingBottom: 'max(0.75rem, calc(0.5rem + env(safe-area-inset-bottom)))' }}>
                   <button onClick={() => handleSaveShop(selectedShop.id)} className="w-full py-3.5 btn-warm">儲存</button>
                 </div>
               </>
@@ -706,7 +706,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
                 </div>
 
                 {/* Close */}
-                <div className="flex-shrink-0 px-6 pt-3 border-t border-sand/15" style={{ paddingBottom: 'calc(7rem + env(safe-area-inset-bottom))' }}>
+                <div className="flex-shrink-0 px-6 pt-3 border-t border-sand/15" style={{ paddingBottom: 'max(0.75rem, calc(0.5rem + env(safe-area-inset-bottom)))' }}>
                   <button
                     onClick={closeSheet}
                     className="w-full py-3 text-sm text-pencil hover:text-ink transition-colors font-sans tracking-[0.18em] uppercase"

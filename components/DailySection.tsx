@@ -377,7 +377,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
             </div>
 
             {/* Scrollable fields */}
-            <div className="flex-1 overflow-y-auto px-8 pb-4 space-y-6">
+            <div className="flex-1 overflow-y-auto px-8 pb-4 space-y-6" style={{ overscrollBehavior: 'contain' }}>
               <div>
                 <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">Date</label>
                 <input
@@ -450,7 +450,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
             </div>
 
             {/* Sticky submit */}
-            <div className="flex-shrink-0 px-8 pt-4 border-t border-sand/20" style={{ paddingBottom: 'calc(7rem + env(safe-area-inset-bottom))' }}>
+            <div className="flex-shrink-0 px-8 pt-4 border-t border-sand/20" style={{ paddingBottom: 'max(0.75rem, calc(0.5rem + env(safe-area-inset-bottom)))' }}>
               <button type="submit" className="w-full py-3.5 btn-warm">
                 {editingLogId ? '更新' : '儲存'}
               </button>
