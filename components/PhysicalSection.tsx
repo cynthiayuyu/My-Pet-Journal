@@ -272,7 +272,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
              <div className="w-12 h-12 rounded-full bg-sand/20 flex items-center justify-center text-pencil group-hover:text-gold group-hover:scale-110 transition-all duration-500">
                <Plus size={24} />
              </div>
-             <p className="text-sm font-fangsong text-pencil">Tap to add a measurement</p>
+             <p className="text-sm font-fangsong text-pencil">點擊新增測量紀錄</p>
           </div>
         )}
 

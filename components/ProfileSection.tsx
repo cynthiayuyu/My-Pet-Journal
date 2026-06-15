@@ -156,7 +156,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
             type="text"
             value={profile.name}
             onChange={(e) => handleInputChange('name', e.target.value)}
-            placeholder="Pet Name"
+            placeholder="寵物名稱"
             className="text-4xl font-fangsong text-ink text-center w-full bg-transparent border-none focus:ring-0 placeholder-warm/40 transition-all p-0 selection:bg-gold/20"
           />
           <div className="flex justify-center items-center">
@@ -187,7 +187,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
                 value={profile.breed}
                 onChange={(e) => handleInputChange('breed', e.target.value)}
                 className="w-full py-2 bg-transparent border-b border-sand text-ink text-xl focus:border-clay transition-colors rounded-none font-fangsong placeholder-sand"
-                placeholder="Unknown"
+                placeholder="未知"
               />
             </div>
 
@@ -328,7 +328,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
                   value={profile.vetContact?.phone || ''}
                   onChange={(e) => handleVetChange('phone', e.target.value)}
                   className="w-full py-2 bg-transparent border-b border-sand text-ink text-lg font-mono focus:border-clay transition-colors rounded-none placeholder-sand"
-                  placeholder="Phone Number"
+                  placeholder="電話號碼"
                 />
              </div>
           </div>
@@ -340,7 +340,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
               value={profile.vetContact?.address || ''}
               onChange={(e) => handleVetChange('address', e.target.value)}
               className="w-full py-2 bg-transparent border-b border-sand text-ink text-lg focus:border-clay transition-colors rounded-none placeholder-sand font-fangsong"
-              placeholder="Clinic Address"
+              placeholder="診所地址"
             />
           </div>
         </div>

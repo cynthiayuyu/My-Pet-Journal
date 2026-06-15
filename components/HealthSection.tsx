@@ -209,7 +209,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
         </div>
         <input
           type="text"
-          placeholder="Search records..."
+          placeholder="搜尋紀錄..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full pl-12 pr-4 py-3 bg-white/80 backdrop-blur-md border border-white rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gold/50 text-ink font-fangsong transition-all"
@@ -226,10 +226,10 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
 
       {searchTerm ? (
         <div className="space-y-4">
-          <h3 className="text-sm font-bold tracking-widest text-pencil uppercase font-sans px-2">Search Results ({searchResults.length})</h3>
+          <h3 className="text-sm font-bold tracking-widest text-pencil uppercase font-sans px-2">搜尋結果（{searchResults.length}）</h3>
           {searchResults.length === 0 ? (
             <div className="text-center py-8 bg-white/50 rounded-3xl border border-dashed border-sand">
-              <p className="text-sm font-fangsong text-pencil">No matching records found.</p>
+              <p className="text-sm font-fangsong text-pencil">找不到相關紀錄</p>
             </div>
           ) : (
             searchResults.map(record => (
@@ -268,7 +268,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
                                   )}
                                   {record.nextDueDate && (
                                       <div className="flex items-center gap-1.5 text-xs text-clay font-medium font-fangsong">
-                                          <Clock size={12} /> Next due: {formatDate(record.nextDueDate)}
+                                          <Clock size={12} /> 下次到期：{formatDate(record.nextDueDate)}
                                       </div>
                                   )}
                               </div>
@@ -474,7 +474,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
       <div className="space-y-4">
          <div className="flex justify-between items-end px-2">
            <div>
-             <span className="text-xs font-bold tracking-[0.2em] text-pencil uppercase font-sans">Events on</span>
+             <span className="text-xs font-bold tracking-[0.2em] text-pencil uppercase font-sans">當日紀錄</span>
              <h4 className="text-2xl font-fangsong text-ink mt-1">{formatDate(selectedDateStr)}</h4>
            </div>
            {(selectedDayRecords.length > 0 || selectedDayReminders.length > 0) && (
@@ -492,7 +492,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
              <div className="w-12 h-12 rounded-full bg-sand/20 flex items-center justify-center text-pencil group-hover:text-gold group-hover:scale-110 transition-all duration-500">
                <Plus size={24} />
              </div>
-             <p className="text-sm font-fangsong text-pencil">Tap to add a health record</p>
+             <p className="text-sm font-fangsong text-pencil">點擊新增健康紀錄</p>
           </div>
         )}
 
@@ -503,9 +503,9 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
                    <Clock size={18} />
                 </div>
                 <div className="flex-1">
-                    <div className="text-[10px] font-bold uppercase tracking-widest text-clay font-sans mb-1">Reminder Due</div>
+                    <div className="text-[10px] font-bold uppercase tracking-widest text-clay font-sans mb-1">到期提醒</div>
                     <div className="text-lg font-fangsong text-ink font-medium whitespace-pre-wrap">{record.title}</div>
-                    <div className="text-xs text-pencil mt-1">From previous {getEventTypeName(record.type)} record</div>
+                    <div className="text-xs text-pencil mt-1">來自過去的{getEventTypeName(record.type)}紀錄</div>
                 </div>
              </div>
         ))}
@@ -558,7 +558,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
                                 )}
                                 {record.nextDueDate && (
                                     <div className="flex items-center gap-1.5 text-xs text-clay font-medium font-fangsong">
-                                        <Clock size={12} /> Next due: {formatDate(record.nextDueDate)}
+                                        <Clock size={12} /> 下次到期：{formatDate(record.nextDueDate)}
                                     </div>
                                 )}
                             </div>
@@ -572,7 +572,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
 
                         {record.metrics && Object.keys(record.metrics).length > 0 && (
                           <div className="mt-4 pt-4 border-t border-sand/30">
-                            <div className="text-[10px] font-bold uppercase tracking-widest text-pencil font-sans mb-2">Test Results</div>
+                            <div className="text-[10px] font-bold uppercase tracking-widest text-pencil font-sans mb-2">檢驗數值</div>
                             <div className="grid grid-cols-2 gap-2">
                               {Object.entries(record.metrics).map(([key, val]) => (
                                 <div key={key} className="flex justify-between items-center bg-sand/10 px-3 py-1.5 rounded-lg">
@@ -595,7 +595,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
       {allMetricKeys.length > 0 && !searchTerm && (
         <div className="card-warm rounded-[2rem] p-6 mt-8">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-xs font-bold tracking-[0.2em] text-gold uppercase font-sans opacity-80">Checkup Trends</h3>
+            <h3 className="text-xs font-bold tracking-[0.2em] text-gold uppercase font-sans opacity-80">健檢趨勢</h3>
             <select 
               value={selectedMetric} 
               onChange={e => setSelectedMetric(e.target.value)}
@@ -621,7 +621,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
               </ResponsiveContainer>
             </div>
           ) : (
-            <p className="text-sm text-pencil font-fangsong text-center py-8">No trend data available for {selectedMetric}.</p>
+            <p className="text-sm text-pencil font-fangsong text-center py-8">尚無 {selectedMetric} 趨勢資料</p>
           )}
         </div>
       )}
@@ -709,27 +709,27 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
                       }}
                       className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none appearance-none"
                      >
-                       <option value="">Select...</option>
+                       <option value="">請選擇...</option>
                        {shopLocations.length > 0 && (
-                         <optgroup label="Shops & Places">
+                         <optgroup label="店家 / 地點">
                            {shopLocations.map(loc => (
                              <option key={loc} value={loc}>{loc}</option>
                            ))}
                          </optgroup>
                        )}
                        {otherLocations.length > 0 && (
-                         <optgroup label="Other Locations">
+                         <optgroup label="其他地點">
                            {otherLocations.map(loc => (
                              <option key={loc} value={loc}>{loc}</option>
                            ))}
                          </optgroup>
                        )}
-                       <option value="other">+ Add New...</option>
+                       <option value="other">+ 新增...</option>
                      </select>
                      {(!allLocations.includes(newRecord.location || '') && newRecord.location !== '') && (
                        <input 
                         type="text"
-                        placeholder="Type new location..."
+                        placeholder="輸入新地點..."
                         value={newRecord.location?.trim() || ''}
                         onChange={e => setNewRecord({...newRecord, location: e.target.value})}
                         className="w-full mt-2 py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none placeholder-sand/50 animate-fade-in"
@@ -800,7 +800,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
                    <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">備註</label>
                    <textarea
                     rows={2}
-                    placeholder="Add any additional notes..."
+                    placeholder="備註..."
                     value={newRecord.notes || ''}
                     onChange={e => setNewRecord({...newRecord, notes: e.target.value})}
                     className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none placeholder-sand/50 resize-none"

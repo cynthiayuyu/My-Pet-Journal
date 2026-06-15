@@ -116,7 +116,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-0.5">
               {isFirst && item.type === 'Food' && (
-                <span className="text-[8px] font-bold uppercase tracking-widest bg-gold/20 text-gold px-2 py-0.5 rounded-full">Use First</span>
+                <span className="text-[8px] font-bold uppercase tracking-widest bg-gold/20 text-gold px-2 py-0.5 rounded-full">優先使用</span>
               )}
             </div>
             <div className="text-lg font-fangsong text-ink leading-snug">{item.name}</div>
@@ -181,17 +181,17 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
           <div className="w-8 h-8 rounded-full bg-clay/10 flex items-center justify-center text-clay">
             <Calculator size={16} />
           </div>
-          <h3 className="text-xs font-bold tracking-[0.2em] text-gold uppercase font-sans opacity-80">Calorie Needs</h3>
+          <h3 className="text-xs font-bold tracking-[0.2em] text-gold uppercase font-sans opacity-80">每日熱量需求</h3>
         </div>
         {calorieInfo ? (
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-sand/10 rounded-xl p-4 text-center">
               <div className="text-[10px] font-bold uppercase tracking-widest text-pencil font-sans mb-1">RER</div>
-              <div className="text-2xl font-fangsong text-ink">{calorieInfo.rer} <span className="text-xs text-pencil font-sans">kcal/day</span></div>
+              <div className="text-2xl font-fangsong text-ink">{calorieInfo.rer} <span className="text-xs text-pencil font-sans">大卡/天</span></div>
             </div>
             <div className="bg-clay/5 rounded-xl p-4 text-center border border-clay/20">
               <div className="text-[10px] font-bold uppercase tracking-widest text-clay font-sans mb-1">MER</div>
-              <div className="text-2xl font-fangsong text-ink">{calorieInfo.mer} <span className="text-xs text-pencil font-sans">kcal/day</span></div>
+              <div className="text-2xl font-fangsong text-ink">{calorieInfo.mer} <span className="text-xs text-pencil font-sans">大卡/天</span></div>
             </div>
           </div>
         ) : (
@@ -202,7 +202,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
       {/* Header */}
       <div className="flex justify-between items-end px-1">
         <div>
-          <span className="text-xs font-bold tracking-[0.2em] text-pencil uppercase font-sans">Inventory</span>
+          <span className="text-xs font-bold tracking-[0.2em] text-pencil uppercase font-sans">庫存清單</span>
           <h4 className="text-2xl font-fangsong text-ink mt-0.5">庫存管理</h4>
         </div>
         <button
@@ -274,7 +274,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
                     onClick={() => setNewItem(prev => ({ ...prev, type: t }))}
                     className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all duration-300 font-fangsong ${newItem.type === t ? 'bg-white text-ink shadow-sm' : 'text-pencil'}`}
                   >
-                    {t === 'Food' ? 'Food 飼料' : 'Supplement 補充品'}
+                    {t === 'Food' ? '飼料 / 食物' : '保健補充品'}
                   </button>
                 ))}
               </div>
