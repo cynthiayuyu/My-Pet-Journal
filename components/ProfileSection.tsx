@@ -1,4 +1,4 @@
-import React, { useRef, useState, useMemo } from 'react';
+import React, { useRef, useState } from 'react';
 import { PetProfile } from '../types';
 import { calculateAge } from '../utils';
 import { Camera, Award, Stethoscope, Cloud, Upload, Download, Copy, CheckCircle, AlertCircle, RefreshCw, X } from 'lucide-react';
@@ -7,10 +7,9 @@ import { ImageCropper } from './ImageCropper';
 interface ProfileSectionProps {
   profile: PetProfile;
   setProfile: (profile: PetProfile) => void;
-  storageUsedBytes: number;
 }
 
-export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProfile, storageUsedBytes }) => {
+export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProfile }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [cropperDataUrl, setCropperDataUrl] = useState<string | null>(null);
 
@@ -117,10 +116,6 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
     }
   };
 
-  const storageMB = storageUsedBytes / (1024 * 1024);
-  const storagePct = Math.min((storageUsedBytes / (5 * 1024 * 1024)) * 100, 100);
-  const storageWarn = storagePct >= 85;
-
   return (
     <>
     {cropperDataUrl && (
@@ -144,7 +139,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
               </div>
             )}
              <div className="absolute inset-0 bg-ink/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-[1px]">
-               <span className="text-white text-xs font-medium tracking-widest uppercase drop-shadow-md">Change Photo</span>
+               <span className="text-white text-xs font-medium tracking-widest uppercase drop-shadow-md">更換照片</span>
              </div>
           </div>
           <input 
@@ -161,7 +156,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
             type="text"
             value={profile.name}
             onChange={(e) => handleInputChange('name', e.target.value)}
-            placeholder="Pet Name"
+            placeholder="寵物名稱"
             className="text-4xl font-fangsong text-ink text-center w-full bg-transparent border-none focus:ring-0 placeholder-warm/40 transition-all p-0 selection:bg-gold/20"
           />
           <div className="flex justify-center items-center">
@@ -180,24 +175,24 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
 
         <h3 className="text-xs font-bold tracking-[0.2em] text-gold uppercase flex items-center gap-3 mb-6 font-sans opacity-80">
           <Award size={14} />
-          Identity
+          基本資料
         </h3>
         
         <div className="grid grid-cols-1 gap-8">
           <div className="grid grid-cols-2 gap-8">
              <div className="group">
-              <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">Breed</label>
+              <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">品種</label>
               <input
                 type="text"
                 value={profile.breed}
                 onChange={(e) => handleInputChange('breed', e.target.value)}
                 className="w-full py-2 bg-transparent border-b border-sand text-ink text-xl focus:border-clay transition-colors rounded-none font-fangsong placeholder-sand"
-                placeholder="Unknown"
+                placeholder="未知"
               />
             </div>
 
             <div className="group">
-              <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">Gender</label>
+              <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">性別</label>
                <div className="flex gap-1 pt-1">
                   {(['Male', 'Female'] as const).map((g) => (
                     <button
@@ -209,7 +204,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
                           : 'border-transparent text-pencil hover:text-ink/70'
                       }`}
                     >
-                      {g === 'Male' ? 'Male' : 'Female'}
+                      {g === 'Male' ? '公' : '母'}
                     </button>
                   ))}
                </div>
@@ -219,7 +214,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
           <div className="grid grid-cols-2 gap-8">
             <div className="group">
               <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">
-                Ideal Weight (kg)
+                理想體重 (kg)
               </label>
               <input
                 type="number"
@@ -231,7 +226,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
               />
             </div>
             <div className="group">
-              <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">Neutered</label>
+              <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">結紮</label>
                <div className="flex gap-1 pt-1">
                   {[true, false].map((n) => (
                     <button
@@ -243,7 +238,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
                           : 'border-transparent text-pencil hover:text-ink/70'
                       }`}
                     >
-                      {n ? 'Yes' : 'No'}
+                      {n ? '是' : '否'}
                     </button>
                   ))}
                </div>
@@ -252,26 +247,26 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
 
           <div className="group">
             <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">
-              Activity Level
+              活動量
             </label>
             <select
               value={profile.activityLevel || 'neutered_adult'}
               onChange={(e) => handleInputChange('activityLevel', e.target.value)}
               className="w-full py-2 bg-transparent border-b border-sand text-ink text-lg focus:border-clay transition-colors rounded-none font-fangsong"
             >
-              <option value="resting">Resting / Inactive</option>
-              <option value="neutered_adult">Neutered Adult</option>
-              <option value="intact_adult">Intact Adult</option>
-              <option value="active">Active / Working</option>
-              <option value="highly_active">Highly Active</option>
-              <option value="weight_loss">Weight Loss</option>
-              <option value="weight_gain">Weight Gain</option>
+              <option value="resting">靜態 / 不活動</option>
+              <option value="neutered_adult">成年結紮</option>
+              <option value="intact_adult">成年未結紮</option>
+              <option value="active">活躍 / 工作犬</option>
+              <option value="highly_active">高度活躍</option>
+              <option value="weight_loss">減重</option>
+              <option value="weight_gain">增重</option>
             </select>
           </div>
 
           <div className="group">
             <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">
-              Birth Date
+              生日
             </label>
             <input
               type="date"
@@ -283,7 +278,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
 
           <div className="group">
             <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">
-              Microchip ID
+              晶片號碼
             </label>
             <input
               type="text"
@@ -300,173 +295,135 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
       <div className="card-warm rounded-[2rem] p-8 shadow-soft border border-white space-y-6 relative">
          <h3 className="text-xs font-bold tracking-[0.2em] text-gold uppercase flex items-center gap-3 mb-6 font-sans opacity-80">
           <Stethoscope size={14} />
-          Care Team
+          醫療聯絡
         </h3>
 
         <div className="space-y-8">
            <div className="group">
-            <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">Clinic Name</label>
+            <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">診所名稱</label>
             <input
               type="text"
               value={profile.vetContact?.clinicName || ''}
               onChange={(e) => handleVetChange('clinicName', e.target.value)}
               className="w-full py-2 bg-transparent border-b border-sand text-ink text-xl font-fangsong focus:border-clay transition-colors rounded-none placeholder-sand"
-              placeholder="Clinic Name"
+              placeholder="診所名稱"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-8">
              <div className="group">
-                <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">Doctor</label>
+                <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">獸醫師</label>
                 <input
                   type="text"
                   value={profile.vetContact?.doctorName || ''}
                   onChange={(e) => handleVetChange('doctorName', e.target.value)}
                   className="w-full py-2 bg-transparent border-b border-sand text-ink text-lg focus:border-clay transition-colors rounded-none placeholder-sand font-fangsong"
-                  placeholder="Dr. Name"
+                  placeholder="醫師姓名"
                 />
              </div>
              <div className="group">
-                <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">Phone</label>
+                <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">電話</label>
                 <input
                   type="tel"
                   value={profile.vetContact?.phone || ''}
                   onChange={(e) => handleVetChange('phone', e.target.value)}
                   className="w-full py-2 bg-transparent border-b border-sand text-ink text-lg font-mono focus:border-clay transition-colors rounded-none placeholder-sand"
-                  placeholder="Phone Number"
+                  placeholder="電話號碼"
                 />
              </div>
           </div>
 
            <div className="group">
-            <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">Address</label>
+            <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">地址</label>
             <input
               type="text"
               value={profile.vetContact?.address || ''}
               onChange={(e) => handleVetChange('address', e.target.value)}
               className="w-full py-2 bg-transparent border-b border-sand text-ink text-lg focus:border-clay transition-colors rounded-none placeholder-sand font-fangsong"
-              placeholder="Clinic Address"
+              placeholder="診所地址"
             />
           </div>
         </div>
       </div>
 
       {/* 雲端備份 */}
-      <div className="card-warm rounded-[2rem] p-8 shadow-soft border border-white space-y-6 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-gold/8 to-transparent rounded-bl-[4rem] pointer-events-none" />
-        <h3 className="text-xs font-bold tracking-[0.2em] text-gold uppercase flex items-center gap-3 font-sans opacity-80">
-          <Cloud size={14} />
+      <div className="card-warm rounded-[2rem] p-5 shadow-soft border border-white space-y-4 relative overflow-hidden">
+        <h3 className="text-xs font-bold tracking-[0.2em] text-gold uppercase flex items-center gap-2 font-sans opacity-80">
+          <Cloud size={13} />
           雲端備份
         </h3>
 
-        <div className="space-y-5">
-          <div className="group">
-            <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">
-              GitHub Token (PAT)
-            </label>
-            <div className="relative">
-              <input
-                type="password"
-                value={githubToken}
-                onChange={e => handleTokenChange(e.target.value)}
-                placeholder="ghp_xxxxxxxxxxxx"
-                className="w-full py-2 bg-transparent border-b border-sand text-ink text-sm font-mono focus:border-clay transition-colors rounded-none placeholder-sand/60 pr-6"
-              />
-              {githubToken && (
-                <button type="button" onClick={() => handleTokenChange('')} className="absolute right-0 bottom-2.5 text-pencil/40 hover:text-ink transition-colors">
-                  <X size={14} />
-                </button>
-              )}
-            </div>
-            <p className="text-[10px] text-pencil/50 mt-1.5 font-sans leading-relaxed">
-              GitHub → Settings → Developer settings → Personal access tokens，需勾選 <span className="font-semibold text-pencil/70">gist</span> 權限
-            </p>
+        <div className="space-y-3">
+          <div className="relative">
+            <label className="block text-[9px] font-bold text-pencil/60 mb-1 font-sans uppercase tracking-widest">GitHub Token (PAT)</label>
+            <input
+              type="password"
+              value={githubToken}
+              onChange={e => handleTokenChange(e.target.value)}
+              placeholder="ghp_xxxxxxxxxxxx · 需 gist 權限"
+              className="w-full py-1.5 bg-transparent border-b border-sand text-ink text-xs font-mono focus:border-clay transition-colors rounded-none placeholder-sand/50 pr-5 focus:outline-none"
+            />
+            {githubToken && (
+              <button type="button" onClick={() => handleTokenChange('')} className="absolute right-0 bottom-2 text-pencil/35 hover:text-ink transition-colors">
+                <X size={12} />
+              </button>
+            )}
           </div>
 
-          <div className="group">
-            <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">
-              Gist ID
-            </label>
-            <div className="relative">
-              <input
-                type="text"
-                value={gistId}
-                onChange={e => { setGistId(e.target.value); localStorage.setItem('pawprint_gist_id', e.target.value); }}
-                placeholder="首次上傳後自動填入"
-                className="w-full py-2 bg-transparent border-b border-sand text-ink text-sm font-mono focus:border-clay transition-colors rounded-none placeholder-sand/60 pr-6"
-              />
-              {gistId && (
-                <button type="button" onClick={() => navigator.clipboard.writeText(gistId)} className="absolute right-0 bottom-2.5 text-pencil/40 hover:text-ink transition-colors" title="複製">
-                  <Copy size={14} />
-                </button>
-              )}
-            </div>
-            <p className="text-[10px] text-pencil/50 mt-1.5 font-sans">換新裝置時，在新裝置手動貼上此 ID 再按下載還原</p>
+          <div className="relative">
+            <label className="block text-[9px] font-bold text-pencil/60 mb-1 font-sans uppercase tracking-widest">Gist ID</label>
+            <input
+              type="text"
+              value={gistId}
+              onChange={e => { setGistId(e.target.value); localStorage.setItem('pawprint_gist_id', e.target.value); }}
+              placeholder="首次上傳後自動填入"
+              className="w-full py-1.5 bg-transparent border-b border-sand text-ink text-xs font-mono focus:border-clay transition-colors rounded-none placeholder-sand/50 pr-5 focus:outline-none"
+            />
+            {gistId && (
+              <button type="button" onClick={() => navigator.clipboard.writeText(gistId)} className="absolute right-0 bottom-2 text-pencil/35 hover:text-ink transition-colors" title="複製">
+                <Copy size={12} />
+              </button>
+            )}
           </div>
 
           {backupStatus && (
-            <div className={`flex items-start gap-2.5 text-xs rounded-2xl px-4 py-3 font-fangsong ${
+            <div className={`flex items-center gap-2 text-xs rounded-xl px-3 py-2 font-fangsong ${
               backupStatus.type === 'success' ? 'bg-sage/10 text-sage border border-sage/20' :
               backupStatus.type === 'error'   ? 'bg-clay/10 text-clay border border-clay/20' :
                                                 'bg-sand/20 text-pencil border border-sand/30'
             }`}>
               {backupStatus.type === 'loading'
-                ? <RefreshCw size={13} className="flex-shrink-0 mt-0.5 animate-spin" />
+                ? <RefreshCw size={12} className="flex-shrink-0 animate-spin" />
                 : backupStatus.type === 'success'
-                ? <CheckCircle size={13} className="flex-shrink-0 mt-0.5" />
-                : <AlertCircle size={13} className="flex-shrink-0 mt-0.5" />}
+                ? <CheckCircle size={12} className="flex-shrink-0" />
+                : <AlertCircle size={12} className="flex-shrink-0" />}
               {backupStatus.msg}
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-3 pt-1">
+          <div className="grid grid-cols-2 gap-2">
             <button
               type="button"
               onClick={handleUpload}
               disabled={backupStatus?.type === 'loading'}
-              className="flex items-center justify-center gap-2 py-3 rounded-2xl bg-clay/10 text-clay border border-clay/20 hover:bg-clay/20 transition-all disabled:opacity-50 text-sm font-sans font-semibold tracking-wide"
+              className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-clay/10 text-clay border border-clay/20 hover:bg-clay/20 transition-all disabled:opacity-50 text-xs font-sans font-semibold"
             >
-              <Upload size={14} />
+              <Upload size={13} />
               上傳備份
             </button>
             <button
               type="button"
               onClick={handleDownload}
               disabled={backupStatus?.type === 'loading'}
-              className="flex items-center justify-center gap-2 py-3 rounded-2xl bg-sage/10 text-sage border border-sage/20 hover:bg-sage/20 transition-all disabled:opacity-50 text-sm font-sans font-semibold tracking-wide"
+              className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-sage/10 text-sage border border-sage/20 hover:bg-sage/20 transition-all disabled:opacity-50 text-xs font-sans font-semibold"
             >
-              <Download size={14} />
+              <Download size={13} />
               下載還原
             </button>
           </div>
         </div>
       </div>
 
-      {/* Storage Bar */}
-      <div className="card-warm rounded-[2rem] p-6 shadow-soft border border-white">
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-[10px] font-bold tracking-[0.2em] text-pencil/60 uppercase font-sans">本機儲存空間</p>
-          <p className={`text-xs font-mono font-semibold ${storageWarn ? 'text-clay' : 'text-pencil/50'}`}>
-            {storageMB.toFixed(2)} / 5.00 MB
-          </p>
-        </div>
-        <div className="h-2 bg-sand/40 rounded-full overflow-hidden">
-          <div
-            className="h-full rounded-full transition-all duration-500"
-            style={{
-              width: `${storagePct}%`,
-              background: storageWarn
-                ? 'linear-gradient(90deg, #B87068, #A86060)'
-                : 'linear-gradient(90deg, #7A9870, #5E8A55)',
-            }}
-          />
-        </div>
-        {storageWarn && (
-          <p className="text-[10px] text-clay/80 mt-2 font-sans leading-relaxed">
-            ⚠ 儲存空間已使用 {storagePct.toFixed(0)}%，請考慮清理舊紀錄或匯出備份。
-          </p>
-        )}
-      </div>
     </div>
     </>
   );

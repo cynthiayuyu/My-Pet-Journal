@@ -21,6 +21,12 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [newItem, setNewItem] = useState<Partial<InventoryItem>>({ type: 'Food', unit: 'g' });
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(null), 2000);
+  };
 
   const handleOpenForm = (item?: InventoryItem) => {
     if (item) {
@@ -54,6 +60,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
     } else {
       setItems([...items, itemData]);
     }
+    showToast(editingItemId ? '已更新 ✓' : '已新增 ✓');
     setIsFormOpen(false);
     setNewItem({ type: 'Food', unit: 'g' });
     setEditingItemId(null);
@@ -97,7 +104,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
           <button onClick={() => handleOpenForm(item)} className="text-sand hover:text-clay transition-colors p-1">
             <Edit2 size={15} />
           </button>
-          <button onClick={() => setItems(items.filter(i => i.id !== item.id))} className="text-sand hover:text-clay transition-colors p-1">
+          <button onClick={() => { if (!window.confirm('確定要刪除嗎？')) return; setItems(items.filter(i => i.id !== item.id)); }} className="text-sand hover:text-clay transition-colors p-1">
             <Trash2 size={15} />
           </button>
         </div>
@@ -109,7 +116,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-0.5">
               {isFirst && item.type === 'Food' && (
-                <span className="text-[8px] font-bold uppercase tracking-widest bg-gold/20 text-gold px-2 py-0.5 rounded-full">Use First</span>
+                <span className="text-[8px] font-bold uppercase tracking-widest bg-gold/20 text-gold px-2 py-0.5 rounded-full">優先使用</span>
               )}
             </div>
             <div className="text-lg font-fangsong text-ink leading-snug">{item.name}</div>
@@ -159,6 +166,14 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
 
   return (
     <div className="space-y-6 animate-fade-in">
+      {toastMsg && (
+        <div
+          className="fixed top-20 left-1/2 -translate-x-1/2 z-[150] bg-ink/80 text-white text-sm px-5 py-2.5 rounded-full shadow-lg font-sans pointer-events-none animate-fade-in"
+          style={{ whiteSpace: 'nowrap' }}
+        >
+          {toastMsg}
+        </div>
+      )}
 
       {/* Calorie Calculator */}
       <div className="card-warm rounded-[2rem] p-6">
@@ -166,17 +181,17 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
           <div className="w-8 h-8 rounded-full bg-clay/10 flex items-center justify-center text-clay">
             <Calculator size={16} />
           </div>
-          <h3 className="text-xs font-bold tracking-[0.2em] text-gold uppercase font-sans opacity-80">Calorie Needs</h3>
+          <h3 className="text-xs font-bold tracking-[0.2em] text-gold uppercase font-sans opacity-80">每日熱量需求</h3>
         </div>
         {calorieInfo ? (
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-sand/10 rounded-xl p-4 text-center">
               <div className="text-[10px] font-bold uppercase tracking-widest text-pencil font-sans mb-1">RER</div>
-              <div className="text-2xl font-fangsong text-ink">{calorieInfo.rer} <span className="text-xs text-pencil font-sans">kcal/day</span></div>
+              <div className="text-2xl font-fangsong text-ink">{calorieInfo.rer} <span className="text-xs text-pencil font-sans">大卡/天</span></div>
             </div>
             <div className="bg-clay/5 rounded-xl p-4 text-center border border-clay/20">
               <div className="text-[10px] font-bold uppercase tracking-widest text-clay font-sans mb-1">MER</div>
-              <div className="text-2xl font-fangsong text-ink">{calorieInfo.mer} <span className="text-xs text-pencil font-sans">kcal/day</span></div>
+              <div className="text-2xl font-fangsong text-ink">{calorieInfo.mer} <span className="text-xs text-pencil font-sans">大卡/天</span></div>
             </div>
           </div>
         ) : (
@@ -187,7 +202,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
       {/* Header */}
       <div className="flex justify-between items-end px-1">
         <div>
-          <span className="text-xs font-bold tracking-[0.2em] text-pencil uppercase font-sans">Inventory</span>
+          <span className="text-xs font-bold tracking-[0.2em] text-pencil uppercase font-sans">庫存清單</span>
           <h4 className="text-2xl font-fangsong text-ink mt-0.5">庫存管理</h4>
         </div>
         <button
@@ -259,7 +274,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
                     onClick={() => setNewItem(prev => ({ ...prev, type: t }))}
                     className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all duration-300 font-fangsong ${newItem.type === t ? 'bg-white text-ink shadow-sm' : 'text-pencil'}`}
                   >
-                    {t === 'Food' ? 'Food 飼料' : 'Supplement 補充品'}
+                    {t === 'Food' ? '飼料 / 食物' : '保健補充品'}
                   </button>
                 ))}
               </div>
@@ -371,7 +386,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
               </div>
             </div>
 
-            <div className="flex-shrink-0 px-8 pt-4 border-t border-sand/20" style={{ paddingBottom: 'calc(7rem + env(safe-area-inset-bottom))' }}>
+            <div className="flex-shrink-0 px-8 pt-4 border-t border-sand/20" style={{ paddingBottom: 'max(0.75rem, calc(0.5rem + env(safe-area-inset-bottom)))' }}>
               <button type="submit" className="w-full py-3.5 btn-warm">
                 {editingItemId ? '更新' : '儲存'}
               </button>

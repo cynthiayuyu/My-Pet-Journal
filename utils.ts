@@ -1,5 +1,5 @@
 export const calculateAge = (birthDateString: string): string => {
-  if (!birthDateString) return '未知年齡 Unknown Age';
+  if (!birthDateString) return '未知年齡';
   
   const birthDate = new Date(birthDateString);
   const today = new Date();

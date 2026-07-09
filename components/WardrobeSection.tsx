@@ -22,6 +22,12 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
   const [isFormOpen, setIsFormOpen]   = useState(false);
   const [editingId, setEditingId]     = useState<string | null>(null);
   const [newItem, setNewItem]         = useState<Partial<WardrobeItem>>({ category: 'Clothing' });
+  const [toastMsg, setToastMsg]       = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(null), 2000);
+  };
   const [searchTerm, setSearchTerm]   = useState('');
   const [filterCat, setFilterCat]     = useState<WardrobeItem['category'] | null>(null);
   const [sortOrder, setSortOrder]     = useState<SortOrder>('default');
@@ -57,6 +63,7 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
     } else {
       setItems([item, ...items]);
     }
+    showToast(editingId ? '已更新 ✓' : '已新增 ✓');
     setIsFormOpen(false);
     setNewItem({ category: 'Clothing' });
     setEditingId(null);
@@ -85,13 +92,71 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
   const catLabel = (cat: WardrobeItem['category']) =>
     CATEGORIES.find(c => c.value === cat)?.label ?? cat;
 
+  const renderCard = (item: WardrobeItem) => {
+    const firstPhoto = item.photos?.[0] || item.photoUrl;
+    return (
+      <div
+        key={item.id}
+        className="card-warm rounded-2xl overflow-hidden relative group cursor-pointer active:scale-[0.98] transition-transform"
+        onClick={() => handleOpenForm(item)}
+      >
+        {firstPhoto ? (
+          <div className="w-full aspect-square overflow-hidden bg-sand/10">
+            <img
+              src={firstPhoto}
+              alt={item.name}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
+            />
+          </div>
+        ) : (
+          <div className="w-full aspect-square bg-gradient-to-br from-sand/20 to-sand/5 flex items-center justify-center">
+            <Tag size={28} className="text-pencil/25" />
+          </div>
+        )}
+        <button
+          onClick={e => { e.stopPropagation(); if (!window.confirm('確定要刪除嗎？')) return; setItems(items.filter(i => i.id !== item.id)); }}
+          className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/85 backdrop-blur-sm flex items-center justify-center text-ink/30 hover:text-clay opacity-0 group-hover:opacity-100 transition-all shadow-sm"
+        >
+          <Trash2 size={13} />
+        </button>
+        <div className="p-3 pb-3.5">
+          <div className="font-fangsong text-sm text-ink truncate leading-snug">{item.name}</div>
+          {item.brand && <div className="text-[10px] text-pencil/55 font-sans truncate mt-0.5">{item.brand}</div>}
+          <div className="flex items-center justify-between mt-1">
+            {item.color && <span className="text-[10px] text-pencil/50 font-fangsong">{item.color}</span>}
+            {item.price ? <span className="text-xs text-gold font-fangsong">${item.price.toLocaleString()}</span> : null}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const totalValue = useMemo(
     () => items.reduce((sum, i) => sum + (i.price || 0), 0),
     [items]
   );
 
+  const categoryTotals = useMemo(() => {
+    const map: Record<string, { count: number; value: number }> = {};
+    CATEGORIES.forEach(c => { map[c.value] = { count: 0, value: 0 }; });
+    items.forEach(i => {
+      map[i.category].count++;
+      map[i.category].value += i.price || 0;
+    });
+    return map;
+  }, [items]);
+
   return (
     <div className="space-y-5 animate-fade-in">
+      {toastMsg && (
+        <div
+          className="fixed top-20 left-1/2 -translate-x-1/2 z-[150] bg-ink/80 text-white text-sm px-5 py-2.5 rounded-full shadow-lg font-sans pointer-events-none animate-fade-in"
+          style={{ whiteSpace: 'nowrap' }}
+        >
+          {toastMsg}
+        </div>
+      )}
 
       {/* Search */}
       <div className="relative">
@@ -185,49 +250,31 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
       )}
 
       {/* Grid */}
-      <div className="grid grid-cols-2 gap-3">
-        {filteredItems.map(item => (
-          <div
-            key={item.id}
-            className="card-warm rounded-2xl overflow-hidden relative group cursor-pointer active:scale-[0.98] transition-transform"
-            onClick={() => handleOpenForm(item)}
-          >
-            {(() => {
-              const firstPhoto = item.photos?.[0] || item.photoUrl;
-              return firstPhoto && !firstPhoto.startsWith('http') ? (
-                <div className="w-full aspect-square overflow-hidden bg-sand/10">
-                  <img src={firstPhoto} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+      {(filterCat || searchTerm) ? (
+        <div className="grid grid-cols-2 gap-3">
+          {filteredItems.map(item => renderCard(item))}
+        </div>
+      ) : (
+        <div className="space-y-5">
+          {CATEGORIES.filter(cat => categoryTotals[cat.value].count > 0).map(cat => (
+            <div key={cat.value}>
+              <div className="flex items-center justify-between px-1 mb-2">
+                <div className="flex items-center gap-2">
+                  <Tag size={11} className="text-clay/60" />
+                  <span className="text-[10px] font-bold tracking-[0.2em] text-clay/70 uppercase font-sans">{cat.label}</span>
+                  <span className="text-[10px] text-pencil/40 font-sans">{categoryTotals[cat.value].count} 件</span>
                 </div>
-              ) : firstPhoto ? (
-                <div className="w-full aspect-square overflow-hidden bg-sand/10 flex items-center justify-center">
-                  <img src={firstPhoto} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={e => { (e.target as HTMLImageElement).style.display='none'; }} />
-                </div>
-              ) : (
-                <div className="w-full aspect-square bg-gradient-to-br from-sand/20 to-sand/5 flex items-center justify-center">
-                  <Tag size={28} className="text-pencil/25" />
-                </div>
-              );
-            })()}
-            <button
-              onClick={e => { e.stopPropagation(); setItems(items.filter(i => i.id !== item.id)); }}
-              className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/85 backdrop-blur-sm flex items-center justify-center text-ink/30 hover:text-clay opacity-0 group-hover:opacity-100 transition-all shadow-sm"
-            >
-              <Trash2 size={13} />
-            </button>
-            <div className="p-3 pb-3.5">
-              <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-sand/30 text-clay font-sans inline-block mb-1 tracking-wide">
-                {catLabel(item.category)}
-              </span>
-              <div className="font-fangsong text-sm text-ink truncate leading-snug">{item.name}</div>
-              {item.brand && <div className="text-[10px] text-pencil/55 font-sans truncate mt-0.5">{item.brand}</div>}
-              <div className="flex items-center justify-between mt-1">
-                {item.color && <span className="text-[10px] text-pencil/50 font-fangsong">{item.color}</span>}
-                {item.price ? <span className="text-xs text-gold font-fangsong">${item.price.toLocaleString()}</span> : null}
+                {categoryTotals[cat.value].value > 0 && (
+                  <span className="text-xs font-fangsong text-gold">${categoryTotals[cat.value].value.toLocaleString()}</span>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                {filteredItems.filter(i => i.category === cat.value).map(item => renderCard(item))}
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Slide-up Form */}
       {isFormOpen && (
@@ -359,7 +406,7 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
               </div>
             </div>
 
-            <div className="flex-shrink-0 px-8 pt-4 border-t border-sand/20" style={{ paddingBottom: 'calc(7rem + env(safe-area-inset-bottom))' }}>
+            <div className="flex-shrink-0 px-8 pt-4 border-t border-sand/20" style={{ paddingBottom: 'max(0.75rem, calc(0.5rem + env(safe-area-inset-bottom)))' }}>
               <button type="submit" className="w-full py-3.5 btn-warm">
                 {editingId ? '更新' : '儲存'}
               </button>

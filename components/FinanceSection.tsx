@@ -257,7 +257,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
                <div className="w-12 h-12 rounded-full bg-sand/20 flex items-center justify-center text-pencil group-hover:text-gold group-hover:scale-110 transition-all duration-500">
                  <Shield size={24} />
                </div>
-               <p className="text-sm font-fangsong text-pencil">尚無保險紀錄。<br/>No insurance policies. Tap to add one.</p>
+               <p className="text-sm font-fangsong text-pencil">尚無保險紀錄，點擊新增</p>
             </div>
           )}
 
@@ -324,7 +324,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
                <div className="w-12 h-12 rounded-full bg-sand/20 flex items-center justify-center text-pencil group-hover:text-gold group-hover:scale-110 transition-all duration-500">
                  <PiggyBank size={24} />
                </div>
-               <p className="text-sm font-fangsong text-pencil">尚無預付服務。<br/>No prepaid services. Tap to add balance.</p>
+               <p className="text-sm font-fangsong text-pencil">尚無預付服務，點擊新增</p>
             </div>
           )}
 
@@ -448,7 +448,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
               </div>
             </div>
             {/* Scrollable fields */}
-            <div className="flex-1 overflow-y-auto px-8 pb-4 space-y-6">
+            <div className="flex-1 overflow-y-auto px-8 pb-4 space-y-6" style={{ overscrollBehavior: 'contain' }}>
               <div>
                 <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">保險公司 Provider</label>
                 <input
@@ -480,7 +480,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
               </div>
             </div>
             {/* Sticky submit */}
-            <div className="flex-shrink-0 px-8 pt-4 border-t border-sand/20" style={{ paddingBottom: 'calc(7rem + env(safe-area-inset-bottom))' }}>
+            <div className="flex-shrink-0 px-8 pt-4 border-t border-sand/20" style={{ paddingBottom: 'max(0.75rem, calc(0.5rem + env(safe-area-inset-bottom)))' }}>
               <button type="submit" className="w-full py-3.5 btn-warm">
                 {editingPolicyId ? '更新保險 Update Policy' : '儲存保險 Save Policy'}
               </button>
@@ -518,7 +518,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
               </div>
             </div>
             {/* Scrollable fields */}
-            <div className="flex-1 overflow-y-auto px-8 pb-4 space-y-6">
+            <div className="flex-1 overflow-y-auto px-8 pb-4 space-y-6" style={{ overscrollBehavior: 'contain' }}>
               <div>
                 <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">名稱/店家 Name / Store</label>
                 <input
@@ -562,7 +562,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
               </div>
             </div>
             {/* Sticky submit */}
-            <div className="flex-shrink-0 px-8 pt-4 border-t border-sand/20" style={{ paddingBottom: 'calc(7rem + env(safe-area-inset-bottom))' }}>
+            <div className="flex-shrink-0 px-8 pt-4 border-t border-sand/20" style={{ paddingBottom: 'max(0.75rem, calc(0.5rem + env(safe-area-inset-bottom)))' }}>
               <button type="submit" className="w-full py-3.5 btn-warm">
                 {editingServiceId ? '更新紀錄 Update Record' : '儲存紀錄 Save Record'}
               </button>
@@ -694,12 +694,12 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
                        value={newClaim.status} onChange={e => setNewClaim({...newClaim, status: e.target.value as any})}
                        className="flex-1 py-2 px-3 bg-white border border-sand focus:border-gold text-ink text-sm rounded-xl"
                      >
-                       <option value="Pending">審核中 Pending</option>
-                       <option value="Approved">已核准 Approved</option>
-                       <option value="Rejected">已拒絕 Rejected</option>
+                       <option value="Pending">審核中</option>
+                       <option value="Approved">已核准</option>
+                       <option value="Rejected">已拒絕</option>
                      </select>
                      <button type="submit" className="px-4 bg-ink text-white rounded-xl font-bold hover:bg-ink/90 transition-colors text-xs uppercase tracking-widest font-sans whitespace-nowrap">
-                       新增理賠 Add Claim
+                       新增理賠
                      </button>
                    </div>
                  </form>
