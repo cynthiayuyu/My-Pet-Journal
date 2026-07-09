@@ -56,6 +56,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
   };
 
   const handleOpenForm = (record?: HealthRecord) => {
+    (document.activeElement as HTMLElement | null)?.blur();
     if (record) {
       setEditingRecordId(record.id);
       setActiveType(record.type as any);
@@ -630,7 +631,7 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
       {isFormOpen && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsFormOpen(false)} />
-          <form onSubmit={handleSubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] shadow-2xl pointer-events-auto animate-fade-in relative flex flex-col" style={{ maxHeight: '90vh' }}>
+          <form onSubmit={handleSubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] shadow-2xl pointer-events-auto animate-fade-in relative flex flex-col" style={{ maxHeight: '90dvh' }}>
             {/* Fixed header */}
             <div className="flex-shrink-0 px-8 pt-6 pb-4">
               <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-5 opacity-50" />
@@ -733,7 +734,6 @@ export const HealthSection: React.FC<HealthSectionProps> = ({ records, addRecord
                         value={newRecord.location?.trim() || ''}
                         onChange={e => setNewRecord({...newRecord, location: e.target.value})}
                         className="w-full mt-2 py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none placeholder-sand/50 animate-fade-in"
-                        autoFocus
                        />
                      )}
                    </div>

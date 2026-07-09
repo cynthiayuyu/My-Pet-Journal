@@ -112,9 +112,9 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
     const diff = latestRecord.weight - profile.idealWeight;
     const percentDiff = (diff / profile.idealWeight) * 100;
     
-    if (percentDiff > 10) return { type: 'overweight', message: `Overweight by ${diff.toFixed(1)}kg (${percentDiff.toFixed(0)}%)`, color: 'text-clay', bg: 'bg-clay/10', icon: TrendingUp };
-    if (percentDiff < -10) return { type: 'underweight', message: `Underweight by ${Math.abs(diff).toFixed(1)}kg (${Math.abs(percentDiff).toFixed(0)}%)`, color: 'text-pencil', bg: 'bg-sand/20', icon: TrendingDown };
-    return { type: 'ideal', message: 'Ideal Weight!', color: 'text-[#5E8A55]', bg: 'bg-sage/15', icon: Weight };
+    if (percentDiff > 10) return { type: 'overweight', message: `超重 ${diff.toFixed(1)}kg（${percentDiff.toFixed(0)}%）`, color: 'text-clay', bg: 'bg-clay/10', icon: TrendingUp };
+    if (percentDiff < -10) return { type: 'underweight', message: `過輕 ${Math.abs(diff).toFixed(1)}kg（${Math.abs(percentDiff).toFixed(0)}%）`, color: 'text-pencil', bg: 'bg-sand/20', icon: TrendingDown };
+    return { type: 'ideal', message: '體重正常！', color: 'text-[#5E8A55]', bg: 'bg-sage/15', icon: Weight };
   }, [profile.idealWeight, latestRecord]);
 
   return (
@@ -135,7 +135,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
              <weightAlert.icon size={20} />
            </div>
            <div>
-             <h4 className={`text-sm font-bold tracking-widest uppercase font-sans ${weightAlert.color}`}>Weight Status</h4>
+             <h4 className={`text-sm font-bold tracking-widest uppercase font-sans ${weightAlert.color}`}>體重狀態</h4>
              <p className="text-lg font-fangsong text-ink">{weightAlert.message}</p>
            </div>
         </div>
@@ -333,7 +333,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
       {isFormOpen && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsFormOpen(false)} />
-          <form onSubmit={handleSubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] shadow-2xl pointer-events-auto animate-fade-in relative flex flex-col" style={{ maxHeight: '90vh' }}>
+          <form onSubmit={handleSubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] shadow-2xl pointer-events-auto animate-fade-in relative flex flex-col" style={{ maxHeight: '90dvh' }}>
             <div className="flex-shrink-0 px-8 pt-6 pb-4">
               <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-5 opacity-50" />
               <div className="flex justify-between items-center">

@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { WardrobeItem } from '../types';
 import { generateId } from '../utils';
-import { Plus, Trash2, X, Search, Tag } from 'lucide-react';
+import { Plus, Trash2, X, Search, Tag, Settings, Edit2, Save } from 'lucide-react';
 import { PhotoGallery, PhotoStrip } from './PhotoGallery';
 
 interface WardrobeSectionProps {
@@ -15,6 +15,8 @@ const CATEGORIES: { value: WardrobeItem['category']; label: string }[] = [
   { value: 'Bag',       label: '包包' },
   { value: 'Other',     label: '其他' },
 ];
+
+const DEFAULT_SOURCES = ['蝦皮', 'PChome', '寵物用品店', '其他'];
 
 type SortOrder = 'default' | 'az' | 'za' | 'price_asc' | 'price_desc';
 
@@ -32,7 +34,63 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
   const [filterCat, setFilterCat]     = useState<WardrobeItem['category'] | null>(null);
   const [sortOrder, setSortOrder]     = useState<SortOrder>('default');
 
+  // ── Purchase source options (custom, editable list) ──
+  const [sources, setSources] = useState<string[]>(() => {
+    const saved = localStorage.getItem('pawprint_wardrobe_sources');
+    return saved ? JSON.parse(saved) : DEFAULT_SOURCES;
+  });
+  React.useEffect(() => {
+    localStorage.setItem('pawprint_wardrobe_sources', JSON.stringify(sources));
+  }, [sources]);
+  const [isManagingSources, setIsManagingSources] = useState(false);
+  const [newSource, setNewSource] = useState('');
+  const [editingSource, setEditingSource] = useState<string | null>(null);
+  const [editSourceValue, setEditSourceValue] = useState('');
+
+  const handleAddSource = () => {
+    if (newSource.trim() && !sources.includes(newSource.trim())) {
+      setSources([...sources, newSource.trim()]);
+      setNewSource('');
+    }
+  };
+  const handleDeleteSource = (source: string) => {
+    setSources(sources.filter(s => s !== source));
+  };
+  const handleSaveEditSource = (oldSource: string) => {
+    if (editSourceValue.trim() && editSourceValue.trim() !== oldSource && !sources.includes(editSourceValue.trim())) {
+      setSources(sources.map(s => s === oldSource ? editSourceValue.trim() : s));
+      setItems(items.map(i => i.purchaseSource === oldSource ? { ...i, purchaseSource: editSourceValue.trim() } : i));
+    }
+    setEditingSource(null);
+  };
+
+  const uniqueSources = Array.from(new Set([...sources, ...items.map(i => i.purchaseSource).filter(Boolean) as string[]]));
+
+  const SourceSelector = ({ value, onChange }: { value: string | undefined; onChange: (v: string) => void }) => (
+    <>
+      <select
+        value={uniqueSources.includes(value || '') ? value : (value ? 'other' : '')}
+        onChange={e => onChange(e.target.value === 'other' ? ' ' : e.target.value)}
+        className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none appearance-none"
+      >
+        <option value="">請選擇...</option>
+        {uniqueSources.map(s => <option key={s} value={s}>{s}</option>)}
+        <option value="other">+ 新增...</option>
+      </select>
+      {(!uniqueSources.includes(value || '') && value !== '') && (
+        <input
+          type="text"
+          placeholder="輸入新來源..."
+          value={value?.trim() || ''}
+          onChange={e => onChange(e.target.value)}
+          className="w-full mt-2 py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none placeholder-sand/50 animate-fade-in"
+        />
+      )}
+    </>
+  );
+
   const handleOpenForm = (item?: WardrobeItem) => {
+    (document.activeElement as HTMLElement | null)?.blur();
     if (item) {
       setEditingId(item.id);
       setNewItem(item);
@@ -54,6 +112,7 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
       color: newItem.color || undefined,
       size: newItem.size || undefined,
       purchaseDate: newItem.purchaseDate || undefined,
+      purchaseSource: newItem.purchaseSource?.trim() || undefined,
       price: newItem.price || undefined,
       notes: newItem.notes || undefined,
       photos: newItem.photos?.length ? newItem.photos : (newItem.photoUrl ? [newItem.photoUrl] : undefined),
@@ -158,6 +217,59 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
         </div>
       )}
 
+      {/* ── Source Management Modal ── */}
+      {isManagingSources && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center pointer-events-none p-4">
+          <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsManagingSources(false)} />
+          <div className="bg-[#FDFAF5] w-full max-w-sm rounded-3xl p-6 shadow-2xl pointer-events-auto animate-fade-in relative">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="font-fangsong text-xl text-ink">購入來源管理</h3>
+              <button onClick={() => setIsManagingSources(false)} className="text-ink/40 hover:text-ink"><X size={20} /></button>
+            </div>
+            <div className="space-y-3 mb-6 max-h-[40vh] overflow-y-auto pr-2">
+              {sources.map(source => (
+                <div key={source} className="flex justify-between items-center bg-white p-3 rounded-xl border border-sand/30">
+                  {editingSource === source ? (
+                    <input
+                      type="text" value={editSourceValue}
+                      onChange={e => setEditSourceValue(e.target.value)}
+                      onKeyDown={e => e.key === 'Enter' && handleSaveEditSource(source)}
+                      className="flex-1 bg-transparent border-b border-clay focus:outline-none text-ink font-fangsong mr-2"
+                      autoFocus
+                    />
+                  ) : (
+                    <span className="text-ink font-fangsong">{source}</span>
+                  )}
+                  <div className="flex gap-2">
+                    {editingSource === source ? (
+                      <button onClick={() => handleSaveEditSource(source)} className="text-clay hover:text-clay/80"><Save size={16} /></button>
+                    ) : (
+                      <button onClick={() => { setEditingSource(source); setEditSourceValue(source); }} className="text-sand hover:text-clay"><Edit2 size={16} /></button>
+                    )}
+                    <button onClick={() => handleDeleteSource(source)} className="text-sand hover:text-clay"><Trash2 size={16} /></button>
+                  </div>
+                </div>
+              ))}
+              {sources.length === 0 && (
+                <p className="text-sm font-fangsong text-pencil text-center py-4">尚無來源，請新增</p>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="text" placeholder="新增來源..."
+                value={newSource}
+                onChange={e => setNewSource(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleAddSource()}
+                className="flex-1 bg-white border border-sand rounded-xl px-4 py-2 text-ink focus:ring-1 focus:ring-clay outline-none font-fangsong"
+              />
+              <button onClick={handleAddSource} className="bg-clay text-white px-4 py-2 rounded-xl hover:bg-clay/90 transition-colors">
+                <Plus size={20} />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Search */}
       <div className="relative">
         <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-pencil">
@@ -201,6 +313,13 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
           })}
         </div>
         <button
+          onClick={() => setIsManagingSources(true)}
+          className="w-9 h-9 rounded-full bg-white border border-sand flex items-center justify-center text-pencil hover:text-clay shadow-sm hover:bg-sand/20 transition-colors flex-shrink-0"
+          title="來源管理"
+        >
+          <Settings size={15} />
+        </button>
+        <button
           onClick={() => handleOpenForm()}
           className="w-9 h-9 rounded-full bg-white border border-sand flex items-center justify-center text-ink shadow-sm hover:bg-sand/20 transition-colors flex-shrink-0"
         >
@@ -226,10 +345,10 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
         </div>
       )}
 
-      {/* Total value banner */}
+      {/* Total spend banner */}
       {totalValue > 0 && !filterCat && !searchTerm && (
         <div className="bg-white/60 border border-white/90 rounded-2xl px-5 py-3 flex justify-between items-center shadow-sm">
-          <span className="text-xs text-pencil/60 font-sans uppercase tracking-widest">總價值</span>
+          <span className="text-xs text-pencil/60 font-sans uppercase tracking-widest">總花費</span>
           <span className="font-fangsong text-lg text-clay">${totalValue.toLocaleString()}</span>
         </div>
       )}
@@ -283,7 +402,7 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
           <form
             onSubmit={handleSubmit}
             className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] shadow-2xl pointer-events-auto animate-fade-in relative flex flex-col"
-            style={{ maxHeight: '90vh' }}
+            style={{ maxHeight: '90dvh' }}
           >
             <div className="flex-shrink-0 px-8 pt-6 pb-4">
               <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-5 opacity-50" />
@@ -391,6 +510,14 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
                   value={newItem.purchaseDate || ''}
                   onChange={e => setNewItem(prev => ({ ...prev, purchaseDate: e.target.value }))}
                   className="w-full py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">購入來源</label>
+                <SourceSelector
+                  value={newItem.purchaseSource}
+                  onChange={v => setNewItem(prev => ({ ...prev, purchaseSource: v }))}
                 />
               </div>
 

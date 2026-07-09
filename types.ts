@@ -88,6 +88,7 @@ export interface WardrobeItem {
   color?: string;
   size?: string;
   purchaseDate?: string;
+  purchaseSource?: string;
   price?: number;
   notes?: string;
   photoUrl?: string; // legacy

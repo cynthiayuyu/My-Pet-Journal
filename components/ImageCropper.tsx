@@ -76,9 +76,15 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({ imageDataUrl, onConf
   const maxScale = fillScale * 5;
 
   return (
-    <div className="fixed inset-0 z-[200] flex flex-col select-none" style={{ background: '#1a1410' }}>
+    <div
+      className="fixed inset-0 z-[200] flex flex-col select-none"
+      style={{ background: '#1a1410', height: '100dvh' }}
+    >
       {/* Header */}
-      <div className="flex-shrink-0 flex justify-between items-center px-5 py-4">
+      <div
+        className="flex-shrink-0 flex justify-between items-center px-5 pb-4"
+        style={{ paddingTop: 'calc(1rem + env(safe-area-inset-top))' }}
+      >
         <button
           onClick={onCancel}
           className="w-10 h-10 rounded-full flex items-center justify-center text-white"

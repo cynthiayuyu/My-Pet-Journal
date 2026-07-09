@@ -410,7 +410,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={closeSheet} />
           <div
             className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] shadow-2xl pointer-events-auto animate-fade-in relative flex flex-col"
-            style={{ maxHeight: '88vh' }}
+            style={{ maxHeight: '88dvh' }}
           >
             {/* Drag handle + close button */}
             <div className="pt-4 pb-0 px-5 flex items-center justify-between flex-shrink-0">
