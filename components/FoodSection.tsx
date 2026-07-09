@@ -256,7 +256,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
           <form
             onSubmit={handleSubmit}
             className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] shadow-2xl pointer-events-auto animate-fade-in relative flex flex-col"
-            style={{ maxHeight: '90vh' }}
+            style={{ maxHeight: '90dvh' }}
           >
             <div className="flex-shrink-0 px-8 pt-6 pb-4">
               <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-5 opacity-50" />

@@ -436,7 +436,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
       {isPolicyFormOpen && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsPolicyFormOpen(false)} />
-          <form onSubmit={handlePolicySubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] shadow-2xl pointer-events-auto animate-fade-in relative flex flex-col" style={{ maxHeight: '90vh' }}>
+          <form onSubmit={handlePolicySubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] shadow-2xl pointer-events-auto animate-fade-in relative flex flex-col" style={{ maxHeight: '90dvh' }}>
             {/* Fixed header */}
             <div className="flex-shrink-0 px-8 pt-6 pb-4">
               <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-5 opacity-50" />
@@ -493,7 +493,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
       {isServiceFormOpen && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsServiceFormOpen(false)} />
-          <form onSubmit={handleServiceSubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] shadow-2xl pointer-events-auto animate-fade-in relative flex flex-col" style={{ maxHeight: '90vh' }}>
+          <form onSubmit={handleServiceSubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] shadow-2xl pointer-events-auto animate-fade-in relative flex flex-col" style={{ maxHeight: '90dvh' }}>
             {/* Fixed header */}
             <div className="flex-shrink-0 px-8 pt-6 pb-4">
               <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-5 opacity-50" />
@@ -575,7 +575,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
       {selectedPolicy && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setSelectedPolicy(null)} />
-          <div className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative max-h-[90vh] overflow-y-auto">
+          <div className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative max-h-[90dvh] overflow-y-auto">
              <div className="w-12 h-1 bg-sand rounded-full mx-auto mb-8 opacity-50" />
              
              <div className="flex justify-between items-center mb-6">

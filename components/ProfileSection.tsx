@@ -214,7 +214,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
           <div className="grid grid-cols-2 gap-8">
             <div className="group">
               <label className="block text-[10px] font-bold text-pencil mb-1 font-sans uppercase tracking-widest group-focus-within:text-clay transition-colors">
-                理想體重 (kg)
+                體重 (kg)
               </label>
               <input
                 type="number"
@@ -262,6 +262,9 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
               <option value="weight_loss">減重</option>
               <option value="weight_gain">增重</option>
             </select>
+            <p className="mt-1.5 text-[11px] text-pencil/55 font-fangsong leading-relaxed">
+              用於估算每日所需熱量，「食物庫存」與「財務與服務」的餵食建議會參考此設定
+            </p>
           </div>
 
           <div className="group">
