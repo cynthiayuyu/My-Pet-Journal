@@ -66,7 +66,9 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
 
   const uniqueSources = Array.from(new Set([...sources, ...items.map(i => i.purchaseSource).filter(Boolean) as string[]]));
 
-  const SourceSelector = ({ value, onChange }: { value: string | undefined; onChange: (v: string) => void }) => (
+  // Plain render helper (not a component) — an inline component type would be
+  // recreated on every keystroke, remounting the input and dropping focus.
+  const renderSourceSelector = (value: string | undefined, onChange: (v: string) => void) => (
     <>
       <select
         value={uniqueSources.includes(value || '') ? value : (value ? 'other' : '')}
@@ -81,7 +83,7 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
         <input
           type="text"
           placeholder="輸入新來源..."
-          value={value?.trim() || ''}
+          value={value === ' ' ? '' : value || ''}
           onChange={e => onChange(e.target.value)}
           className="w-full mt-2 py-2 bg-transparent border-b border-sand focus:border-gold text-ink font-fangsong text-lg rounded-none placeholder-sand/50 animate-fade-in"
         />
@@ -515,10 +517,7 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
 
               <div>
                 <label className="text-[10px] text-pencil font-bold tracking-widest uppercase mb-1 block font-sans">購入來源</label>
-                <SourceSelector
-                  value={newItem.purchaseSource}
-                  onChange={v => setNewItem(prev => ({ ...prev, purchaseSource: v }))}
-                />
+                {renderSourceSelector(newItem.purchaseSource, v => setNewItem(prev => ({ ...prev, purchaseSource: v })))}
               </div>
 
               <div>
