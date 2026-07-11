@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import React, { useRef, useState } from 'react';
 import { PetProfile } from '../types';
 import { calculateAge } from '../utils';
@@ -118,12 +119,13 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ profile, setProf
 
   return (
     <>
-    {cropperDataUrl && (
+    {cropperDataUrl && createPortal(
       <ImageCropper
         imageDataUrl={cropperDataUrl}
         onConfirm={handleCropConfirm}
         onCancel={() => setCropperDataUrl(null)}
-      />
+      />,
+      document.body
     )}
     <div className="flex flex-col gap-8 animate-fade-in pb-8">
       {/* Photo & Main Info Card */}

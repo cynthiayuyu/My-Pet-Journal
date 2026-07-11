@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import React, { useState, useMemo } from 'react';
 import { WardrobeItem } from '../types';
 import { generateId } from '../utils';
@@ -220,7 +221,7 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
       )}
 
       {/* ── Source Management Modal ── */}
-      {isManagingSources && (
+      {isManagingSources && createPortal(
         <div className="fixed inset-0 z-[60] flex items-center justify-center pointer-events-none p-4">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsManagingSources(false)} />
           <div className="bg-[#FDFAF5] w-full max-w-sm rounded-3xl p-6 shadow-2xl pointer-events-auto animate-fade-in relative">
@@ -270,7 +271,7 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
             </div>
           </div>
         </div>
-      )}
+      , document.body)}
 
       {/* Search */}
       <div className="relative">
@@ -398,7 +399,7 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
       )}
 
       {/* Slide-up Form */}
-      {isFormOpen && (
+      {isFormOpen && createPortal(
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsFormOpen(false)} />
           <form
@@ -539,7 +540,7 @@ export const WardrobeSection: React.FC<WardrobeSectionProps> = ({ items, setItem
             </div>
           </form>
         </div>
-      )}
+      , document.body)}
     </div>
   );
 };

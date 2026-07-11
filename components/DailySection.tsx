@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import React, { useState, useMemo } from 'react';
 import { DailyLog } from '../types';
 import { generateId, formatDate } from '../utils';
@@ -372,7 +373,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
       )}
 
       {/* ── Slide-up Form ── */}
-      {isFormOpen && (
+      {isFormOpen && createPortal(
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsFormOpen(false)} />
           <form
@@ -472,7 +473,7 @@ export const DailySection: React.FC<DailySectionProps> = ({ logs, addLog, update
             </div>
           </form>
         </div>
-      )}
+      , document.body)}
     </div>
   );
 };

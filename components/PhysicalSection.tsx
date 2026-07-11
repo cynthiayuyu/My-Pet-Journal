@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import React, { useState, useMemo } from 'react';
 import { PhysicalRecord, PetProfile } from '../types';
 import { generateId, formatDate } from '../utils';
@@ -330,7 +331,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
       </div>
 
       {/* Slide Up Form */}
-      {isFormOpen && (
+      {isFormOpen && createPortal(
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsFormOpen(false)} />
           <form onSubmit={handleSubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] shadow-2xl pointer-events-auto animate-fade-in relative flex flex-col" style={{ maxHeight: '90dvh' }}>
@@ -414,7 +415,7 @@ export const PhysicalSection: React.FC<PhysicalSectionProps> = ({ records, addRe
             </div>
           </form>
         </div>
-      )}
+      , document.body)}
     </div>
   );
 };

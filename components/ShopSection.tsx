@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import React, { useState, useMemo } from 'react';
 import { PetShop, ShopVisit, ShopVisitService } from '../types';
 import { generateId } from '../utils';
@@ -252,7 +253,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
       </div>
 
       {/* ── Category Management Modal ── */}
-      {isManagingCategories && (
+      {isManagingCategories && createPortal(
         <div className="fixed inset-0 z-[60] flex items-center justify-center pointer-events-none p-4">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsManagingCategories(false)} />
           <div className="bg-[#FDFAF5] w-full max-w-sm rounded-3xl p-6 shadow-2xl pointer-events-auto animate-fade-in relative">
@@ -299,7 +300,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
             </div>
           </div>
         </div>
-      )}
+      , document.body)}
 
       {/* ── Add Shop Form ── */}
       {isAddingShop && (
@@ -405,7 +406,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
       })}
 
       {/* ── Shop Detail Bottom Sheet ── */}
-      {selectedShop && (
+      {selectedShop && createPortal(
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={closeSheet} />
           <div
@@ -736,7 +737,7 @@ export const ShopSection: React.FC<ShopSectionProps> = ({ shops, setShops }) => 
             )}
           </div>
         </div>
-      )}
+      , document.body)}
     </div>
   );
 };

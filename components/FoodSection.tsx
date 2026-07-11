@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import React, { useState, useMemo } from 'react';
 import { InventoryItem, PetProfile } from '../types';
 import { generateId, formatDate } from '../utils';
@@ -250,7 +251,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
       )}
 
       {/* Form */}
-      {isFormOpen && (
+      {isFormOpen && createPortal(
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsFormOpen(false)} />
           <form
@@ -393,7 +394,7 @@ export const FoodSection: React.FC<FoodSectionProps> = ({ items, setItems, profi
             </div>
           </form>
         </div>
-      )}
+      , document.body)}
     </div>
   );
 };

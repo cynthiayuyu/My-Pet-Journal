@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import React, { useState, useMemo } from 'react';
 import { InsurancePolicy, PrepaidService, InventoryItem, PetProfile } from '../types';
 import { generateId, formatDate } from '../utils';
@@ -389,7 +390,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
       )}
 
       {/* Hotel Plan Generator Modal */}
-      {showHotelPlan && (
+      {showHotelPlan && createPortal(
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-ink/40 backdrop-blur-sm" onClick={() => setShowHotelPlan(false)} />
           <div className="bg-[#FDFAF5] w-full max-w-md rounded-[2rem] p-8 shadow-2xl relative z-10 animate-scale-in">
@@ -430,10 +431,10 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
             </button>
           </div>
         </div>
-      )}
+      , document.body)}
 
       {/* Policy Form */}
-      {isPolicyFormOpen && (
+      {isPolicyFormOpen && createPortal(
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsPolicyFormOpen(false)} />
           <form onSubmit={handlePolicySubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] shadow-2xl pointer-events-auto animate-fade-in relative flex flex-col" style={{ maxHeight: '90dvh' }}>
@@ -487,10 +488,10 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
             </div>
           </form>
         </div>
-      )}
+      , document.body)}
 
       {/* Service Form */}
-      {isServiceFormOpen && (
+      {isServiceFormOpen && createPortal(
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setIsServiceFormOpen(false)} />
           <form onSubmit={handleServiceSubmit} className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] shadow-2xl pointer-events-auto animate-fade-in relative flex flex-col" style={{ maxHeight: '90dvh' }}>
@@ -569,10 +570,10 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
             </div>
           </form>
         </div>
-      )}
+      , document.body)}
 
       {/* Policy Details / Claims Modal */}
-      {selectedPolicy && (
+      {selectedPolicy && createPortal(
         <div className="fixed inset-0 z-[60] flex items-end justify-center pointer-events-none">
           <div className="absolute inset-0 bg-ink/20 backdrop-blur-sm pointer-events-auto" onClick={() => setSelectedPolicy(null)} />
           <div className="bg-[#FDFAF5] w-full max-w-md rounded-t-[2.5rem] p-8 shadow-2xl pointer-events-auto animate-fade-in relative max-h-[90dvh] overflow-y-auto">
@@ -707,7 +708,7 @@ export const FinanceSection: React.FC<FinanceSectionProps> = ({ policies, setPol
              </div>
           </div>
         </div>
-      )}
+      , document.body)}
     </div>
   );
 };
